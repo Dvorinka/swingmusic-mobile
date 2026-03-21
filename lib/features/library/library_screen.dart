@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../shared/providers/audio_provider.dart';
-import '../../shared/providers/library_provider.dart';
+import '../../app/state/library_controller.dart';
 import '../../core/widgets/album_card.dart';
 import '../../core/widgets/track_list_tile.dart';
 import '../../data/models/track_model.dart';
+import '../../data/models/album_model.dart';
 
 class LibraryScreen extends StatefulWidget {
   const LibraryScreen({super.key});
@@ -16,7 +17,7 @@ class LibraryScreen extends StatefulWidget {
 class _LibraryScreenState extends State<LibraryScreen>
     with SingleTickerProviderStateMixin {
     late TabController _tabController;
-    late LibraryProvider _libraryProvider;
+    late LibraryController _libraryController;
     late AudioProvider _audioProvider;
     bool _isLoading = false;
 
@@ -24,7 +25,7 @@ class _LibraryScreenState extends State<LibraryScreen>
     void initState() {
       super.initState();
       _tabController = TabController(length: 6, vsync: this);
-      _libraryProvider = Provider.of<LibraryProvider>(context, listen: false);
+      _libraryController = Provider.of<LibraryController>(context, listen: false);
       _audioProvider = Provider.of<AudioProvider>(context, listen: false);
       _loadLibraryData();
     }
@@ -35,12 +36,8 @@ class _LibraryScreenState extends State<LibraryScreen>
       });
 
       try {
-        await Future.wait([
-          _libraryProvider.loadTracks(),
-          _libraryProvider.loadAlbums(),
-          _libraryProvider.loadArtists(),
-          _libraryProvider.loadFavorites(),
-        ]);
+        // Load library data using canonical controller
+        await _libraryController.bootstrap();
       } catch (e) {
         // Handle error silently for now
       }
@@ -136,15 +133,16 @@ class _LibraryScreenState extends State<LibraryScreen>
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 16),
-            if (_libraryProvider.tracks.isEmpty)
+            if (_libraryController.recentlyPlayed.isEmpty)
               _buildEmptyState('No recently played tracks')
             else
               ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: _libraryProvider.tracks.length,
+                itemCount: _libraryController.recentlyPlayed.length,
                 itemBuilder: (context, index) {
-                  final track = _libraryProvider.tracks[index];
+                  final trackData = _libraryController.recentlyPlayed[index];
+                  final track = TrackModel.fromJson(trackData);
                   return TrackListTile(
                     track: track,
                     onTap: () => _playTrack(track),
@@ -173,7 +171,7 @@ class _LibraryScreenState extends State<LibraryScreen>
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 16),
-            if (_libraryProvider.albums.isEmpty)
+            if (_libraryController.recentlyAdded.isEmpty)
               _buildEmptyState('No albums found')
             else
               GridView.builder(
@@ -185,9 +183,10 @@ class _LibraryScreenState extends State<LibraryScreen>
                   crossAxisSpacing: 16,
                   mainAxisSpacing: 16,
                 ),
-                itemCount: _libraryProvider.albums.length,
+                itemCount: _libraryController.recentlyAdded.length,
                 itemBuilder: (context, index) {
-                  final album = _libraryProvider.albums[index];
+                  final albumData = _libraryController.recentlyAdded[index];
+                  final album = AlbumModel.fromJson(albumData);
                   return AlbumCard(
                     album: album,
                     onTap: () {
@@ -216,15 +215,39 @@ class _LibraryScreenState extends State<LibraryScreen>
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 16),
-            if (_libraryProvider.tracks.isEmpty)
+            if (_libraryController.folderTracks.isEmpty)
               _buildEmptyState('No tracks found')
             else
               ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: _libraryProvider.tracks.length,
+                itemCount: _libraryController.folderTracks.length,
                 itemBuilder: (context, index) {
-                  final track = _libraryProvider.tracks[index];
+                  final musicTrack = _libraryController.folderTracks[index];
+                  // Convert MusicTrack to TrackModel for compatibility
+                  final track = TrackModel(
+                    id: index,
+                    title: musicTrack.title,
+                    album: musicTrack.album,
+                    albumhash: musicTrack.albumhash ?? '',
+                    artists: [],
+                    albumartists: [],
+                    artisthashes: [],
+                    track: 0,
+                    disc: 0,
+                    duration: musicTrack.durationSeconds,
+                    bitrate: musicTrack.bitrate,
+                    filepath: musicTrack.filepath,
+                    folder: '',
+                    genres: [],
+                    genrehashes: [],
+                    date: 0,
+                    lastModified: 0,
+                    trackhash: musicTrack.trackhash,
+                    image: musicTrack.imageUrl ?? '',
+                    isFavorite: musicTrack.isFavorite,
+                    extra: {},
+                  );
                   return TrackListTile(
                     track: track,
                     onTap: () => _playTrack(track),
@@ -253,15 +276,39 @@ class _LibraryScreenState extends State<LibraryScreen>
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 16),
-            if (_libraryProvider.favoriteTracks.isEmpty)
+            if (_libraryController.favoriteTracks.isEmpty)
               _buildEmptyState('No favorite tracks yet')
             else
               ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: _libraryProvider.favoriteTracks.length,
+                itemCount: _libraryController.favoriteTracks.length,
                 itemBuilder: (context, index) {
-                  final track = _libraryProvider.favoriteTracks[index];
+                  final musicTrack = _libraryController.favoriteTracks[index];
+                  // Convert MusicTrack to TrackModel for compatibility
+                  final track = TrackModel(
+                    id: index,
+                    title: musicTrack.title,
+                    album: musicTrack.album,
+                    albumhash: musicTrack.albumhash ?? '',
+                    artists: [],
+                    albumartists: [],
+                    artisthashes: [],
+                    track: 0,
+                    disc: 0,
+                    duration: musicTrack.durationSeconds,
+                    bitrate: musicTrack.bitrate,
+                    filepath: musicTrack.filepath,
+                    folder: '',
+                    genres: [],
+                    genrehashes: [],
+                    date: 0,
+                    lastModified: 0,
+                    trackhash: musicTrack.trackhash,
+                    image: musicTrack.imageUrl ?? '',
+                    isFavorite: true,
+                    extra: {},
+                  );
                   return TrackListTile(
                     track: track,
                     onTap: () => _playTrack(track),
@@ -276,50 +323,78 @@ class _LibraryScreenState extends State<LibraryScreen>
     }
 
     Widget _buildFoldersTab() {
-      return Center(
+      if (_isLoading) {
+        return const Center(child: CircularProgressIndicator());
+      }
+
+      return SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(
-              Icons.folder,
-              size: 64,
-              color: Theme.of(context).colorScheme.onSurface,
+            Text(
+              'Folders',
+              style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 16),
-            Text(
-              'Folder navigation coming soon',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.normal,
-                color: Theme.of(context).colorScheme.onSurface,
+            if (_libraryController.folders.isEmpty)
+              _buildEmptyState('No folders found')
+            else
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: _libraryController.folders.length,
+                itemBuilder: (context, index) {
+                  final folder = _libraryController.folders[index];
+                  return ListTile(
+                    leading: const Icon(Icons.folder),
+                    title: Text(folder.name),
+                    trailing: const Icon(Icons.arrow_forward_ios),
+                    onTap: () {
+                      // Navigate to folder contents
+                    },
+                  );
+                },
               ),
-              textAlign: TextAlign.center,
-            ),
           ],
         ),
       );
     }
 
     Widget _buildPlaylistsTab() {
-      return Center(
+      if (_isLoading) {
+        return const Center(child: CircularProgressIndicator());
+      }
+
+      return SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(
-              Icons.playlist_play,
-              size: 64,
-              color: Theme.of(context).colorScheme.onSurface,
+            Text(
+              'Playlists',
+              style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 16),
-            Text(
-              'Playlist management coming soon',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.normal,
-                color: Theme.of(context).colorScheme.onSurface,
+            if (_libraryController.playlists.isEmpty)
+              _buildEmptyState('No playlists yet')
+            else
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: _libraryController.playlists.length,
+                itemBuilder: (context, index) {
+                  final playlist = _libraryController.playlists[index];
+                  return ListTile(
+                    leading: const Icon(Icons.playlist_play),
+                    title: Text(playlist.name),
+                    trailing: const Icon(Icons.arrow_forward_ios),
+                    onTap: () {
+                      // Navigate to playlist contents
+                    },
+                  );
+                },
               ),
-              textAlign: TextAlign.center,
-            ),
           ],
         ),
       );

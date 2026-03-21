@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../shared/providers/audio_provider.dart';
-import '../../shared/providers/library_provider.dart';
+import '../../app/state/library_controller.dart';
+import '../player/providers/media_controller_provider.dart';
 import '../../core/widgets/album_card.dart';
 import '../../core/widgets/track_list_tile.dart';
 import '../../data/models/track_model.dart';
+import '../../data/models/album_model.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,14 +16,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late LibraryProvider _libraryProvider;
+  late LibraryController _libraryController;
   late AudioProvider _audioProvider;
   bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    _libraryProvider = Provider.of<LibraryProvider>(context, listen: false);
+    _libraryController = Provider.of<LibraryController>(context, listen: false);
     _audioProvider = Provider.of<AudioProvider>(context, listen: false);
     _loadHomeData();
   }
@@ -32,12 +34,8 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     try {
-      // Load recent data from library
-      await Future.wait([
-        _libraryProvider.loadTracks(limit: 10),
-        _libraryProvider.loadAlbums(limit: 5),
-        _libraryProvider.loadArtists(limit: 5),
-      ]);
+      // Load home data using the canonical controller
+      await _libraryController.loadHome();
     } catch (e) {
       // Handle error silently for now
     }
@@ -193,16 +191,17 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 16),
                   if (_isLoading)
                     const Center(child: CircularProgressIndicator())
-                  else if (_libraryProvider.tracks.isEmpty)
+                  else if (_libraryController.recentlyPlayed.isEmpty)
                     _buildEmptySection('No recently played tracks')
                   else
                     SizedBox(
                       height: 200,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
-                        itemCount: _libraryProvider.tracks.length.clamp(0, 10),
+                        itemCount: _libraryController.recentlyPlayed.length.clamp(0, 10),
                         itemBuilder: (context, index) {
-                          final track = _libraryProvider.tracks[index];
+                          final trackData = _libraryController.recentlyPlayed[index];
+                          final track = TrackModel.fromJson(trackData);
                           return Container(
                             width: 160,
                             margin: const EdgeInsets.only(right: 12),
@@ -246,7 +245,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 16),
                   if (_isLoading)
                     const Center(child: CircularProgressIndicator())
-                  else if (_libraryProvider.albums.isEmpty)
+                  else if (_libraryController.recentlyAdded.isEmpty)
                     _buildEmptySection('No recent albums')
                   else
                     GridView.builder(
@@ -258,9 +257,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         crossAxisSpacing: 16,
                         mainAxisSpacing: 16,
                       ),
-                      itemCount: _libraryProvider.albums.length.clamp(0, 4),
+                      itemCount: _libraryController.recentlyAdded.length.clamp(0, 4),
                       itemBuilder: (context, index) {
-                        final album = _libraryProvider.albums[index];
+                        final albumData = _libraryController.recentlyAdded[index];
+                        final album = AlbumModel.fromJson(albumData);
                         return AlbumCard(
                           album: album,
                           onTap: () {
@@ -288,15 +288,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 16),
                   if (_isLoading)
                     const Center(child: CircularProgressIndicator())
-                  else if (_libraryProvider.artists.isEmpty)
+                  else if (_libraryController.recommendedArtists.isEmpty)
                     _buildEmptySection('No top artists')
                   else
                     ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: _libraryProvider.artists.length.clamp(0, 5),
+                      itemCount: _libraryController.recommendedArtists.length.clamp(0, 5),
                       itemBuilder: (context, index) {
-                        final artist = _libraryProvider.artists[index];
+                        final artist = _libraryController.recommendedArtists[index];
                         return ListTile(
                           leading: CircleAvatar(
                             backgroundColor: Theme.of(context).colorScheme.primaryContainer,
@@ -398,6 +398,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _playTrack(TrackModel track) {
+    // Set queue source for playback logging
+    final mediaController = Provider.of<MediaControllerProvider>(context, listen: false);
+    mediaController.setQueueSource(QueueSource.unknown);
+    
     _audioProvider.setQueue([track]);
     _audioProvider.loadTrack(track);
     _audioProvider.play();

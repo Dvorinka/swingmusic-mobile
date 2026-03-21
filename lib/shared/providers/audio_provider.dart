@@ -38,7 +38,7 @@ class AudioProvider extends ChangeNotifier {
 
   // Audio controls
   Future<void> initialize() async {
-    await _audioService.initialize();
+    await _audioService.init();
     notifyListeners();
   }
 

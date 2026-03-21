@@ -6,7 +6,7 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.10.4
+  sdk: ^3.5.0
 
 dependencies:
   flutter:
@@ -24,16 +24,20 @@ dependencies:
   retrofit: ^4.0.1
   json_annotation: ^4.8.1
   lottie: ^2.7.0
+  hive: ^2.2.3
   hive_flutter: ^1.1.0
   
   # Media & Metadata
-  flutter_media_metadata: ^1.0.0
+  # flutter_media_metadata: ^1.0.0+1  # Removed due to namespace issues
+  # flutter_taggy: ^2.1.0  # Version not found
+  metadata_fetch: ^0.4.1
   
   # Visualizations
   flutter_audio_waveforms: ^1.2.0
   
-  # Background Processing
-  workmanager: ^0.5.2
+  # QR Code
+  mobile_scanner: ^5.0.0
+  qr_flutter: ^4.1.0
   
   # UI Components
   cupertino_icons: ^1.0.8
@@ -41,14 +45,38 @@ dependencies:
   # Additional Utilities
   equatable: ^2.0.5
   uuid: ^4.2.1
-  intl: ^0.20.2
+  intl: ^0.19.0
+  
+  # Audio Service
+  audio_service: ^0.18.12
+  
+  # Cache
+  cached_network_image: ^3.3.0
+  
+  # File picker
+  file_picker: ^8.0.0+1
+  
+  # Share
+  share_plus: ^10.0.0
+  
+  # URL launcher
+  url_launcher: ^6.3.0
+  
+  # HTTP requests
+  http: ^1.1.0
+
+  # Connectivity / network-aware quality + sync
+  connectivity_plus: ^6.0.5
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   # Linting
-  flutter_lints: ^6.0.0
+  flutter_lints: ^5.0.0
+  
+  # Testing
+  mockito: ^5.4.2
   
   # Code Generation
   retrofit_generator: ^7.0.8

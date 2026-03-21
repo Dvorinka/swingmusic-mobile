@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'artist_model.dart';
 
 class TrackModel extends Equatable {
   final int id;
@@ -259,33 +260,6 @@ class TrackModel extends Equatable {
       'score': score,
     };
   }
-}
-
-class ArtistModel extends Equatable {
-  final String name;
-  final String artisthash;
-
-  const ArtistModel({
-    required this.name,
-    required this.artisthash,
-  });
-
-  factory ArtistModel.fromJson(Map<String, dynamic> json) {
-    return ArtistModel(
-      name: json['name'] ?? '',
-      artisthash: json['artisthash'] ?? '',
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'artisthash': artisthash,
-    };
-  }
-
-  @override
-  List<Object?> get props => [name, artisthash];
 }
 
 class GenreModel extends Equatable {

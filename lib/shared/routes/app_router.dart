@@ -1,75 +1,122 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../features/player/enhanced_player_screen_new.dart';
-import '../../features/library/library_screen.dart';
-import '../../features/search/search_screen.dart';
-import '../../features/playlists/playlists_screen.dart';
-import '../../features/settings/enhanced_settings_screen.dart';
-import '../../features/auth/enhanced_auth_screen.dart';
-import '../../features/downloads/downloads_screen.dart';
-import '../../features/analytics/analytics_screen.dart';
-import '../../features/home/home_screen.dart';
-import '../widgets/main_navigation.dart';
+import 'package:provider/provider.dart';
+import '../providers/auth_provider.dart';
+import '../../features/auth/screens/login_screen.dart';
+import '../../features/auth/screens/qr_login_screen.dart';
+import '../../features/folder/screens/folders_screen.dart';
+import '../../features/player/screens/now_playing_screen.dart';
+import '../../features/player/screens/queue_screen.dart';
+import '../../features/artist/screens/artist_screen.dart';
+import '../../features/album/screens/album_screen.dart';
+import '../../features/settings/screens/settings_screen.dart';
+import '../../presentation/widgets/main_scaffold.dart';
 import '../../core/constants/app_constants.dart';
 
 class AppRouter {
   static final GoRouter _router = GoRouter(
     initialLocation: AppConstants.homeRoute,
+    redirect: (context, state) {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final isAuthRoute = state.uri.path.startsWith('/login') || 
+                         state.uri.path.startsWith('/qr-login');
+      
+      // If not authenticated and not on auth route, redirect to login
+      if (!authProvider.isLoggedIn && !isAuthRoute) {
+        return '/login';
+      }
+      
+      // If authenticated and on auth route, redirect to home
+      if (authProvider.isLoggedIn && isAuthRoute) {
+        return AppConstants.homeRoute;
+      }
+      
+      return null;
+    },
     routes: [
-      ShellRoute(
-        builder: (context, state, child) {
-          return MainNavigation(child: child);
-        },
+      // Public routes (no authentication required)
+      GoRoute(
+        path: '/login',
+        name: 'login',
+        builder: (context, state) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: '/qr-login',
+        name: 'qr-login',
+        builder: (context, state) => const QRLoginScreen(),
+      ),
+      
+      // Protected routes (authentication required)
+      GoRoute(
+        path: '/',
+        name: 'main',
+        builder: (context, state) => const MainScaffold(),
         routes: [
           GoRoute(
-            path: AppConstants.homeRoute,
+            path: AppConstants.homeRoute.substring(1), // Remove leading slash
             name: 'home',
-            builder: (context, state) => const HomeScreen(),
+            builder: (context, state) => const MainScaffold(),
           ),
           GoRoute(
-            path: AppConstants.libraryRoute,
-            name: 'library',
-            builder: (context, state) => const LibraryScreen(),
-          ),
-          GoRoute(
-            path: AppConstants.playerRoute,
-            name: 'player',
-            builder: (context, state) => const EnhancedPlayerScreen(),
-          ),
-          GoRoute(
-            path: AppConstants.searchRoute,
+            path: AppConstants.searchRoute.substring(1),
             name: 'search',
-            builder: (context, state) => const SearchScreen(),
+            builder: (context, state) => const MainScaffold(),
           ),
           GoRoute(
-            path: AppConstants.playlistsRoute,
-            name: 'playlists',
-            builder: (context, state) => const PlaylistsScreen(),
+            path: AppConstants.libraryRoute.substring(1),
+            name: 'library',
+            builder: (context, state) => const MainScaffold(),
           ),
           GoRoute(
-            path: AppConstants.authRoute,
-            name: 'auth',
-            builder: (context, state) => const EnhancedAuthScreen(),
-          ),
-          GoRoute(
-            path: '/downloads',
+            path: AppConstants.downloadsRoute.substring(1),
             name: 'downloads',
-            builder: (context, state) => const DownloadsScreen(),
+            builder: (context, state) => const MainScaffold(),
           ),
           GoRoute(
-            path: AppConstants.analyticsRoute,
-            name: 'analytics',
-            builder: (context, state) => const AnalyticsScreen(),
+            path: 'now-playing',
+            name: 'now-playing',
+            builder: (context, state) => const NowPlayingScreen(),
           ),
           GoRoute(
-            path: AppConstants.settingsRoute,
+            path: 'queue',
+            name: 'queue',
+            builder: (context, state) => const QueueScreen(),
+          ),
+          GoRoute(
+            path: 'artist/:artistHash',
+            name: 'artist',
+            builder: (context, state) {
+              final artistHash = state.pathParameters['artistHash']!;
+              return ArtistScreen(artistHash: artistHash);
+            },
+          ),
+          GoRoute(
+            path: 'album/:albumHash',
+            name: 'album',
+            builder: (context, state) {
+              final albumHash = state.pathParameters['albumHash']!;
+              return AlbumScreen(albumHash: albumHash);
+            },
+          ),
+          GoRoute(
+            path: 'folder/:folderHash',
+            name: 'folder',
+            builder: (context, state) {
+              return FoldersScreen();
+            },
+          ),
+          GoRoute(
+            path: AppConstants.settingsRoute.substring(1),
             name: 'settings',
-            builder: (context, state) => const EnhancedSettingsScreen(),
+            builder: (context, state) => const SettingsScreen(),
           ),
         ],
       ),
     ],
     errorBuilder: (context, state) => Scaffold(
+      appBar: AppBar(
+        title: const Text('Error'),
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -84,6 +131,11 @@ class AppRouter {
               'Page not found: ${state.uri}',
               style: const TextStyle(fontSize: 18),
               textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () => context.go(AppConstants.homeRoute),
+              child: const Text('Go Home'),
             ),
           ],
         ),

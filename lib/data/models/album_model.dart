@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'track_model.dart';
+import 'artist_model.dart';
 
 class AlbumModel extends Equatable {
   final List<ArtistModel> albumartists;
@@ -149,14 +150,13 @@ class AlbumModel extends Equatable {
   String get displayTitle => originalTitle.isNotEmpty ? originalTitle : title;
   
   String get artistNames => albumartists.map((artist) => artist.name).join(', ');
-  
   String get durationFormatted {
     final hours = duration ~/ 3600;
     final minutes = (duration % 3600) ~/ 60;
     final seconds = duration % 60;
     
     if (hours > 0) {
-      return '${hours}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+      return '$hours:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
     } else {
       return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
     }

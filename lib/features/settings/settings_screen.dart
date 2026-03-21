@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/constants/app_constants.dart';
+import '../../services/dragonfly_service.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -39,11 +40,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
   // Analytics settings
   bool _enableAnalytics = true;
   bool _shareListeningData = false;
+  
+  // DragonflyDB cache status
+  DragonflyStats? _dragonflyStats;
+  bool _isLoadingDragonfly = false;
 
   @override
   void initState() {
     super.initState();
     _loadSettings();
+    _loadDragonflyStats();
   }
 
   Future<void> _loadSettings() async {
@@ -150,6 +156,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 _buildCacheSizeField(),
                 _buildClearCacheSwitch(),
                 _buildClearCacheButton(),
+                const SizedBox(height: 24),
+                
+                // DragonflyDB Cache Status
+                _buildSectionHeader('Cache Server'),
+                _buildDragonflyStatus(),
                 const SizedBox(height: 24),
                 
                 // Analytics Section
@@ -323,45 +334,30 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Widget _buildThemeSelector() {
-    return Column(
-      children: [
-        RadioListTile<ThemeMode>(
-          title: const Text('Light'),
+    return SegmentedButton<ThemeMode>(
+      segments: const [
+        ButtonSegment<ThemeMode>(
           value: ThemeMode.light,
-          groupValue: _themeMode,
-          onChanged: (ThemeMode? value) {
-            if (value != null) {
-              setState(() {
-                _themeMode = value;
-              });
-            }
-          },
+          label: Text('Light'),
+          icon: Icon(Icons.light_mode),
         ),
-        RadioListTile<ThemeMode>(
-          title: const Text('Dark'),
+        ButtonSegment<ThemeMode>(
           value: ThemeMode.dark,
-          groupValue: _themeMode,
-          onChanged: (ThemeMode? value) {
-            if (value != null) {
-              setState(() {
-                _themeMode = value;
-              });
-            }
-          },
+          label: Text('Dark'),
+          icon: Icon(Icons.dark_mode),
         ),
-        RadioListTile<ThemeMode>(
-          title: const Text('System'),
+        ButtonSegment<ThemeMode>(
           value: ThemeMode.system,
-          groupValue: _themeMode,
-          onChanged: (ThemeMode? value) {
-            if (value != null) {
-              setState(() {
-                _themeMode = value;
-              });
-            }
-          },
+          label: Text('System'),
+          icon: Icon(Icons.settings_system_daydream),
         ),
       ],
+      selected: {_themeMode},
+      onSelectionChanged: (Set<ThemeMode> newSelection) {
+        setState(() {
+          _themeMode = newSelection.first;
+        });
+      },
     );
   }
 
@@ -501,6 +497,155 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ],
         );
       },
+    );
+  }
+
+  Future<void> _loadDragonflyStats() async {
+    if (!_isConnected || _serverUrl.isEmpty) return;
+    
+    setState(() {
+      _isLoadingDragonfly = true;
+    });
+    
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('auth_token') ?? '';
+      
+      final service = DragonflyService(
+        baseUrl: _serverUrl,
+        authToken: token,
+      );
+      
+      final stats = await service.getStats();
+      setState(() {
+        _dragonflyStats = stats;
+        _isLoadingDragonfly = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoadingDragonfly = false;
+      });
+    }
+  }
+
+  Widget _buildDragonflyStatus() {
+    if (!_isConnected) {
+      return Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade200,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: const Row(
+          children: [
+            Icon(Icons.info_outline, color: Colors.grey),
+            SizedBox(width: 8),
+            Text('Connect to server to view cache status'),
+          ],
+        ),
+      );
+    }
+    
+    if (_isLoadingDragonfly) {
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+    
+    if (_dragonflyStats == null) {
+      return Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.orange.shade100,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: const Row(
+          children: [
+            Icon(Icons.warning, color: Colors.orange),
+            SizedBox(width: 8),
+            Text('Cache server status unavailable'),
+          ],
+        ),
+      );
+    }
+    
+    final stats = _dragonflyStats!;
+    final statusColor = stats.connected 
+        ? (stats.latencyMs > 100 ? Colors.orange : Colors.green)
+        : Colors.red;
+    
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: Colors.grey.shade300),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 12,
+                      height: 12,
+                      decoration: BoxDecoration(
+                        color: statusColor,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      stats.statusText,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: statusColor,
+                      ),
+                    ),
+                  ],
+                ),
+                IconButton(
+                  icon: const Icon(Icons.refresh),
+                  onPressed: _loadDragonflyStats,
+                  tooltip: 'Refresh',
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            _buildStatRow('Latency', '${stats.latencyMs.toStringAsFixed(1)} ms'),
+            _buildStatRow('Memory Used', stats.memoryUsed),
+            _buildStatRow('Memory Peak', stats.memoryPeak),
+            _buildStatRow('Cached Keys', stats.totalKeys.toString()),
+            _buildStatRow('Uptime', stats.uptimeFormatted),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: TextStyle(color: Colors.grey.shade600),
+          ),
+          Text(
+            value,
+            style: const TextStyle(fontWeight: FontWeight.w500),
+          ),
+        ],
+      ),
     );
   }
 

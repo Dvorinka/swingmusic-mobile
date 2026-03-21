@@ -7,13 +7,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
 import 'package:swingmusic_mobile/main.dart';
+import 'package:swingmusic_mobile/app/services/swing_api_client.dart';
 
 void main() {
   testWidgets('SwingMusic App smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const SwingMusicApp());
+    await tester.pumpWidget(SwingMusicMobileApp(apiClient: SwingApiClient()));
 
     // Verify that the app loads
     expect(find.byType(MaterialApp), findsOneWidget);

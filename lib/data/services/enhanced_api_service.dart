@@ -1,8 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/foundation.dart';
 import '../models/track_model.dart';
 import '../models/album_model.dart';
-import '../models/artist_model.dart';
+import '../models/artist_model.dart' as artist;
 import '../models/playlist_model.dart';
 import '../models/search_suggestion_model.dart';
 import '../../core/constants/app_constants.dart';
@@ -10,11 +11,11 @@ import '../../core/constants/app_constants.dart';
 class EnhancedApiService {
   late Dio _dio;
   final String baseUrl;
-  final SharedPreferences _prefs;
+  late SharedPreferences _prefs;
 
   EnhancedApiService({String? baseUrl}) : baseUrl = baseUrl ?? AppConstants.defaultApiUrl {
     _dio = Dio(BaseOptions(
-      baseUrl: baseUrl,
+      baseUrl: this.baseUrl,
       connectTimeout: AppConstants.apiTimeout,
       receiveTimeout: AppConstants.apiTimeout,
       headers: {
@@ -23,17 +24,24 @@ class EnhancedApiService {
       },
     ));
     
-    _prefs = SharedPreferences.getInstance() as Future<SharedPreferences>;
+    _initializePrefs();
     
     _dio.interceptors.add(LogInterceptor(
       requestBody: true,
       responseBody: true,
       logPrint: (obj) {
-        print('API: $obj');
+        if (kDebugMode) debugPrint('API: $obj');
       },
     ));
     
     _dio.interceptors.add(InterceptorsWrapper(
+      onRequest: (options, handler) async {
+        final token = _prefs.getString('auth_token');
+        if (token != null) {
+          options.headers['Authorization'] = 'Bearer $token';
+        }
+        handler.next(options);
+      },
       onError: (error, handler) {
         String errorMessage = AppConstants.genericErrorMessage;
         
@@ -45,13 +53,21 @@ class EnhancedApiService {
         } else if (error.response?.statusCode == 401) {
           errorMessage = AppConstants.authErrorMessage;
         } else if (error.response?.statusCode == 404) {
-          errorMessage = 'Resource not found';
+          errorMessage = AppConstants.notFoundErrorMessage;
         }
         
-        print('API Error: $errorMessage');
-        handler.next(error);
+        handler.next(DioException(
+          requestOptions: error.requestOptions,
+          error: errorMessage,
+          type: error.type,
+          response: error.response,
+        ));
       },
     ));
+  }
+  
+  Future<void> _initializePrefs() async {
+    _prefs = await SharedPreferences.getInstance();
   }
 
   // Authentication methods
@@ -116,10 +132,12 @@ class EnhancedApiService {
 
   // Album methods
   Future<List<AlbumModel>> getAlbums({
-    int limit = 20,
-    int offset = 0,
     String? search,
     String? artist,
+    int limit = 50,
+    int offset = 0,
+    String? sortBy,
+    String? sortOrder,
   }) async {
     try {
       Map<String, dynamic> queryParams = {
@@ -132,6 +150,12 @@ class EnhancedApiService {
       }
       if (artist != null && artist.isNotEmpty) {
         queryParams['artist'] = artist;
+      }
+      if (sortBy != null && sortBy.isNotEmpty) {
+        queryParams['sortby'] = sortBy;
+      }
+      if (sortOrder != null && sortOrder.isNotEmpty) {
+        queryParams['reverse'] = sortOrder == 'desc' ? 1 : 0;
       }
 
       final response = await _dio.get('/albums', queryParameters: queryParams);
@@ -171,7 +195,7 @@ class EnhancedApiService {
   }
 
   // Artist methods
-  Future<List<ArtistModel>> getArtists({
+  Future<List<artist.ArtistModel>> getArtists({
     int limit = 20,
     int offset = 0,
     String? search,
@@ -189,19 +213,51 @@ class EnhancedApiService {
       final response = await _dio.get('/artists', queryParameters: queryParams);
       final artistsData = response.data['artists'] as List<dynamic>? ?? [];
       
-      return artistsData.map((artistData) => ArtistModel.fromJson(artistData)).toList();
+      return artistsData.map((artistData) => artist.ArtistModel.fromJson(artistData)).toList();
     } catch (e) {
       throw Exception('Failed to load artists: $e');
     }
   }
 
-  Future<ArtistModel?> getArtist(String artistHash) async {
+  Future<artist.ArtistModel?> getArtist(String artistHash) async {
     try {
       final response = await _dio.get('/artist/$artistHash');
       final artistData = response.data['artist'];
-      return artistData != null ? ArtistModel.fromJson(artistData) : null;
+      return artistData != null ? artist.ArtistModel.fromJson(artistData) : null;
     } catch (e) {
       throw Exception('Failed to load artist: $e');
+    }
+  }
+
+  /// Get artist info with optional track limit and all albums flag
+  /// Matches Android: getArtistInfo
+  Future<Map<String, dynamic>> getArtistInfo(
+    String artistHash, {
+    int trackLimit = -1,
+    bool returnAllAlbums = true,
+  }) async {
+    try {
+      final response = await _dio.get('/artist/$artistHash/info', queryParameters: {
+        'tracklimit': trackLimit,
+        'all': returnAllAlbums,
+      });
+      
+      return response.data as Map<String, dynamic>? ?? {};
+    } catch (e) {
+      throw Exception('Failed to load artist info: $e');
+    }
+  }
+
+  /// Get similar artists
+  /// Matches Android: getSimilarArtists
+  Future<List<artist.ArtistModel>> getSimilarArtists(String artistHash) async {
+    try {
+      final response = await _dio.get('/artist/$artistHash/similar');
+      final artistsData = response.data['artists'] as List<dynamic>? ?? [];
+      
+      return artistsData.map((artistData) => artist.ArtistModel.fromJson(artistData)).toList();
+    } catch (e) {
+      throw Exception('Failed to load similar artists: $e');
     }
   }
 
@@ -359,7 +415,7 @@ class EnhancedApiService {
     }
   }
 
-  Future<List<ArtistModel>> getFavoriteArtists({
+  Future<List<artist.ArtistModel>> getFavoriteArtists({
     int limit = 20,
     int offset = 0,
   }) async {
@@ -370,14 +426,14 @@ class EnhancedApiService {
       });
       final artistsData = response.data['artists'] as List<dynamic>? ?? [];
       
-      return artistsData.map((artistData) => ArtistModel.fromJson(artistData)).toList();
+      return artistsData.map((artistData) => artist.ArtistModel.fromJson(artistData)).toList();
     } catch (e) {
       throw Exception('Failed to load favorite artists: $e');
     }
   }
 
   // Search methods
-  Future<List<SearchSuggestionModel>> getSearchSuggestions(String query) async {
+  Future<List<SearchSuggestion>> getSearchSuggestions(String query) async {
     try {
       final response = await _dio.get('/search/suggestions', queryParameters: {
         'q': query,
@@ -385,9 +441,24 @@ class EnhancedApiService {
       });
       final suggestionsData = response.data['suggestions'] as List<dynamic>? ?? [];
       
-      return suggestionsData.map((suggestionData) => SearchSuggestionModel.fromJson(suggestionData)).toList();
+      return suggestionsData.map((suggestionData) => SearchSuggestion.fromJson(suggestionData)).toList();
     } catch (e) {
       throw Exception('Failed to get search suggestions: $e');
+    }
+  }
+
+  /// Get top search results (aggregated results with top result)
+  /// Matches Android: getTopSearchResults
+  Future<Map<String, dynamic>> getTopSearchResults(String query, {int limit = 5}) async {
+    try {
+      final response = await _dio.get('/search', queryParameters: {
+        'q': query,
+        'limit': limit,
+      });
+      
+      return response.data as Map<String, dynamic>? ?? {};
+    } catch (e) {
+      throw Exception('Failed to get top search results: $e');
     }
   }
 
@@ -398,6 +469,36 @@ class EnhancedApiService {
       return response.data['folders'] as List<dynamic>? ?? [];
     } catch (e) {
       throw Exception('Failed to load folders: $e');
+    }
+  }
+
+  /// Get root directories for folder navigation
+  /// Matches Android: getRootDirectories
+  Future<List<dynamic>> getRootDirectories() async {
+    try {
+      final response = await _dio.get('/folders/root');
+      return response.data['folders'] as List<dynamic>? ?? [];
+    } catch (e) {
+      throw Exception('Failed to load root directories: $e');
+    }
+  }
+
+  /// Get folders and tracks in a single request
+  /// Matches Android: getFoldersAndTracks
+  Future<Map<String, dynamic>> getFoldersAndTracks({
+    required String folderHash,
+    int limit = 50,
+    int offset = 0,
+  }) async {
+    try {
+      final response = await _dio.post('/folder/$folderHash/content', data: {
+        'limit': limit,
+        'offset': offset,
+      });
+      
+      return response.data as Map<String, dynamic>? ?? {};
+    } catch (e) {
+      throw Exception('Failed to load folder content: $e');
     }
   }
 
@@ -419,6 +520,25 @@ class EnhancedApiService {
   }
 
   // User methods
+  // Generic HTTP methods
+  Future<Map<String, dynamic>> post(String path, {Map<String, dynamic>? data}) async {
+    try {
+      final response = await _dio.post(path, data: data);
+      return response.data as Map<String, dynamic>;
+    } catch (e) {
+      throw Exception('POST request failed: $e');
+    }
+  }
+
+  Future<Map<String, dynamic>> get(String path) async {
+    try {
+      final response = await _dio.get(path);
+      return response.data as Map<String, dynamic>? ?? {};
+    } catch (e) {
+      throw Exception('Failed to get user info: $e');
+    }
+  }
+
   Future<Map<String, dynamic>> getUserInfo() async {
     try {
       final response = await _dio.get('/user/info');
@@ -483,6 +603,55 @@ class EnhancedApiService {
     }
   }
 
+  Future<Map<String, dynamic>> getDownloadSettings() async {
+    try {
+      final response = await _dio.get('/settings/downloads');
+      return response.data as Map<String, dynamic>? ?? {};
+    } catch (e) {
+      throw Exception('Failed to get download settings: $e');
+    }
+  }
+
+  Future<void> updateDownloadSettings(Map<String, dynamic> settings) async {
+    try {
+      await _dio.put('/settings/downloads', data: settings);
+    } catch (e) {
+      throw Exception('Failed to update download settings: $e');
+    }
+  }
+
+  Future<void> pauseDownload(String downloadId) async {
+    try {
+      await _dio.post('/download/$downloadId/pause');
+    } catch (e) {
+      throw Exception('Failed to pause download: $e');
+    }
+  }
+
+  Future<void> resumeDownload(String downloadId) async {
+    try {
+      await _dio.post('/download/$downloadId/resume');
+    } catch (e) {
+      throw Exception('Failed to resume download: $e');
+    }
+  }
+
+  Future<void> cancelDownload(String downloadId) async {
+    try {
+      await _dio.post('/download/$downloadId/cancel');
+    } catch (e) {
+      throw Exception('Failed to cancel download: $e');
+    }
+  }
+
+  Future<void> retryDownload(String downloadId) async {
+    try {
+      await _dio.post('/download/$downloadId/retry');
+    } catch (e) {
+      throw Exception('Failed to retry download: $e');
+    }
+  }
+
   // Lyrics methods
   Future<String?> getLyrics(String trackHash) async {
     try {
@@ -540,6 +709,117 @@ class EnhancedApiService {
       });
     } catch (e) {
       throw Exception('Failed to reorder queue: $e');
+    }
+  }
+
+  // Analytics API methods
+  Future<Map<String, dynamic>> getAnalyticsData(String period) async {
+    try {
+      final response = await _dio.get('/analytics', queryParameters: {
+        'period': period,
+      });
+      
+      return response.data;
+    } catch (e) {
+      throw Exception('Failed to load analytics data: $e');
+    }
+  }
+
+  Future<List<dynamic>> getTopTracks({int limit = 10}) async {
+    try {
+      final response = await _dio.get('/analytics/top-tracks', queryParameters: {
+        'limit': limit,
+      });
+      
+      return response.data['tracks'] ?? [];
+    } catch (e) {
+      throw Exception('Failed to load top tracks: $e');
+    }
+  }
+
+  Future<List<dynamic>> getTopArtists({int limit = 10}) async {
+    try {
+      final response = await _dio.get('/analytics/top-artists', queryParameters: {
+        'limit': limit,
+      });
+      
+      return response.data['artists'] ?? [];
+    } catch (e) {
+      throw Exception('Failed to load top artists: $e');
+    }
+  }
+
+  // Settings API methods
+  Future<Map<String, dynamic>> getUserSettings() async {
+    try {
+      final response = await _dio.get('/settings');
+      
+      return response.data['settings'] ?? {};
+    } catch (e) {
+      throw Exception('Failed to load user settings: $e');
+    }
+  }
+
+  Future<void> updateUserSettings(Map<String, dynamic> settings) async {
+    try {
+      await _dio.put('/settings', data: settings);
+    } catch (e) {
+      throw Exception('Failed to update user settings: $e');
+    }
+  }
+
+  // Sync API methods
+  Future<Map<String, dynamic>> getLibraryChanges(int lastSyncTimestamp) async {
+    try {
+      final response = await _dio.get('/sync/library/changes', queryParameters: {
+        'since': lastSyncTimestamp,
+      });
+      
+      return response.data as Map<String, dynamic>? ?? {};
+    } catch (e) {
+      throw Exception('Failed to get library changes: $e');
+    }
+  }
+
+  Future<void> syncListeningHistory(List<Map<String, dynamic>> history) async {
+    try {
+      await _dio.post('/sync/history', data: {
+        'history': history,
+      });
+    } catch (e) {
+      throw Exception('Failed to sync listening history: $e');
+    }
+  }
+
+  /// Log track playback to server.
+  /// The Android app logs tracks that have been played for at least 5 seconds.
+  /// Endpoint: POST /logger/track/log
+  Future<void> logTrackPlay({
+    required String trackhash,
+    required int durationSeconds,
+    required String source,
+    int? timestamp,
+  }) async {
+    try {
+      final ts = timestamp ?? DateTime.now().millisecondsSinceEpoch ~/ 1000;
+      
+      await _dio.post(
+        '${baseUrl}logger/track/log',
+        data: {
+          'duration': durationSeconds,
+          'source': source,
+          'timestamp': ts,
+          'trackhash': trackhash,
+        },
+      );
+      
+      debugPrint('LOG: Track logged -> $trackhash, duration: ${durationSeconds}s, source: $source');
+    } on DioException catch (e) {
+      debugPrint('NETWORK ERROR LOGGING TRACK TO SERVER: ${e.message}');
+      // Don't throw - logging failures shouldn't interrupt playback
+    } catch (e) {
+      debugPrint('ERROR LOGGING TRACK TO SERVER: $e');
+      // Don't throw - logging failures shouldn't interrupt playback
     }
   }
 }

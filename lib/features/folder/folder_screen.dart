@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../shared/providers/audio_provider.dart';
 import '../../data/models/track_model.dart';
+import 'providers/folders_provider.dart';
 
 class FolderScreen extends StatefulWidget {
   const FolderScreen({super.key});
@@ -11,16 +12,15 @@ class FolderScreen extends StatefulWidget {
 }
 
 class _FolderScreenState extends State<FolderScreen> {
-  List<FolderItem> _folderItems = [];
-  List<FolderItem> _currentPath = [];
-  bool _isLoading = false;
   final TextEditingController _searchController = TextEditingController();
-  String _currentFolderId = 'root';
+  List<dynamic> _filteredItems = [];
 
   @override
   void initState() {
     super.initState();
-    _loadFolderContents(_currentFolderId);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadFolders();
+    });
   }
 
   @override
@@ -29,370 +29,397 @@ class _FolderScreenState extends State<FolderScreen> {
     super.dispose();
   }
 
-  Future<void> _loadFolderContents(String folderId) async {
+  Future<void> _loadFolders() async {
+    final provider = context.read<FoldersProvider>();
+    await provider.loadFolders();
     setState(() {
-      _isLoading = true;
+      _filteredItems = provider.folders;
     });
+  }
 
-    // Simulate API call
-    await Future.delayed(const Duration(milliseconds: 500));
-    
+  Future<void> _loadFolderTracks(String folderHash, String folderName) async {
+    final provider = context.read<FoldersProvider>();
+    await provider.loadFolderTracks(folderHash, folderName);
     setState(() {
-      _isLoading = false;
-      if (folderId == 'root') {
-        _currentPath = [];
-        _folderItems = [
-          FolderItem(
-            id: 'music',
-            name: 'Music',
-            type: FolderType.folder,
-            itemCount: 156,
-            path: '/music',
-            modifiedDate: DateTime.now().subtract(const Duration(days: 1)),
-          ),
-          FolderItem(
-            id: 'downloads',
-            name: 'Downloads',
-            type: FolderType.folder,
-            itemCount: 42,
-            path: '/downloads',
-            modifiedDate: DateTime.now().subtract(const Duration(hours: 3)),
-          ),
-          FolderItem(
-            id: 'rock',
-            name: 'Rock',
-            type: FolderType.folder,
-            itemCount: 89,
-            path: '/music/rock',
-            modifiedDate: DateTime.now().subtract(const Duration(days: 7)),
-          ),
-          FolderItem(
-            id: 'pop',
-            name: 'Pop',
-            type: FolderType.folder,
-            itemCount: 67,
-            path: '/music/pop',
-            modifiedDate: DateTime.now().subtract(const Duration(days: 2)),
-          ),
-          FolderItem(
-            id: 'jazz',
-            name: 'Jazz',
-            type: FolderType.folder,
-            itemCount: 34,
-            path: '/music/jazz',
-            modifiedDate: DateTime.now().subtract(const Duration(days: 14)),
-          ),
-          FolderItem(
-            id: 'electronic',
-            name: 'Electronic',
-            type: FolderType.folder,
-            itemCount: 78,
-            path: '/music/electronic',
-            modifiedDate: DateTime.now().subtract(const Duration(days: 5)),
-          ),
-          FolderItem(
-            id: 'classical',
-            name: 'Classical',
-            type: FolderType.folder,
-            itemCount: 45,
-            path: '/music/classical',
-            modifiedDate: DateTime.now().subtract(const Duration(days: 21)),
-          ),
-        ];
-      } else if (folderId == 'music') {
-        _currentPath = [
-          FolderItem(id: 'root', name: '..', type: FolderType.folder, path: '/'),
-          FolderItem(id: 'rock', name: 'Rock', type: FolderType.folder, itemCount: 89, path: '/music/rock'),
-          FolderItem(id: 'pop', name: 'Pop', type: FolderType.folder, itemCount: 67, path: '/music/pop'),
-          FolderItem(id: 'jazz', name: 'Jazz', type: FolderType.folder, itemCount: 34, path: '/music/jazz'),
-          FolderItem(id: 'electronic', name: 'Electronic', type: FolderType.folder, itemCount: 78, path: '/music/electronic'),
-          FolderItem(id: 'classical', name: 'Classical', type: FolderType.folder, itemCount: 45, path: '/music/classical'),
-        ];
-        _folderItems = [
-          TrackFolderItem(
-            id: '1',
-            name: 'Bohemian Rhapsody.mp3',
-            artist: 'Queen',
-            album: 'A Night at the Opera',
-            duration: 334,
-            size: 5.2,
-            modifiedDate: DateTime.now().subtract(const Duration(days: 30)),
-          ),
-          TrackFolderItem(
-            id: '2',
-            name: 'Stairway to Heaven.mp3',
-            artist: 'Led Zeppelin',
-            album: 'Led Zeppelin IV',
-            duration: 482,
-            size: 7.8,
-            modifiedDate: DateTime.now().subtract(const Duration(days: 25)),
-          ),
-          TrackFolderItem(
-            id: '3',
-            name: 'Hotel California.mp3',
-            artist: 'Eagles',
-            album: 'Hotel California',
-            duration: 391,
-            size: 6.1,
-            modifiedDate: DateTime.now().subtract(const Duration(days: 20)),
-          ),
-          TrackFolderItem(
-            id: '4',
-            name: 'Sweet Child O\' Mine.mp3',
-            artist: 'Queen',
-            album: 'A Night at the Opera',
-            duration: 348,
-            size: 5.4,
-            modifiedDate: DateTime.now().subtract(const Duration(days: 15)),
-          ),
-          TrackFolderItem(
-            id: '5',
-            name: 'Another Brick in the Wall.mp3',
-            artist: 'Pink Floyd',
-            album: 'The Wall',
-            duration: 623,
-            size: 9.8,
-            modifiedDate: DateTime.now().subtract(const Duration(days: 10)),
-          ),
-        ];
+      _filteredItems = provider.currentFolderTracks;
+    });
+  }
+
+  void _filterItems(String query) {
+    setState(() {
+      final provider = context.read<FoldersProvider>();
+
+      if (query.isEmpty) {
+        _filteredItems = provider.hasCurrentFolder
+            ? provider.currentFolderTracks
+            : provider.folders;
       } else {
-        // Handle other folders with sample data
-        _currentPath = [
-          FolderItem(id: 'root', name: '..', type: FolderType.folder, path: '/'),
-        ];
-        _folderItems = [
-          TrackFolderItem(
-            id: '1',
-            name: 'Sample Track.mp3',
-            artist: 'Sample Artist',
-            album: 'Sample Album',
-            duration: 240,
-            size: 4.2,
-            modifiedDate: DateTime.now().subtract(const Duration(days: 5)),
-          ),
-        ];
+        if (provider.hasCurrentFolder) {
+          _filteredItems = provider.currentFolderTracks.where((track) {
+            return track.title.toLowerCase().contains(query.toLowerCase()) ||
+                track.artistNames.toLowerCase().contains(query.toLowerCase());
+          }).toList();
+        } else {
+          _filteredItems = provider.folders.where((folder) {
+            final name = (folder['name'] ?? folder['title'] ?? '')
+                .toString()
+                .toLowerCase();
+            return name.contains(query.toLowerCase());
+          }).toList();
+        }
       }
     });
   }
 
+  void _navigateBack() {
+    final provider = context.read<FoldersProvider>();
+    if (provider.hasCurrentFolder) {
+      provider.clearCurrentFolder();
+      setState(() {
+        _filteredItems = provider.folders;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(_getFolderTitle()),
-        elevation: 0,
-        backgroundColor: Theme.of(context).colorScheme.surface,
-        leading: _currentFolderId != 'root'
-            ? IconButton(
-                onPressed: () => _navigateToFolder('root'),
-                icon: const Icon(Icons.arrow_back),
-              )
-            : null,
-        actions: [
-          PopupMenuButton<String>(
-            onSelected: _handleMenuAction,
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: 'sort_name',
-                child: ListTile(
-                  leading: const Icon(Icons.sort_by_alpha),
-                  title: Text('Sort by Name'),
-                  contentPadding: EdgeInsets.zero,
-                ),
-              ),
-              const PopupMenuItem(
-                value: 'sort_date',
-                child: ListTile(
-                  leading: const Icon(Icons.access_time),
-                  title: Text('Sort by Date'),
-                  contentPadding: EdgeInsets.zero,
-                ),
-              ),
-              const PopupMenuItem(
-                value: 'sort_size',
-                child: ListTile(
-                  leading: const Icon(Icons.storage),
-                  title: Text('Sort by Size'),
-                  contentPadding: EdgeInsets.zero,
-                ),
-              ),
-              const PopupMenuItem(
-                value: 'view_list',
-                child: ListTile(
-                  leading: const Icon(Icons.list),
-                  title: Text('List View'),
-                  contentPadding: EdgeInsets.zero,
-                ),
-              ),
-              const PopupMenuItem(
-                value: 'view_grid',
-                child: ListTile(
-                  leading: const Icon(Icons.grid_view),
-                  title: Text('Grid View'),
-                  contentPadding: EdgeInsets.zero,
-                ),
+    return Consumer<FoldersProvider>(
+      builder: (context, provider, child) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(
+              provider.hasCurrentFolder
+                  ? provider.currentFolderName ?? 'Folder'
+                  : 'Music Library',
+            ),
+            elevation: 0,
+            backgroundColor: Theme.of(context).colorScheme.surface,
+            leading: provider.hasCurrentFolder
+                ? IconButton(
+                    onPressed: _navigateBack,
+                    icon: const Icon(Icons.arrow_back),
+                  )
+                : null,
+            actions: [
+              PopupMenuButton<String>(
+                onSelected: (action) => _handleMenuAction(action, provider),
+                itemBuilder: (context) => [
+                  const PopupMenuItem(
+                    value: 'sort_name',
+                    child: ListTile(
+                      leading: Icon(Icons.sort_by_alpha),
+                      title: Text('Sort by Name'),
+                      contentPadding: EdgeInsets.zero,
+                    ),
+                  ),
+                  const PopupMenuItem(
+                    value: 'sort_date',
+                    child: ListTile(
+                      leading: Icon(Icons.access_time),
+                      title: Text('Sort by Date'),
+                      contentPadding: EdgeInsets.zero,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-        ],
-      ),
-      body: Column(
-        children: [
-          // Breadcrumb Navigation
-          _buildBreadcrumbNavigation(),
-          
-          // Search Bar
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Search in current folder...',
-                prefixIcon: const Icon(Icons.search),
-                suffixIcon: _searchController.text.isNotEmpty
-                    ? IconButton(
-                        onPressed: () {
-                          _searchController.clear();
-                        },
-                        icon: const Icon(Icons.clear),
-                      )
-                    : null,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
-                ),
-                filled: true,
-                fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
+          body: Column(
+            children: [
+              // Breadcrumb Navigation
+              _buildBreadcrumbNavigation(provider),
+
+              // Search Bar
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    hintText: 'Search in current folder...',
+                    prefixIcon: const Icon(Icons.search),
+                    suffixIcon: _searchController.text.isNotEmpty
+                        ? IconButton(
+                            onPressed: () {
+                              _searchController.clear();
+                              _filterItems('');
+                            },
+                            icon: const Icon(Icons.clear),
+                          )
+                        : null,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                    filled: true,
+                    fillColor: Theme.of(
+                      context,
+                    ).colorScheme.surfaceContainerHighest,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                  ),
+                  onChanged: _filterItems,
                 ),
               ),
-              onChanged: (value) {
-                _filterItems(value);
-              },
+
+              // Folder Contents
+              Expanded(
+                child: provider.isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : provider.errorMessage != null
+                    ? _buildErrorState(provider.errorMessage!)
+                    : _filteredItems.isEmpty
+                    ? _buildEmptyState()
+                    : _buildFolderContents(provider),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildBreadcrumbNavigation(FoldersProvider provider) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Row(
+        children: [
+          InkWell(
+            onTap: provider.hasCurrentFolder ? _navigateBack : null,
+            borderRadius: BorderRadius.circular(8),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: !provider.hasCurrentFolder
+                    ? Theme.of(context).colorScheme.primaryContainer
+                    : Theme.of(context).colorScheme.surfaceContainerHighest,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.home,
+                    size: 20,
+                    color: !provider.hasCurrentFolder
+                        ? Theme.of(context).colorScheme.onPrimaryContainer
+                        : Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Home',
+                    style: TextStyle(
+                      color: !provider.hasCurrentFolder
+                          ? Theme.of(context).colorScheme.onPrimaryContainer
+                          : Theme.of(context).colorScheme.onSurfaceVariant,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-          
-          // Folder Contents
-          Expanded(
-            child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : _folderItems.isEmpty
-                    ? _buildEmptyState()
-                    : _buildFolderContents(),
-          ),
+          if (provider.hasCurrentFolder) ...[
+            const Icon(Icons.chevron_right, size: 16),
+            const SizedBox(width: 4),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primaryContainer,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                provider.currentFolderName ?? '',
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );
   }
 
-  Widget _buildBreadcrumbNavigation() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: [
-            // Root/Home
-            InkWell(
-              onTap: () => _navigateToFolder('root'),
-              borderRadius: BorderRadius.circular(8),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+  Widget _buildFolderContents(FoldersProvider provider) {
+    return ListView.builder(
+      padding: const EdgeInsets.all(8.0),
+      itemCount: _filteredItems.length,
+      itemBuilder: (context, index) {
+        final item = _filteredItems[index];
+
+        if (item is TrackModel) {
+          return _buildTrackTile(item);
+        } else {
+          return _buildFolderTile(item, provider);
+        }
+      },
+    );
+  }
+
+  Widget _buildFolderTile(
+    Map<String, dynamic> folder,
+    FoldersProvider provider,
+  ) {
+    final name = folder['name'] ?? folder['title'] ?? 'Unknown';
+    final itemCount = folder['count'] ?? folder['itemCount'] ?? 0;
+    final path = folder['path'] ?? '';
+    final hash =
+        folder['hash'] ?? folder['folderhash'] ?? path.hashCode.toString();
+
+    return Card(
+      child: InkWell(
+        onTap: () => _loadFolderTracks(hash, name),
+        borderRadius: BorderRadius.circular(12),
+        onLongPress: () => _showFolderOptions(name, hash),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            children: [
+              Container(
+                width: 48,
+                height: 48,
                 decoration: BoxDecoration(
-                  color: _currentFolderId == 'root'
-                      ? Theme.of(context).colorScheme.primaryContainer
-                      : Theme.of(context).colorScheme.surfaceContainerHighest,
-                  borderRadius: BorderRadius.circular(8),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8.0),
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
+                child: Icon(
+                  Icons.folder,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(
-                      Icons.home,
-                      size: 20,
-                      color: _currentFolderId == 'root'
-                          ? Theme.of(context).colorScheme.onPrimaryContainer
-                          : Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-                    const SizedBox(width: 8),
                     Text(
-                      'Home',
-                      style: TextStyle(
-                        color: _currentFolderId == 'root'
-                            ? Theme.of(context).colorScheme.onPrimaryContainer
-                            : Theme.of(context).colorScheme.onSurfaceVariant,
-                        fontWeight: FontWeight.w500,
+                      name,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '$itemCount items',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
-            
-            // Breadcrumb items
-            ..._currentPath.map((item) {
-              return Padding(
-                padding: const EdgeInsets.only(left: 4),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(Icons.chevron_right, size: 16),
-                    const SizedBox(width: 4),
-                    InkWell(
-                      onTap: () => _navigateToFolder(item.id),
-                      borderRadius: BorderRadius.circular(8),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: item.id == _currentFolderId
-                              ? Theme.of(context).colorScheme.primaryContainer
-                              : Theme.of(context).colorScheme.surfaceContainerHighest,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          item.name,
-                          style: TextStyle(
-                            color: item.id == _currentFolderId
-                                ? Theme.of(context).colorScheme.onPrimaryContainer
-                                : Theme.of(context).colorScheme.onSurfaceVariant,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }).toList(),
-          ],
+              Icon(
+                Icons.chevron_right,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildFolderContents() {
-    return ListView.builder(
-      padding: const EdgeInsets.all(8.0),
-      itemCount: _folderItems.length,
-      itemBuilder: (context, index) {
-        final item = _folderItems[index];
-        
-        if (item is TrackFolderItem) {
-          return TrackFolderTile(
-            track: item,
-            onTap: () => _playTrack(item),
-            onPlay: () => _playTrack(item),
-          );
-        } else {
-          return FolderTile(
-            folder: item,
-            onTap: () => _navigateToFolder(item.id),
-            onLongPress: () => _showFolderOptions(item),
-          );
-        }
-      },
+  Widget _buildTrackTile(TrackModel track) {
+    return Card(
+      child: InkWell(
+        onTap: () => _playTrack(track),
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            children: [
+              // Track artwork or icon
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: track.image.isNotEmpty
+                    ? Image.network(
+                        track.image,
+                        width: 48,
+                        height: 48,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) =>
+                            _buildDefaultTrackIcon(),
+                      )
+                    : _buildDefaultTrackIcon(),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      track.displayTitle,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      track.artistNames,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Text(
+                          track.durationFormatted,
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurfaceVariant,
+                              ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          '${track.bitrate} kbps',
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurfaceVariant,
+                              ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              IconButton(
+                onPressed: () => _playTrack(track),
+                icon: const Icon(Icons.play_arrow),
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDefaultTrackIcon() {
+    return Container(
+      width: 48,
+      height: 48,
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Icon(
+        Icons.music_note,
+        color: Theme.of(context).colorScheme.secondary,
+      ),
     );
   }
 
@@ -429,106 +456,73 @@ class _FolderScreenState extends State<FolderScreen> {
     );
   }
 
-  String _getFolderTitle() {
-    if (_currentFolderId == 'root') {
-      return 'Music Library';
-    } else {
-      final folder = _currentPath.firstWhere(
-        (item) => item.id == _currentFolderId,
-        orElse: () => FolderItem(id: '', name: '', type: FolderType.folder),
-      );
-      return folder.name;
-    }
-  }
-
-  void _filterItems(String query) {
-    setState(() {
-      if (query.isEmpty) {
-        _loadFolderContents(_currentFolderId);
-      } else {
-        // Filter items (in real app, this would call API)
-        _folderItems = _folderItems.where((item) {
-          final name = item.name.toLowerCase();
-          return name.contains(query.toLowerCase());
-        }).toList();
-      }
-    });
-  }
-
-  void _navigateToFolder(String folderId) {
-    setState(() {
-      _currentFolderId = folderId;
-    });
-    _loadFolderContents(folderId);
-  }
-
-  void _playTrack(TrackFolderItem track) {
-    final trackModel = TrackModel(
-      id: int.parse(track.id),
-      title: track.name,
-      album: track.album,
-      albumhash: track.album.hashCode.toString(),
-      artists: [],
-      albumartists: [],
-      artisthashes: [],
-      track: 0,
-      disc: 1,
-      duration: track.duration,
-      bitrate: 320,
-      filepath: track.id, // Use ID as filepath for demo
-      folder: '',
-      genres: [],
-      genrehashes: [],
-      copyright: '',
-      date: DateTime.now().millisecondsSinceEpoch ~/ 1000,
-      lastModified: DateTime.now().millisecondsSinceEpoch ~/ 1000,
-      trackhash: track.id,
-      image: '',
-      weakHash: '',
-      extra: {},
-      lastplayed: 0,
-      playcount: 0,
-      playduration: track.duration,
-      explicit: false,
-      favUserids: [],
-      isFavorite: false,
-      score: 0.0,
+  Widget _buildErrorState(String error) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.error_outline,
+              size: 64,
+              color: Theme.of(context).colorScheme.error,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Failed to load folders',
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                color: Theme.of(context).colorScheme.error,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              error,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(onPressed: _loadFolders, child: const Text('Retry')),
+          ],
+        ),
+      ),
     );
-
-    final audioProvider = Provider.of<AudioProvider>(context, listen: false);
-    audioProvider.setQueue([trackModel]);
-    audioProvider.loadTrack(trackModel);
-    audioProvider.play();
-    
-    Navigator.pushNamed(context, '/player');
   }
 
-  void _handleMenuAction(String action) {
+  void _handleMenuAction(String action, FoldersProvider provider) {
     switch (action) {
       case 'sort_name':
         setState(() {
-          _folderItems.sort((a, b) => a.name.compareTo(b.name));
+          _filteredItems.sort((a, b) {
+            final nameA = a is TrackModel
+                ? a.title
+                : (a['name'] ?? '').toString();
+            final nameB = b is TrackModel
+                ? b.title
+                : (b['name'] ?? '').toString();
+            return nameA.compareTo(nameB);
+          });
         });
         break;
       case 'sort_date':
         setState(() {
-          _folderItems.sort((a, b) => b.modifiedDate!.compareTo(a.modifiedDate!));
-        });
-        break;
-      case 'sort_size':
-        setState(() {
-          _folderItems.sort((a, b) {
-            final sizeA = a is TrackFolderItem ? a.size : 0;
-            final sizeB = b is TrackFolderItem ? b.size : 0;
-            return sizeA.compareTo(sizeB);
+          _filteredItems.sort((a, b) {
+            final dateA = a is TrackModel
+                ? a.lastModified
+                : (a['lastModified'] ?? 0) as int;
+            final dateB = b is TrackModel
+                ? b.lastModified
+                : (b['lastModified'] ?? 0) as int;
+            return dateB.compareTo(dateA);
           });
         });
         break;
-      // View options would be handled here
     }
   }
 
-  void _showFolderOptions(FolderItem folder) {
+  void _showFolderOptions(String folderName, String folderHash) {
     showModalBottomSheet(
       context: context,
       builder: (context) => Container(
@@ -545,7 +539,7 @@ class _FolderScreenState extends State<FolderScreen> {
               title: const Text('Play All'),
               onTap: () {
                 Navigator.pop(context);
-                _playAllInFolder();
+                _playAllInFolder(folderHash, folderName);
               },
             ),
             ListTile(
@@ -553,7 +547,7 @@ class _FolderScreenState extends State<FolderScreen> {
               title: const Text('Shuffle All'),
               onTap: () {
                 Navigator.pop(context);
-                _shuffleAllInFolder();
+                _shuffleAllInFolder(folderHash, folderName);
               },
             ),
             ListTile(
@@ -561,24 +555,9 @@ class _FolderScreenState extends State<FolderScreen> {
               title: const Text('Add to Playlist'),
               onTap: () {
                 Navigator.pop(context);
-                _addToPlaylist();
-              },
-            ),
-            const SizedBox(height: 8),
-            ListTile(
-              leading: Icon(
-                Icons.delete,
-                color: Theme.of(context).colorScheme.error,
-              ),
-              title: Text(
-                'Delete',
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.error,
-                ),
-              ),
-              onTap: () {
-                Navigator.pop(context);
-                _deleteFolder();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Added to playlist')),
+                );
               },
             ),
           ],
@@ -587,303 +566,65 @@ class _FolderScreenState extends State<FolderScreen> {
     );
   }
 
-  void _playAllInFolder() {
-    // Implementation to play all tracks in folder
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Playing all tracks in folder')),
-    );
+  Future<void> _playAllInFolder(String folderHash, String folderName) async {
+    final provider = context.read<FoldersProvider>();
+    await provider.loadFolderTracks(folderHash, folderName);
+
+    if (provider.currentFolderTracks.isNotEmpty) {
+      if (!mounted) return;
+
+      final audioProvider = context.read<AudioProvider>();
+      audioProvider.setQueue(provider.currentFolderTracks);
+      audioProvider.loadTrack(provider.currentFolderTracks.first);
+      audioProvider.play();
+
+      if (mounted) {
+        Navigator.pushNamed(context, '/player');
+      }
+    }
   }
 
-  void _shuffleAllInFolder() {
-    // Implementation to shuffle all tracks in folder
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Shuffling all tracks in folder')),
-    );
+  Future<void> _shuffleAllInFolder(String folderHash, String folderName) async {
+    final provider = context.read<FoldersProvider>();
+    await provider.loadFolderTracks(folderHash, folderName);
+
+    if (provider.currentFolderTracks.isNotEmpty) {
+      final tracks = List<TrackModel>.from(provider.currentFolderTracks);
+      tracks.shuffle();
+
+      if (!mounted) return;
+
+      final audioProvider = context.read<AudioProvider>();
+      audioProvider.setQueue(tracks);
+      audioProvider.loadTrack(tracks.first);
+      audioProvider.play();
+
+      if (mounted) {
+        Navigator.pushNamed(context, '/player');
+      }
+    }
   }
 
-  void _addToPlaylist() {
-    // Implementation to add folder contents to playlist
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Added to playlist')),
-    );
+  void _playTrack(TrackModel track) {
+    final provider = context.read<FoldersProvider>();
+    final audioProvider = context.read<AudioProvider>();
+
+    if (provider.hasCurrentFolder) {
+      audioProvider.setQueue(provider.currentFolderTracks);
+      final trackIndex = provider.currentFolderTracks.indexWhere(
+        (t) => t.trackhash == track.trackhash,
+      );
+      if (trackIndex >= 0) {
+        audioProvider.jumpToIndex(trackIndex);
+      } else {
+        audioProvider.loadTrack(track);
+      }
+    } else {
+      audioProvider.setQueue([track]);
+      audioProvider.loadTrack(track);
+    }
+
+    audioProvider.play();
+    Navigator.pushNamed(context, '/player');
   }
-
-  void _deleteFolder() {
-    // Implementation to delete folder
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Folder deleted')),
-    );
-  }
-}
-
-// Helper classes
-class FolderItem {
-  final String id;
-  final String name;
-  final FolderType type;
-  final int? itemCount;
-  final String? path;
-  final DateTime? modifiedDate;
-
-  FolderItem({
-    required this.id,
-    required this.name,
-    required this.type,
-    this.itemCount,
-    this.path,
-    this.modifiedDate,
-  });
-}
-
-class TrackFolderItem extends FolderItem {
-  final String artist;
-  final String album;
-  final int duration;
-  final double size;
-
-  TrackFolderItem({
-    required String id,
-    required String name,
-    required this.artist,
-    required this.album,
-    required this.duration,
-    required this.size,
-    String? path,
-    DateTime? modifiedDate,
-  }) : super(
-          id: id,
-          name: name,
-          type: FolderType.track,
-          path: path,
-          modifiedDate: modifiedDate ?? DateTime.now(),
-        );
-}
-
-enum FolderType {
-  folder,
-  track,
-}
-
-// Custom widgets
-class FolderTile extends StatelessWidget {
-  final FolderItem folder;
-  final VoidCallback onTap;
-  final VoidCallback? onLongPress;
-
-  const FolderTile({
-    super.key,
-    required this.folder,
-    required this.onTap,
-    this.onLongPress,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: InkWell(
-        onTap: onTap,
-        onLongPress: onLongPress,
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            children: [
-              // Folder/Track Icon
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  color: folder.type == FolderType.folder
-                      ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
-                      : Theme.of(context).colorScheme.secondary.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Icon(
-                  folder.type == FolderType.folder ? Icons.folder : Icons.music_note,
-                  color: folder.type == FolderType.folder
-                      ? Theme.of(context).colorScheme.primary
-                      : Theme.of(context).colorScheme.secondary,
-                ),
-              ),
-              
-              const SizedBox(width: 16),
-              
-              // Folder/Track Info
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      folder.name,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 4),
-                    if (folder.itemCount != null)
-                      Text(
-                        '${folder.itemCount} items',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    if (folder.modifiedDate != null)
-                      Text(
-                        _formatDate(folder.modifiedDate!),
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    if (folder is TrackFolderItem)
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            (folder as TrackFolderItem).artist,
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
-                            ),
-                          ),
-                          Text(
-                            (folder as TrackFolderItem).album,
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
-                            ),
-                          ),
-                        ],
-                      ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class TrackFolderTile extends StatelessWidget {
-  final TrackFolderItem track;
-  final VoidCallback onTap;
-  final VoidCallback? onPlay;
-
-  const TrackFolderTile({
-    super.key,
-    required this.track,
-    required this.onTap,
-    this.onPlay,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            children: [
-              // Track Icon
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(
-                  Icons.music_note,
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-              ),
-              
-              const SizedBox(width: 16),
-              
-              // Track Info
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      track.name,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      track.artist,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                    Text(
-                      track.album,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Text(
-                          _formatDuration(track.duration),
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          '${track.size.toStringAsFixed(1)} MB',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              
-              // Play Button
-              IconButton(
-                onPressed: onPlay,
-                icon: const Icon(Icons.play_arrow),
-                color: Theme.of(context).colorScheme.primary,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-String _formatDate(DateTime date) {
-  final now = DateTime.now();
-  final difference = now.difference(date);
-  
-  if (difference.inDays == 0) {
-    return 'Today';
-  } else if (difference.inDays == 1) {
-    return 'Yesterday';
-  } else if (difference.inDays < 7) {
-    return '${difference.inDays} days ago';
-  } else if (difference.inDays < 30) {
-    return '${(difference.inDays / 7).floor()} weeks ago';
-  } else {
-    return '${(difference.inDays / 30).floor()} months ago';
-  }
-}
-
-String _formatDuration(int seconds) {
-  final minutes = seconds ~/ 60;
-  final remainingSeconds = seconds % 60;
-  return '${minutes}:${remainingSeconds.toString().padLeft(2, '0')}';
 }

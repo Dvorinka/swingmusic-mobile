@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/constants/app_icons.dart';
-import '../../core/widgets/mini_player.dart';
+import 'mini_player.dart';
 
 class MainNavigation extends StatefulWidget {
   final Widget child;

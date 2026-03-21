@@ -88,9 +88,49 @@ class ArtistModel extends Equatable {
     final seconds = duration % 60;
     
     if (hours > 0) {
-      return '${hours}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+      return '$hours:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
     } else {
       return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
     }
+  }
+
+  factory ArtistModel.fromJson(Map<String, dynamic> json) {
+    return ArtistModel(
+      name: json['name'] ?? '',
+      artisthash: json['artisthash'] ?? '',
+      image: json['image'] ?? '',
+      trackcount: json['trackcount'] ?? 0,
+      albumcount: json['albumcount'] ?? 0,
+      duration: json['duration'] ?? 0,
+      lastplayed: json['lastplayed'] ?? 0,
+      playcount: json['playcount'] ?? 0,
+      playduration: json['playduration'] ?? 0,
+      favUserids: List<int>.from(json['fav_userids'] ?? []),
+      isFavorite: json['is_favorite'] ?? false,
+      albums: (json['albums'] as List<dynamic>?)
+          ?.map((album) => AlbumModel.fromJson(album))
+          .toList() ?? [],
+      tracks: (json['tracks'] as List<dynamic>?)
+          ?.map((track) => TrackModel.fromJson(track))
+          .toList() ?? [],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'artisthash': artisthash,
+      'image': image,
+      'trackcount': trackcount,
+      'albumcount': albumcount,
+      'duration': duration,
+      'lastplayed': lastplayed,
+      'playcount': playcount,
+      'playduration': playduration,
+      'fav_userids': favUserids,
+      'is_favorite': isFavorite,
+      'albums': albums.map((album) => album.toJson()).toList(),
+      'tracks': tracks.map((track) => track.toJson()).toList(),
+    };
   }
 }

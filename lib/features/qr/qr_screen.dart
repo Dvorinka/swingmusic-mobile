@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import 'package:provider/provider.dart';
+import '../../app/state/session_controller.dart';
+import 'mobile_scanner_screen.dart';
 
 class QRScreen extends StatefulWidget {
   const QRScreen({super.key});
@@ -81,35 +85,36 @@ class _QRScreenState extends State<QRScreen> {
                         ? const Center(
                             child: CircularProgressIndicator(),
                           )
-                        : Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                width: 180,
-                                height: 180,
-                                color: Colors.black,
-                                child: const Center(
-                                  child: Text(
-                                    'QR CODE',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.bold,
+                        : _qrCode.isEmpty
+                            ? const Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.qr_code_2,
+                                      size: 60,
+                                      color: Colors.grey,
                                     ),
-                                  ),
+                                    SizedBox(height: 8),
+                                    Text(
+                                      'No QR Code',
+                                      style: TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : QrImageView(
+                                data: _qrCode,
+                                version: QrVersions.auto,
+                                size: 180.0,
+                                backgroundColor: Colors.white,
+                                dataModuleStyle: QrDataModuleStyle(
+                                  color: Colors.black,
                                 ),
                               ),
-                              const SizedBox(height: 16),
-                              Text(
-                                _qrCode.isEmpty ? 'Generate QR Code' : _qrCode,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          ),
                   ),
                   const SizedBox(height: 24),
                   
@@ -124,12 +129,12 @@ class _QRScreenState extends State<QRScreen> {
                             backgroundColor: Theme.of(context).colorScheme.primary,
                             foregroundColor: Theme.of(context).colorScheme.onPrimary,
                           ),
-                          child: const Row(
+                          child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              const Icon(Icons.qr_code_scanner),
-                              const SizedBox(width: 8),
-                              const Text('Scan QR Code'),
+                              Icon(Icons.qr_code_scanner),
+                              SizedBox(width: 8),
+                              Text('Scan QR Code'),
                             ],
                           ),
                         ),
@@ -142,12 +147,12 @@ class _QRScreenState extends State<QRScreen> {
                             backgroundColor: Theme.of(context).colorScheme.secondary,
                             foregroundColor: Theme.of(context).colorScheme.onSecondary,
                           ),
-                          child: const Row(
+                          child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              const Icon(Icons.qr_code),
-                              const SizedBox(width: 8),
-                              const Text('Generate QR'),
+                              Icon(Icons.qr_code),
+                              SizedBox(width: 8),
+                              Text('Generate QR'),
                             ],
                           ),
                         ),
@@ -210,54 +215,95 @@ class _QRScreenState extends State<QRScreen> {
     }
   }
 
-  void _generateQRCode() {
+  void _generateQRCode() async {
     setState(() {
       _isGenerating = true;
     });
 
-    // Generate a random QR code for demo
-    Future.delayed(const Duration(seconds: 2)).then((_) {
+    try {
+      // Get current auth token and server info
+      final session = Provider.of<SessionController>(context, listen: false);
+      
+      if (session.isAuthenticated) {
+        // Generate QR code with auth token and server URL
+        final qrData = {
+          'token': 'current_user_token', // In real implementation, get from secure storage
+          'serverUrl': session.baseUrl,
+          'timestamp': DateTime.now().millisecondsSinceEpoch,
+          'app': 'swingmusic_mobile',
+        };
+        
+        setState(() {
+          _qrCode = Uri.encodeComponent(qrData.toString());
+          _isGenerating = false;
+        });
+        
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('QR Code generated!')),
+          );
+        }
+      } else {
+        throw Exception('Not authenticated');
+      }
+    } catch (e) {
       setState(() {
         _isGenerating = false;
-        _qrCode = 'SWING-${DateTime.now().millisecondsSinceEpoch % 10000}';
       });
       
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('QR Code generated!')),
-      );
-    });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to generate QR code: ${e.toString()}')),
+        );
+      }
+    }
   }
 
   void _scanQRCode() async {
     try {
-      // In a real app, this would use camera plugin
-      // For demo, we'll simulate scanning
-      await Future.delayed(const Duration(seconds: 3));
-      
-      setState(() {
-        _isScanning = false;
-        _qrCode = 'DEMO-SCANNED-${DateTime.now().millisecondsSinceEpoch}';
-      });
-      
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('QR Code scanned!')),
+      // Use mobile_scanner for real QR code scanning
+      final result = await Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => const MobileScannerScreen(),
+        ),
       );
+      
+      if (result != null && result is String) {
+        setState(() {
+          _isScanning = false;
+          _qrCode = result;
+        });
+        
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('QR Code scanned!')),
+          );
+        }
+      } else {
+        setState(() {
+          _isScanning = false;
+        });
+      }
     } catch (e) {
       setState(() {
         _isScanning = false;
       });
       
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Scan failed: ${e.toString()}')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Scan failed: ${e.toString()}')),
+        );
+      }
     }
   }
 
   void _connectWithQR() async {
     if (_qrCode.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter or scan a QR code')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please enter or scan a QR code')),
+        );
+      }
       return;
     }
 
@@ -266,27 +312,55 @@ class _QRScreenState extends State<QRScreen> {
     });
 
     try {
-      // Simulate connection with QR code
-      await Future.delayed(const Duration(seconds: 2));
+      final session = Provider.of<SessionController>(context, listen: false);
       
-      setState(() {
-        _isGenerating = false;
-      });
+      // Parse QR code data
+      String qrData = _qrCode;
+      if (_qrCode.startsWith('SWING-') || _qrCode.startsWith('DEMO-')) {
+        // Handle legacy/demo codes
+        qrData = _qrCode.replaceFirst(RegExp(r'^(SWING-|DEMO-SCANNED-)'), '');
+      }
+      
+      // Try to decode if it's URI encoded
+      try {
+        qrData = Uri.decodeComponent(qrData);
+      } catch (e) {
+        // Not URI encoded, use as is
+      }
+      
+      // Connect using QR data
+      if (qrData.isNotEmpty) {
+        // Parse QR data format: "server_url|pair_code"
+        final parts = qrData.split('|');
+        if (parts.length == 2) {
+          await session.loginWithPairCode(serverUrl: parts[0], code: parts[1]);
+        }
+        
+        setState(() {
+          _isGenerating = false;
+        });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Connected with QR Code!')),
-      );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Connected with QR Code!')),
+          );
 
-      // Navigate to main app
-      Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+          // Navigate to main app
+          Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+        }
+      } else {
+        throw Exception('Invalid QR code format');
+      }
     } catch (e) {
       setState(() {
         _isGenerating = false;
       });
       
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Connection failed: ${e.toString()}')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Connection failed: ${e.toString()}')),
+        );
+      }
     }
   }
 }

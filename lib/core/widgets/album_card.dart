@@ -37,10 +37,10 @@ class _AlbumCardState extends State<AlbumCard> {
         ),
         color: _isHovered ? AppTheme.gray5 : null, // Match web client hover background
         child: InkWell(
-          onTap: onTap,
+          onTap: widget.onTap,
           borderRadius: AppBorderRadius.circularLG,
-          child: Container(
-            width: width ?? 160,
+            child: SizedBox(
+              width: widget.width ?? 160,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -49,16 +49,16 @@ class _AlbumCardState extends State<AlbumCard> {
                   child: Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surfaceVariant,
+                      color: Theme.of(context).colorScheme.surfaceContainerHighest,
                       borderRadius: AppBorderRadius.circularLG,
                     ),
                     child: ClipRRect(
                       borderRadius: AppBorderRadius.circularLG,
                       child: Stack(
                         children: [
-                          if (album.image.isNotEmpty)
+                          if (widget.album.image.isNotEmpty)
                             Image.network(
-                              album.image,
+                              widget.album.image,
                               fit: BoxFit.cover,
                               width: double.infinity,
                               height: double.infinity,
@@ -139,7 +139,7 @@ class _AlbumCardState extends State<AlbumCard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        album.displayTitle,
+                        widget.album.displayTitle,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w700,
                           fontSize: 15, // 0.95rem from web client
@@ -149,7 +149,7 @@ class _AlbumCardState extends State<AlbumCard> {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        album.artistNames,
+                        widget.album.artistNames,
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.75),
                           fontWeight: FontWeight.w700,
@@ -158,10 +158,10 @@ class _AlbumCardState extends State<AlbumCard> {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      if (album.year.isNotEmpty) ...[
+                      if (widget.album.year.isNotEmpty) ...[
                         const SizedBox(height: 2),
                         Text(
-                          album.year,
+                          widget.album.year,
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                             fontSize: 12,
@@ -186,8 +186,8 @@ class _AlbumCardState extends State<AlbumCard> {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Theme.of(context).colorScheme.primary.withOpacity(0.7),
-            Theme.of(context).colorScheme.secondary.withOpacity(0.7),
+            Theme.of(context).colorScheme.primary.withValues(alpha: 0.7),
+            Theme.of(context).colorScheme.secondary.withValues(alpha: 0.7),
           ],
         ),
       ),

@@ -212,9 +212,9 @@ class _OfflineScreenState extends State<OfflineScreen> {
             child: const Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.download),
-                const SizedBox(width: 8),
-                const Text('Download Sample Track'),
+                Icon(Icons.download),
+                SizedBox(width: 8),
+                Text('Download Sample Track'),
               ],
             ),
           ),
@@ -274,9 +274,9 @@ class _OfflineScreenState extends State<OfflineScreen> {
                       value: 'play',
                       child: Row(
                         children: [
-                          const Icon(Icons.play_arrow, size: 16),
-                          const SizedBox(width: 8),
-                          const Text('Play'),
+                          Icon(Icons.play_arrow, size: 16),
+                          SizedBox(width: 8),
+                          Text('Play'),
                         ],
                       ),
                     ),
@@ -284,9 +284,9 @@ class _OfflineScreenState extends State<OfflineScreen> {
                       value: 'delete',
                       child: Row(
                         children: [
-                          const Icon(Icons.delete, size: 16, color: Colors.red),
-                          const SizedBox(width: 8),
-                          const Text('Delete'),
+                          Icon(Icons.delete, size: 16, color: Colors.red),
+                          SizedBox(width: 8),
+                          Text('Delete'),
                         ],
                       ),
                     ),
@@ -333,7 +333,7 @@ class _OfflineScreenState extends State<OfflineScreen> {
       _totalDownloadSize += trackSize;
       
       _downloadedTracks.add({
-        'id': 'track_${_totalDownloads}',
+        'id': 'track$_totalDownloads',
         'title': 'Sample Track $_totalDownloads',
         'artist': 'Sample Artist',
         'album': 'Sample Album',

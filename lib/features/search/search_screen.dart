@@ -24,9 +24,11 @@ class _SearchScreenState extends State<SearchScreen> with TickerProviderStateMix
   final List<TrackModel> _trackResults = [];
   final List<AlbumModel> _albumResults = [];
   final List<artist_model.ArtistModel> _artistResults = [];
+  List<SearchSuggestion> _searchSuggestions = [];
   
   bool _isSearching = false;
   String _currentQuery = '';
+  bool _showSuggestions = false;
   
   // Search filters
   String _selectedFilter = 'all'; // 'all', 'tracks', 'albums', 'artists'
@@ -59,7 +61,7 @@ class _SearchScreenState extends State<SearchScreen> with TickerProviderStateMix
               color: Theme.of(context).colorScheme.surface,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.1),
+                  color: Colors.black.withAlpha(26),
                   blurRadius: 4,
                   offset: const Offset(0, 2),
                 ),
@@ -94,6 +96,71 @@ class _SearchScreenState extends State<SearchScreen> with TickerProviderStateMix
                     ),
                   ),
                 ),
+                
+                const SizedBox(height: 12),
+                
+                // Search Suggestions Dropdown
+                if (_searchSuggestions.isNotEmpty && _showSuggestions)
+                  Container(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surface,
+                      borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withAlpha(26),
+                          blurRadius: 4,
+                          offset: const Offset(0, -2),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: _searchSuggestions.take(5).map((suggestion) {
+                        return ListTile(
+                          leading: suggestion.imageUrl != null
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(6),
+                                  child: Image.network(
+                                    suggestion.imageUrl!,
+                                    width: 40,
+                                    height: 40,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Container(
+                                        width: 40,
+                                        height: 40,
+                                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                                        child: Icon(
+                                          Icons.music_note,
+                                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                )
+                              : CircleAvatar(
+                                  backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                                  child: Text(
+                                    suggestion.text[0].toUpperCase(),
+                                    style: TextStyle(
+                                      color: Theme.of(context).colorScheme.onPrimaryContainer,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                          title: Text(suggestion.title),
+                          subtitle: Text(suggestion.type),
+                          trailing: const Icon(Icons.arrow_forward_ios),
+                          onTap: () {
+                            _searchController.text = suggestion.title;
+                            _performSearch(suggestion.title);
+                            _hideSuggestions();
+                          },
+                        );
+                      }).toList(),
+                    ),
+                  ),
                 
                 const SizedBox(height: 12),
                 
@@ -455,16 +522,19 @@ class _SearchScreenState extends State<SearchScreen> with TickerProviderStateMix
     if (query.isEmpty) {
       setState(() {
         _isSearching = false;
+        _showSuggestions = false;
+        _searchSuggestions.clear();
         _trackResults.clear();
         _albumResults.clear();
         _artistResults.clear();
       });
     } else {
-      // Debounce search
-      Future.delayed(const Duration(milliseconds: 500), () {
-        if (_searchController.text == query) {
-          _performSearch(query);
-        }
+      // Show suggestions after 2 characters of typing
+      if (query.length >= 2) {
+        _fetchSearchSuggestions(query);
+      }
+      setState(() {
+        _showSuggestions = true;
       });
     }
   }
@@ -479,9 +549,51 @@ class _SearchScreenState extends State<SearchScreen> with TickerProviderStateMix
     setState(() {
       _currentQuery = '';
       _isSearching = false;
+      _showSuggestions = false;
+      _searchSuggestions.clear();
       _trackResults.clear();
       _albumResults.clear();
       _artistResults.clear();
+    });
+  }
+
+  Future<void> _fetchSearchSuggestions(String query) async {
+    try {
+      // Simulate API call for search suggestions
+      await Future.delayed(const Duration(milliseconds: 300));
+      
+      final suggestions = <SearchSuggestion>[
+        SearchSuggestion(
+          id: '1',
+          title: '$query - Track 1',
+          type: 'track',
+          imageUrl: 'https://picsum.photos/seed/music1/200',
+        ),
+        SearchSuggestion(
+          id: '2', 
+          title: '$query - Album 1',
+          type: 'album',
+          imageUrl: 'https://picsum.photos/seed/album1/200',
+        ),
+        SearchSuggestion(
+          id: '3',
+          title: '$query - Artist 1',
+          type: 'artist',
+          imageUrl: 'https://picsum.photos/seed/artist1/200',
+        ),
+      ];
+      
+      setState(() {
+        _searchSuggestions = suggestions;
+      });
+    } catch (e) {
+      // Handle error silently
+    }
+  }
+
+  void _hideSuggestions() {
+    setState(() {
+      _showSuggestions = false;
     });
   }
 

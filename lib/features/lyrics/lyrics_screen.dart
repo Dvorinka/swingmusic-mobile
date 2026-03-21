@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../shared/providers/audio_provider.dart';
 import '../../data/services/lyrics_service.dart';
+import '../../data/services/enhanced_api_service.dart';
 import '../../core/constants/app_spacing.dart';
 
 class LyricsScreen extends StatefulWidget {
@@ -16,6 +17,33 @@ class _LyricsScreenState extends State<LyricsScreen> {
   String? _lyrics;
   String? _error;
   final TextEditingController _lyricsController = TextEditingController();
+  late LyricsService _lyricsService;
+
+  @override
+  void initState() {
+    super.initState();
+    // Get API service from provider context in didChangeDependencies
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Initialize lyrics service with API service from provider
+    final apiService = context.read<EnhancedApiService>();
+    _lyricsService = LyricsService(apiService);
+    
+    // Auto-load lyrics for current track
+    final audioProvider = context.read<AudioProvider>();
+    if (audioProvider.currentTrack != null) {
+      _loadLyrics(audioProvider.currentTrack!.trackhash);
+    }
+  }
+
+  @override
+  void dispose() {
+    _lyricsController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +99,7 @@ class _LyricsScreenState extends State<LyricsScreen> {
                           Text(
                             currentTrack.artistNames,
                             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+                              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -81,7 +109,7 @@ class _LyricsScreenState extends State<LyricsScreen> {
                             Text(
                               currentTrack.displayAlbum,
                               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -99,11 +127,12 @@ class _LyricsScreenState extends State<LyricsScreen> {
                         borderRadius: BorderRadius.circular(8),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
+                            color: Colors.black.withValues(alpha: 0.2),
                             blurRadius: 8,
                             offset: const Offset(0, 4),
                           ),
                         ],
+                      ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(8),
                         child: currentTrack.image.isNotEmpty
@@ -115,7 +144,7 @@ class _LyricsScreenState extends State<LyricsScreen> {
                                     decoration: BoxDecoration(
                                       gradient: LinearGradient(
                                         colors: [
-                                          Theme.of(context).colorScheme.primary.withOpacity(0.8),
+                                          Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
                                           Theme.of(context).colorScheme.primary,
                                         ],
                                       ),
@@ -132,13 +161,13 @@ class _LyricsScreenState extends State<LyricsScreen> {
                                 decoration: BoxDecoration(
                                   gradient: LinearGradient(
                                     colors: [
-                                      Theme.of(context).colorScheme.primary.withOpacity(0.8),
+                                      Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
                                       Theme.of(context).colorScheme.primary,
                                     ],
                                   ),
                                 ),
                                 child: Icon(
-                                  Icons.album,
+                                  Icons.music_note,
                                   color: Theme.of(context).colorScheme.onPrimary,
                                   size: 32,
                                 ),
@@ -155,12 +184,12 @@ class _LyricsScreenState extends State<LyricsScreen> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
-                  onPressed: () => _loadLyrics(context, currentTrack?.trackhash ?? ''),
+                  onPressed: () => _loadLyrics(currentTrack.trackhash),
                   icon: Icon(
                     Icons.sync,
                     color: Theme.of(context).colorScheme.onPrimary,
                   ),
-                  label: 'Sync Lyrics',
+                  label: const Text('Sync Lyrics'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Theme.of(context).colorScheme.primary,
                     foregroundColor: Theme.of(context).colorScheme.onPrimary,
@@ -176,10 +205,10 @@ class _LyricsScreenState extends State<LyricsScreen> {
                 child: Container(
                   padding: AppSpacing.paddingLG,
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surfaceVariant,
+                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
+                      color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
                     ),
                   ),
                   child: Column(
@@ -231,14 +260,14 @@ class _LyricsScreenState extends State<LyricsScreen> {
                             children: [
                               Icon(
                                 Icons.lyrics,
-                                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                                 size: 48,
                               ),
                               const SizedBox(height: 16),
                               Text(
                                 'No lyrics available',
                                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                                 ),
                                 textAlign: TextAlign.center,
                               ),
@@ -266,7 +295,7 @@ class _LyricsScreenState extends State<LyricsScreen> {
           Icon(
             Icons.music_note,
             size: 64,
-            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
           ),
           const SizedBox(height: 16),
           Text(
@@ -280,7 +309,7 @@ class _LyricsScreenState extends State<LyricsScreen> {
           Text(
             'Play a track to see its lyrics',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
             ),
             textAlign: TextAlign.center,
           ),
@@ -319,7 +348,7 @@ class _LyricsScreenState extends State<LyricsScreen> {
                       ),
                     ),
                     IconButton(
-                      onPressed: () => _cancelEdit(context),
+                      onPressed: () => _cancelEdit(),
                       icon: Icon(
                         Icons.close,
                         color: Theme.of(context).colorScheme.onSurface,
@@ -328,7 +357,7 @@ class _LyricsScreenState extends State<LyricsScreen> {
                     ),
                   ] else ...[
                     IconButton(
-                      onPressed: () => _enableEditMode(context),
+                      onPressed: () => _enableEditMode(),
                       icon: Icon(
                         Icons.edit,
                         color: Theme.of(context).colorScheme.primary,
@@ -337,26 +366,8 @@ class _LyricsScreenState extends State<LyricsScreen> {
                     ),
                   ],
                 ],
-                
-                // Sync button
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: () => _syncLyrics(context),
-                    icon: Icon(
-                      Icons.refresh,
-                      color: Theme.of(context).colorScheme.onPrimary,
-                    ),
-                    label: 'Sync',
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
           
           // Lyrics text
@@ -367,10 +378,6 @@ class _LyricsScreenState extends State<LyricsScreen> {
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   height: 1.6,
                   color: Theme.of(context).colorScheme.onSurface,
-                  leading: TextStyle(
-                    height: 1.4,
-                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
-                  ),
                 ),
               ),
             ),
@@ -434,32 +441,78 @@ class _LyricsScreenState extends State<LyricsScreen> {
     setState(() {});
   }
 
-  void _saveLyrics(BuildContext context) {
+  void _saveLyrics(BuildContext context) async {
     final updatedLyrics = _lyricsController.text.trim();
+    final audioProvider = Provider.of<AudioProvider>(context, listen: false);
+    final currentTrack = audioProvider.currentTrack;
     
-    // TODO: Save lyrics to API
+    if (currentTrack == null) return;
+    
+    // Capture context before async operation
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    
     setState(() {
-      _lyrics = updatedLyrics;
-      _isEditMode = false;
+      _isLoading = true;
+      _error = null;
     });
     
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Lyrics saved successfully'),
-        backgroundColor: Colors.green,
-      ),
-    );
+    try {
+      final success = await _lyricsService.saveLyrics(currentTrack.trackhash, updatedLyrics);
+      
+      if (success) {
+        setState(() {
+          _lyrics = updatedLyrics;
+          _isLoading = false;
+        });
+        
+        if (mounted) {
+          scaffoldMessenger.showSnackBar(
+            const SnackBar(
+              content: Text('Lyrics saved successfully'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      } else {
+        setState(() {
+          _isLoading = false;
+          _error = 'Failed to save lyrics';
+        });
+        
+        if (mounted) {
+          scaffoldMessenger.showSnackBar(
+            const SnackBar(
+              content: Text('Failed to save lyrics'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+        _error = 'Error saving lyrics: $e';
+      });
+      
+      if (mounted) {
+        scaffoldMessenger.showSnackBar(
+          SnackBar(
+            content: Text('Error saving lyrics: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
-  Future<void> _loadLyrics(BuildContext context, String trackHash) async {
+  Future<void> _loadLyrics(String trackHash) async {
     setState(() {
       _isLoading = true;
       _error = null;
     });
 
     try {
-      final lyricsService = LyricsService();
-      final lyrics = await lyricsService.getLyrics(trackHash);
+      final lyrics = await _lyricsService.getLyrics(trackHash);
       
       setState(() {
         _isLoading = false;
@@ -473,10 +526,10 @@ class _LyricsScreenState extends State<LyricsScreen> {
     }
   }
 
-  void _syncLyrics(BuildContext context) {
-    final currentTrack = Provider.of<AudioProvider>(context, listen: false).currentTrack;
-    if (currentTrack != null) return;
-    
-    _loadLyrics(context, currentTrack.trackhash);
-  }
+  // void _syncLyrics(BuildContext context) {
+  //   final currentTrack = Provider.of<AudioProvider>(context, listen: false).currentTrack;
+  //   if (currentTrack == null) return;
+  //   
+  //   _loadLyrics(context, currentTrack.trackhash);
+  // }
 }

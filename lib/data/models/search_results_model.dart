@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'album_model.dart';
+import 'artist_model.dart';
 import 'folder_model.dart';
 import 'playlist_model.dart';
 import 'track_model.dart';

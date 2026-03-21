@@ -1,42 +1,84 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'features/home/home_screen.dart';
-import 'features/library/library_screen.dart';
-import 'features/player/enhanced_player_screen_new.dart';
-import 'features/search/search_screen.dart';
-import 'features/playlists/playlists_screen.dart';
-import 'features/settings/settings_screen.dart';
-import 'features/auth/enhanced_auth_screen.dart';
-import 'features/analytics/analytics_screen.dart';
-import 'shared/providers/audio_provider.dart';
-import 'shared/providers/auth_provider.dart';
-import 'shared/providers/enhanced_library_provider.dart';
-import 'shared/routes/app_router.dart';
-import 'shared/widgets/main_navigation.dart';
+
+import 'app/screens/root_gate_screen.dart';
+import 'app/services/local_cache_service.dart';
+import 'app/services/offline_manager.dart';
+import 'app/services/swing_api_client.dart';
+import 'app/state/library_controller.dart';
+import 'app/state/offline_controller.dart';
+import 'app/state/player_controller.dart';
+import 'app/state/session_controller.dart';
 import 'core/themes/app_theme.dart';
 
-void main() {
-  runApp(const SwingMusicApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
+  final apiClient = SwingApiClient();
+  runApp(SwingMusicMobileApp(apiClient: apiClient));
 }
 
-class SwingMusicApp extends StatelessWidget {
-  const SwingMusicApp({super.key});
+class SwingMusicMobileApp extends StatelessWidget {
+  const SwingMusicMobileApp({super.key, required this.apiClient});
+
+  final SwingApiClient apiClient;
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AudioProvider()),
-        ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(create: (_) => EnhancedLibraryProvider()),
+        Provider<SwingApiClient>.value(value: apiClient),
+        ChangeNotifierProvider<SessionController>(
+          create: (context) {
+            final session = SessionController(apiClient: apiClient);
+            unawaited(session.initialize());
+            return session;
+          },
+        ),
+        Provider<LocalCacheService>(create: (_) => LocalCacheService()),
+        ProxyProvider3<
+          SwingApiClient,
+          SessionController,
+          LocalCacheService,
+          OfflineManager
+        >(
+          update: (context, api, session, cache, previous) =>
+              OfflineManager(api: api, session: session, cache: cache),
+        ),
+        ChangeNotifierProvider<LibraryController>(
+          create: (context) => LibraryController(
+            api: context.read<SwingApiClient>(),
+            session: context.read<SessionController>(),
+            offline: context.read<OfflineManager>(),
+          ),
+        ),
+        ChangeNotifierProvider<OfflineController>(
+          create: (context) =>
+              OfflineController(offline: context.read<OfflineManager>()),
+        ),
+        ChangeNotifierProvider<PlayerController>(
+          create: (context) => PlayerController(
+            api: context.read<SwingApiClient>(),
+            session: context.read<SessionController>(),
+            offline: context.read<OfflineManager>(),
+            cache: context.read<LocalCacheService>(),
+          ),
+        ),
       ],
-      child: MaterialApp.router(
-        title: 'SwingMusic',
+      child: MaterialApp(
+        title: 'SwingMusic Mobile',
+        debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
-        themeMode: ThemeMode.system,
-        routerConfig: AppRouter.router,
-        debugShowCheckedModeBanner: false,
+        themeMode: ThemeMode.dark,
+        home: const RootGateScreen(),
       ),
     );
   }

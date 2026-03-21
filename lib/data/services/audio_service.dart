@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:audio_session/audio_session.dart';
 import '../models/track_model.dart';
@@ -19,18 +20,18 @@ class AudioService {
   bool _isBuffering = false;
   Duration _position = Duration.zero;
   Duration _duration = Duration.zero;
-  double _volume = 1.0;
+  final double _volume = 1.0;
   
   // Playback modes
   RepeatMode _repeatMode = RepeatMode.off;
   ShuffleMode _shuffleMode = ShuffleMode.off;
-  double _playbackSpeed = 1.0;
+  final double _playbackSpeed = 1.0;
   
   // Playlist
   List<TrackModel> _queue = [];
   int _currentIndex = 0;
-  bool _isShuffleMode = false;
-  bool _isRepeatMode = false;
+  final bool _isShuffleMode = false;
+  final bool _isRepeatMode = false;
   
   // Error handling
   String? _errorMessage;
@@ -38,7 +39,7 @@ class AudioService {
   void _setError(String error) {
     _errorMessage = error;
     _errorController.add(_errorMessage);
-    print('Audio Error: $error');
+    debugPrint('Audio Error: $error');
   }
   
   void _clearError() {
@@ -95,7 +96,7 @@ class AudioService {
   Stream<RepeatMode> get repeatModeStream => _repeatModeController.stream;
   Stream<ShuffleMode> get shuffleModeStream => _shuffleModeController.stream;
 
-  Future<void> initialize() async {
+  Future<void> init() async {
     try {
       _audioPlayer = AudioPlayer();
       _audioSession = await AudioSession.instance;
@@ -138,7 +139,7 @@ class AudioService {
         }
       });
       
-      print('Audio service initialized successfully');
+      debugPrint('Audio service initialized successfully');
     } catch (e) {
       throw Exception('Failed to initialize audio service: $e');
     }
@@ -160,7 +161,7 @@ class AudioService {
       _isLoading = false;
       _isBuffering = false;
       _bufferingController.add(_isBuffering);
-      print('Track loaded: ${track.title}');
+      debugPrint('Track loaded: ${track.title}');
     } catch (e) {
       _isLoading = false;
       _isBuffering = false;
@@ -177,7 +178,7 @@ class AudioService {
         await _audioPlayer.play();
         _isPlaying = true;
         _playingStateController.add(_isPlaying);
-        print('Playing: ${_currentTrack?.title}');
+        debugPrint('Playing: ${_currentTrack?.title}');
       }
     } catch (e) {
       _setError('Failed to play: $e');
@@ -190,7 +191,7 @@ class AudioService {
       await _audioPlayer.pause();
       _isPlaying = false;
       _playingStateController.add(_isPlaying);
-      print('Paused: ${_currentTrack?.title}');
+      debugPrint('Paused: ${_currentTrack?.title}');
     } catch (e) {
       _setError('Failed to pause: $e');
       throw Exception('Failed to pause: $e');
@@ -205,7 +206,7 @@ class AudioService {
       _playingStateController.add(_isPlaying);
       _positionController.add(_position);
       _clearError();
-      print('Stopped: ${_currentTrack?.title}');
+      debugPrint('Stopped: ${_currentTrack?.title}');
     } catch (e) {
       _setError('Failed to stop: $e');
       throw Exception('Failed to stop: $e');
@@ -273,6 +274,24 @@ class AudioService {
     _queue.clear();
     _currentIndex = 0;
     _queueController.add(_queue);
+  }
+  
+  void reorderQueue(int oldIndex, int newIndex) {
+    if (oldIndex < _queue.length && newIndex < _queue.length) {
+      final track = _queue.removeAt(oldIndex);
+      _queue.insert(newIndex, track);
+      
+      // Update current index if needed
+      if (_currentIndex == oldIndex) {
+        _currentIndex = newIndex;
+      } else if (_currentIndex > oldIndex && _currentIndex <= newIndex) {
+        _currentIndex--;
+      } else if (_currentIndex < oldIndex && _currentIndex >= newIndex) {
+        _currentIndex++;
+      }
+      
+      _queueController.add(_queue);
+    }
   }
 
   Future<void> playNext() async {

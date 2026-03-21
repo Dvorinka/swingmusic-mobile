@@ -4,7 +4,7 @@ class AppConstants {
   static const String appVersion = '1.0.0';
   
   // API Configuration
-  static const String defaultApiUrl = 'http://localhost:8181';
+  static const String defaultApiUrl = 'http://localhost:1970';
   static const Duration apiTimeout = Duration(seconds: 30);
   static const int maxRetries = 3;
   
@@ -55,10 +55,12 @@ class AppConstants {
   static const String serverErrorMessage = 'Server is temporarily unavailable';
   static const String authErrorMessage = 'Please login to continue';
   static const String genericErrorMessage = 'Something went wrong. Please try again';
+  static const String notFoundErrorMessage = 'Resource not found';
   
   // Routes
   static const String homeRoute = '/home';
   static const String libraryRoute = '/library';
+  static const String downloadsRoute = '/downloads';
   static const String playerRoute = '/player';
   static const String searchRoute = '/search';
   static const String playlistsRoute = '/playlists';
