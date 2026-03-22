@@ -126,8 +126,8 @@ class TrackListTile extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Theme.of(context).colorScheme.primary.withValues(alpha: 0.7),
-            Theme.of(context).colorScheme.secondary.withValues(alpha: 0.7),
+            Theme.of(context).colorScheme.primary.withOpacity(0.7),
+            Theme.of(context).colorScheme.secondary.withOpacity(0.7),
           ],
         ),
       ),

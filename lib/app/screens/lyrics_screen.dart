@@ -153,9 +153,9 @@ class _LyricsScreenState extends State<LyricsScreen> {
                           final color = isCurrent
                               ? scheme.onSurface
                               : isPast
-                              ? scheme.onSurface.withValues(alpha: alpha)
-                              : scheme.onSurfaceVariant.withValues(
-                                  alpha: alpha,
+                              ? scheme.onSurface.withOpacity(alpha)
+                              : scheme.onSurfaceVariant.withOpacity(
+                                  alpha,
                                 );
 
                           return InkWell(

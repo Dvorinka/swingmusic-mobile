@@ -71,7 +71,7 @@ class PlayerScreen extends StatelessWidget {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      scheme.primary.withValues(alpha: 0.18),
+                      scheme.primary.withOpacity(0.18),
                       scheme.surfaceContainerHighest,
                     ],
                   ),
@@ -236,7 +236,7 @@ class PlayerScreen extends StatelessWidget {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      scheme.primary.withValues(alpha: 0.25),
+                      scheme.primary.withOpacity(0.25),
                       scheme.surfaceContainerHighest,
                     ],
                   ),
@@ -275,8 +275,8 @@ class PlayerScreen extends StatelessWidget {
                           final color = isCurrent
                               ? Colors.white
                               : isSeen
-                              ? Colors.white.withValues(alpha: 0.85 * opacity)
-                              : Colors.white.withValues(alpha: 0.72 * opacity);
+                              ? Colors.white.withOpacity(0.85 * opacity)
+                              : Colors.white.withOpacity(0.72 * opacity);
 
                           return InkWell(
                             onTap: () {

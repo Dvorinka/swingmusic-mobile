@@ -95,7 +95,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Text('Streaming', style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: 8),
               DropdownButtonFormField<String>(
-                initialValue: _streamingQuality,
+                value: _streamingQuality,
                 items: _qualityValues
                     .map(
                       (value) =>
@@ -131,7 +131,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Text('Offline', style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: 8),
               DropdownButtonFormField<String>(
-                initialValue: _downloadQuality,
+                value: _downloadQuality,
                 items: _qualityValues
                     .map(
                       (value) =>

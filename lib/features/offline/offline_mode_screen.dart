@@ -55,7 +55,7 @@ class _OfflineModeScreenState extends State<OfflineModeScreen> {
         color: Theme.of(context).colorScheme.surfaceContainer,
         borderRadius: BorderRadius.circular(AppBorderRadius.lg),
         border: Border.all(
-          color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
+          color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
           width: 1,
         ),
       ),

@@ -99,7 +99,7 @@ class _FoldersScreenState extends State<FoldersScreen> {
           width: 48,
           height: 48,
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+            color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
             borderRadius: BorderRadius.circular(8),
           ),
           child: folder.image != null

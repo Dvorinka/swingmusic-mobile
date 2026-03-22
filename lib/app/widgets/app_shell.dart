@@ -135,7 +135,7 @@ class _NavButton extends StatelessWidget {
           duration: const Duration(milliseconds: 160),
           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
           decoration: BoxDecoration(
-            color: selected ? scheme.primary.withValues(alpha: 0.2) : null,
+            color: selected ? scheme.primary.withOpacity(0.2) : null,
             borderRadius: BorderRadius.circular(8),
           ),
           child: Column(

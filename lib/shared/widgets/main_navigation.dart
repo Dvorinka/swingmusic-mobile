@@ -56,7 +56,7 @@ class _MainNavigationState extends State<MainNavigation> {
           color: Theme.of(context).colorScheme.surface,
           boxShadow: [
             BoxShadow(
-              color: Theme.of(context).shadowColor.withValues(alpha: 0.1),
+              color: Theme.of(context).shadowColor.withOpacity(0.1),
               blurRadius: 8,
               offset: const Offset(0, -2),
             ),
@@ -82,7 +82,7 @@ class _MainNavigationState extends State<MainNavigation> {
                             isSelected ? item.selectedIcon : item.icon,
                             color: isSelected 
                                 ? Theme.of(context).colorScheme.primary
-                                : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                                : Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
                             size: 24,
                           ),
                           const SizedBox(height: 4),
@@ -91,7 +91,7 @@ class _MainNavigationState extends State<MainNavigation> {
                             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               color: isSelected 
                                   ? Theme.of(context).colorScheme.primary
-                                  : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                                  : Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
                               fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                               fontSize: 12,
                             ),

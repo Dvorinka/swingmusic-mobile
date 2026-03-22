@@ -130,7 +130,7 @@ class _MiniPlayerState extends State<MiniPlayer>
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.1),
+                color: Colors.black.withOpacity(0.1),
                 blurRadius: 8,
                 offset: const Offset(0, -2),
               ),
@@ -206,7 +206,7 @@ class _MiniPlayerState extends State<MiniPlayer>
                                   Text(
                                     currentTrack.artistNames,
                                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
                                     ),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
@@ -272,8 +272,8 @@ class _MiniPlayerState extends State<MiniPlayer>
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Theme.of(context).colorScheme.primary.withValues(alpha: 0.7),
-            Theme.of(context).colorScheme.secondary.withValues(alpha: 0.7),
+            Theme.of(context).colorScheme.primary.withOpacity(0.7),
+            Theme.of(context).colorScheme.secondary.withOpacity(0.7),
           ],
         ),
       ),

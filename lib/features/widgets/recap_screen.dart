@@ -137,7 +137,7 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.2),
+                    color: Colors.black.withOpacity(0.2),
                     blurRadius: 20,
                     spreadRadius: 5,
                   ),
@@ -161,7 +161,7 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
             Text(
               'Analyzing your listening habits...',
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: Colors.white.withValues(alpha: 0.8),
+                color: Colors.white.withOpacity(0.8),
               ),
             ),
             const SizedBox(height: 32),
@@ -260,7 +260,7 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
                 child: Text(
                   'Discover your listening journey',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Colors.white.withValues(alpha: 0.8),
+                    color: Colors.white.withOpacity(0.8),
                   ),
                 ),
               ),
@@ -283,7 +283,7 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.1),
+              color: Colors.black.withOpacity(0.1),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -344,7 +344,7 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
     return Container(
       padding: AppSpacing.paddingMD,
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
+        color: color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -362,7 +362,7 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
           Text(
             title,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
             ),
             textAlign: TextAlign.center,
           ),
@@ -380,7 +380,7 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
+            color: Colors.black.withOpacity(0.1),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -413,7 +413,7 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
     return Container(
       padding: AppSpacing.paddingMD,
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
+        color: color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
@@ -434,7 +434,7 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
                 Text(
                   label,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                   ),
                 ),
                 Text(
@@ -462,7 +462,7 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
+            color: Colors.black.withOpacity(0.1),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -543,7 +543,7 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
+            color: Colors.black.withOpacity(0.1),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -622,7 +622,7 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
+            color: Colors.black.withOpacity(0.1),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -726,7 +726,7 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
           Text(
             'Show your friends what you listened to this year',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.white.withValues(alpha: 0.9),
+              color: Colors.white.withOpacity(0.9),
             ),
             textAlign: TextAlign.center,
           ),

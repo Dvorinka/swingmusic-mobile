@@ -751,7 +751,7 @@ class PlaylistTile extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.2),
+                      color: Colors.black.withOpacity(0.2),
                       blurRadius: 6,
                       offset: const Offset(0, 2),
                     ),
@@ -768,7 +768,7 @@ class PlaylistTile extends StatelessWidget {
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   colors: [
-                                    Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
+                                    Theme.of(context).colorScheme.primary.withOpacity(0.8),
                                     Theme.of(context).colorScheme.primary,
                                   ],
                                 ),
@@ -785,7 +785,7 @@ class PlaylistTile extends StatelessWidget {
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               colors: [
-                                Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
+                                Theme.of(context).colorScheme.primary.withOpacity(0.8),
                                 Theme.of(context).colorScheme.primary,
                               ],
                             ),
@@ -834,7 +834,7 @@ class PlaylistTile extends StatelessWidget {
                     Text(
                       playlist.description,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
+                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -915,7 +915,7 @@ class TrackListTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(6),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.2),
+              color: Colors.black.withOpacity(0.2),
               blurRadius: 4,
               offset: const Offset(0, 2),
             ),
@@ -932,7 +932,7 @@ class TrackListTile extends StatelessWidget {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
+                            Theme.of(context).colorScheme.primary.withOpacity(0.8),
                             Theme.of(context).colorScheme.primary,
                           ],
                         ),
@@ -949,7 +949,7 @@ class TrackListTile extends StatelessWidget {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
+                        Theme.of(context).colorScheme.primary.withOpacity(0.8),
                         Theme.of(context).colorScheme.primary,
                       ],
                     ),

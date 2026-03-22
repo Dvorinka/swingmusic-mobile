@@ -22,7 +22,7 @@ class MiniPlayer extends StatelessWidget {
             color: Theme.of(context).colorScheme.surface,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.1),
+                color: Colors.black.withOpacity(0.1),
                 blurRadius: 4,
                 offset: const Offset(0, -2),
               ),
@@ -70,12 +70,12 @@ class MiniPlayer extends StatelessWidget {
                               width: 48,
                               height: 48,
                               decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                                color: Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.3),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Icon(
                                 Icons.music_note,
-                                color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.3),
+                                color: Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.3),
                               ),
                             );
                           },
@@ -102,7 +102,7 @@ class MiniPlayer extends StatelessWidget {
                             Text(
                               currentTrack.artistNames,
                               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.3),
+                                color: Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.3),
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -143,7 +143,7 @@ class MiniPlayer extends StatelessWidget {
                           Icons.skip_next,
                           color: provider.canGoNext
                               ? Theme.of(context).colorScheme.onSurface
-                              : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
+                              : Theme.of(context).colorScheme.onSurface.withOpacity(0.3),
                         ),
                       ),
                     ],

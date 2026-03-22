@@ -284,7 +284,7 @@ class _FolderScreenState extends State<FolderScreen> {
                 decoration: BoxDecoration(
                   color: Theme.of(
                     context,
-                  ).colorScheme.primary.withValues(alpha: 0.1),
+                  ).colorScheme.primary.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: Icon(
@@ -413,7 +413,7 @@ class _FolderScreenState extends State<FolderScreen> {
       width: 48,
       height: 48,
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1),
+        color: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Icon(

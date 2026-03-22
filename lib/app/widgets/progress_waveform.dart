@@ -103,7 +103,7 @@ class _WaveformPainter extends CustomPainter {
       final paint = Paint()
         ..color = isPlayed
             ? playedColor
-            : unplayedColor.withValues(alpha: 0.65);
+            : unplayedColor.withOpacity(0.65);
       canvas.drawRRect(RRect.fromRectAndRadius(rect, radius), paint);
       x += barWidth + gap;
     }
