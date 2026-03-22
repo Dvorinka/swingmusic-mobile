@@ -222,7 +222,7 @@ class _DownloadProgressWidgetState extends State<DownloadProgressWidget> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: _getStatusColor(download.status).withOpacity(0.2),
+              color: _getStatusColor(download.status).withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(4),
             ),
             child: Text(

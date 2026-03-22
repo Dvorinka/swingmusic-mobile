@@ -276,7 +276,7 @@ class _ViewAllSearchScreenState extends State<ViewAllSearchScreen> {
                         width: 48,
                         height: 48,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, _, _) => _buildDefaultArtistIcon(),
+                        errorBuilder: (context, error, stack) => _buildDefaultArtistIcon(),
                       )
                     : _buildDefaultArtistIcon(),
               ),
