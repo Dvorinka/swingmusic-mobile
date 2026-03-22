@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
-import 'package:workmanager/workmanager.dart';
+// import 'package:workmanager/workmanager.dart';  // Temporarily disabled due to compatibility issues
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../services/enhanced_api_service.dart';
@@ -37,12 +37,12 @@ class BackgroundSyncService {
       _prefs = await SharedPreferences.getInstance();
       
       // Initialize WorkManager
-      await Workmanager().initialize(
-        callbackDispatcher,
-      );
+      // await Workmanager().initialize(
+      //   callbackDispatcher,
+      // );
       
       // Schedule periodic sync task
-      await _schedulePeriodicSync();
+      // await _schedulePeriodicSync();
       
       // Start immediate sync if needed
       await _checkAndStartSync();
@@ -54,16 +54,17 @@ class BackgroundSyncService {
   }
 
   Future<void> _schedulePeriodicSync() async {
-    await Workmanager().registerPeriodicTask(
-      _syncTaskName,
-      'backgroundSync',
-      frequency: const Duration(hours: 6),
-      constraints: Constraints(
-        networkType: NetworkType.connected,
-        requiresCharging: false,
-        requiresDeviceIdle: false,
-      ),
-    );
+    // await Workmanager().registerPeriodicTask(
+    //   _syncTaskName,
+    //   'backgroundSync',
+    //   frequency: const Duration(hours: 6),
+    //   constraints: Constraints(
+    //     networkType: NetworkType.connected,
+    //     requiresCharging: false,
+    //     requiresDeviceIdle: false,
+    //   ),
+    // );
+    debugPrint('Periodic sync scheduling disabled (workmanager unavailable)');
   }
 
   Future<void> _checkAndStartSync() async {
@@ -292,8 +293,9 @@ class BackgroundSyncService {
     await _prefs.setInt('sync_interval_hours', hours);
     
     // Reschedule periodic task with new interval
-    await Workmanager().cancelAll();
-    await _schedulePeriodicSync();
+    // await Workmanager().cancelAll();
+    // await _schedulePeriodicSync();
+    debugPrint('Sync interval updated (workmanager unavailable)');
   }
 
   Future<void> enableAutoSync(bool enabled) async {
@@ -302,7 +304,8 @@ class BackgroundSyncService {
     if (enabled) {
       await _checkAndStartSync();
     } else {
-      await Workmanager().cancelAll();
+      // await Workmanager().cancelAll();
+      debugPrint('Auto sync disabled (workmanager unavailable)');
     }
   }
 
@@ -328,19 +331,19 @@ class BackgroundSyncService {
 }
 
 // WorkManager callback
-@pragma('vm:entry-point')
-void callbackDispatcher() {
-  Workmanager().executeTask((task, inputData) async {
-    try {
-      final syncService = BackgroundSyncService();
-      await syncService.startSync();
-      return true;
-    } catch (e) {
-      debugPrint('Background sync task failed: $e');
-      return false;
-    }
-  });
-}
+// @pragma('vm:entry-point')
+// void callbackDispatcher() {
+//   Workmanager().executeTask((task, inputData) async {
+//     try {
+//       final syncService = BackgroundSyncService();
+//       await syncService.startSync();
+//       return true;
+//     } catch (e) {
+//       debugPrint('Background sync task failed: $e');
+//       return false;
+//     }
+//   });
+// }
 
 // Models
 enum SyncStatusType { idle, syncing, completed, error }
