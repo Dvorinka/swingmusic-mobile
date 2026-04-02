@@ -29,7 +29,8 @@ class AudioProvider extends ChangeNotifier {
   Stream<Duration> get positionStream => _audioService.positionStream;
   Stream<Duration> get durationStream => _audioService.durationStream;
   Stream<bool> get playingStateStream => _audioService.playingStateStream;
-  Stream<TrackModel?> get currentTrackStream => _audioService.currentTrackStream;
+  Stream<TrackModel?> get currentTrackStream =>
+      _audioService.currentTrackStream;
   Stream<List<TrackModel>> get queueStream => _audioService.queueStream;
   Stream<bool> get bufferingStream => _audioService.bufferingStream;
   Stream<String?> get errorStream => _audioService.errorStream;

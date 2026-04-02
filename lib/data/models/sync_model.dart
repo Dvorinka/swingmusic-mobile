@@ -6,22 +6,22 @@ part 'sync_model.g.dart';
 class SyncModel extends HiveObject {
   @HiveField(0)
   String id;
-  
+
   @HiveField(1)
   SyncType type;
-  
+
   @HiveField(2)
   Map<String, dynamic> data;
-  
+
   @HiveField(3)
   DateTime timestamp;
-  
+
   @HiveField(4)
   int retryCount;
-  
+
   @HiveField(5)
   int maxRetries;
-  
+
   @HiveField(6)
   DateTime nextRetryTime;
 

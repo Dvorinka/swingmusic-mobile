@@ -168,10 +168,10 @@ class _FolderScreenState extends State<FolderScreen> {
                 child: provider.isLoading
                     ? const Center(child: CircularProgressIndicator())
                     : provider.errorMessage != null
-                    ? _buildErrorState(provider.errorMessage!)
-                    : _filteredItems.isEmpty
-                    ? _buildEmptyState()
-                    : _buildFolderContents(provider),
+                        ? _buildErrorState(provider.errorMessage!)
+                        : _filteredItems.isEmpty
+                            ? _buildEmptyState()
+                            : _buildFolderContents(provider),
               ),
             ],
           ),
@@ -284,7 +284,7 @@ class _FolderScreenState extends State<FolderScreen> {
                 decoration: BoxDecoration(
                   color: Theme.of(
                     context,
-                  ).colorScheme.primary.withOpacity(0.1),
+                  ).colorScheme.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: Icon(
@@ -300,8 +300,8 @@ class _FolderScreenState extends State<FolderScreen> {
                     Text(
                       name,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                            fontWeight: FontWeight.bold,
+                          ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -309,8 +309,9 @@ class _FolderScreenState extends State<FolderScreen> {
                     Text(
                       '$itemCount items',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
                     ),
                   ],
                 ),
@@ -357,8 +358,8 @@ class _FolderScreenState extends State<FolderScreen> {
                     Text(
                       track.displayTitle,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                            fontWeight: FontWeight.bold,
+                          ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -366,30 +367,31 @@ class _FolderScreenState extends State<FolderScreen> {
                     Text(
                       track.artistNames,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
                     ),
                     const SizedBox(height: 8),
                     Row(
                       children: [
                         Text(
                           track.durationFormatted,
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.onSurfaceVariant,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurfaceVariant,
+                                  ),
                         ),
                         const SizedBox(width: 8),
                         Text(
                           '${track.bitrate} kbps',
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.onSurfaceVariant,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurfaceVariant,
+                                  ),
                         ),
                       ],
                     ),
@@ -413,7 +415,7 @@ class _FolderScreenState extends State<FolderScreen> {
       width: 48,
       height: 48,
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
+        color: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Icon(
@@ -439,15 +441,15 @@ class _FolderScreenState extends State<FolderScreen> {
             Text(
               'This folder is empty',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
             ),
             const SizedBox(height: 8),
             Text(
               'Add music files to see them here',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
               textAlign: TextAlign.center,
             ),
           ],
@@ -472,15 +474,15 @@ class _FolderScreenState extends State<FolderScreen> {
             Text(
               'Failed to load folders',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                color: Theme.of(context).colorScheme.error,
-              ),
+                    color: Theme.of(context).colorScheme.error,
+                  ),
             ),
             const SizedBox(height: 8),
             Text(
               error,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
@@ -496,12 +498,10 @@ class _FolderScreenState extends State<FolderScreen> {
       case 'sort_name':
         setState(() {
           _filteredItems.sort((a, b) {
-            final nameA = a is TrackModel
-                ? a.title
-                : (a['name'] ?? '').toString();
-            final nameB = b is TrackModel
-                ? b.title
-                : (b['name'] ?? '').toString();
+            final nameA =
+                a is TrackModel ? a.title : (a['name'] ?? '').toString();
+            final nameB =
+                b is TrackModel ? b.title : (b['name'] ?? '').toString();
             return nameA.compareTo(nameB);
           });
         });

@@ -12,12 +12,12 @@ class AdvancedAudioScreen extends StatefulWidget {
 
 class _AdvancedAudioScreenState extends State<AdvancedAudioScreen> {
   late final SettingsService _settingsService;
-  
+
   // EQ Settings
   List<double> _eqBands = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
   bool _eqEnabled = false;
   String _eqPreset = 'flat';
-  
+
   // Audio Effects
   bool _bassBoostEnabled = false;
   double _bassBoostLevel = 0.0;
@@ -25,7 +25,7 @@ class _AdvancedAudioScreenState extends State<AdvancedAudioScreen> {
   double _virtualizerLevel = 0.0;
   bool _reverbEnabled = false;
   String _reverbPreset = 'none';
-  
+
   // Advanced Settings
   bool _loudnessEnhancementEnabled = false;
   double _loudnessGain = 0.0;
@@ -43,17 +43,18 @@ class _AdvancedAudioScreenState extends State<AdvancedAudioScreen> {
 
   Future<void> _loadAudioSettings() async {
     final settings = _settingsService.currentSettings;
-    
+
     setState(() {
       // Load EQ settings
-      _eqEnabled = settings.useCrossfade; // Using existing setting as placeholder
+      _eqEnabled =
+          settings.useCrossfade; // Using existing setting as placeholder
       _eqPreset = 'flat';
-      
+
       // Load audio effects
       _bassBoostEnabled = false;
       _virtualizerEnabled = false;
       _reverbEnabled = false;
-      
+
       // Load advanced settings
       _loudnessEnhancementEnabled = false;
       _dynamicRangeCompressionEnabled = false;
@@ -133,8 +134,19 @@ class _AdvancedAudioScreenState extends State<AdvancedAudioScreen> {
   }
 
   Widget _buildEQBands() {
-    const frequencies = ['32', '64', '125', '250', '500', '1k', '2k', '4k', '8k', '16k'];
-    
+    const frequencies = [
+      '32',
+      '64',
+      '125',
+      '250',
+      '500',
+      '1k',
+      '2k',
+      '4k',
+      '8k',
+      '16k'
+    ];
+
     return SizedBox(
       height: 200,
       child: Row(
@@ -179,8 +191,16 @@ class _AdvancedAudioScreenState extends State<AdvancedAudioScreen> {
   }
 
   Widget _buildEQPresets() {
-    final presets = ['flat', 'rock', 'pop', 'jazz', 'classical', 'electronic', 'bass'];
-    
+    final presets = [
+      'flat',
+      'rock',
+      'pop',
+      'jazz',
+      'classical',
+      'electronic',
+      'bass'
+    ];
+
     return Wrap(
       spacing: AppSpacing.sm,
       runSpacing: AppSpacing.sm,
@@ -319,8 +339,15 @@ class _AdvancedAudioScreenState extends State<AdvancedAudioScreen> {
   }
 
   Widget _buildReverbControl() {
-    final reverbPresets = ['none', 'smallroom', 'mediumroom', 'largeroom', 'hall', 'plate'];
-    
+    final reverbPresets = [
+      'none',
+      'smallroom',
+      'mediumroom',
+      'largeroom',
+      'hall',
+      'plate'
+    ];
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -345,7 +372,7 @@ class _AdvancedAudioScreenState extends State<AdvancedAudioScreen> {
         if (_reverbEnabled) ...[
           const SizedBox(height: AppSpacing.sm),
           DropdownButtonFormField<String>(
-            value: _reverbPreset,
+            initialValue: _reverbPreset,
             decoration: const InputDecoration(
               labelText: 'Reverb Type',
               border: OutlineInputBorder(),
@@ -587,22 +614,30 @@ class _AdvancedAudioScreenState extends State<AdvancedAudioScreen> {
         _eqBands = List.filled(10, 0.0);
         break;
       case 'rock':
-        _eqBands = [4, 3, 0, -1, -2, -1, 1, 3, 4, 4].map((e) => e.toDouble()).toList();
+        _eqBands =
+            [4, 3, 0, -1, -2, -1, 1, 3, 4, 4].map((e) => e.toDouble()).toList();
         break;
       case 'pop':
-        _eqBands = [-1, 2, 4, 4, 2, 0, -1, -1, -1, -1].map((e) => e.toDouble()).toList();
+        _eqBands = [-1, 2, 4, 4, 2, 0, -1, -1, -1, -1]
+            .map((e) => e.toDouble())
+            .toList();
         break;
       case 'jazz':
-        _eqBands = [3, 2, 1, 0, -1, -1, 0, 1, 2, 3].map((e) => e.toDouble()).toList();
+        _eqBands =
+            [3, 2, 1, 0, -1, -1, 0, 1, 2, 3].map((e) => e.toDouble()).toList();
         break;
       case 'classical':
-        _eqBands = [0, 0, 0, 0, 0, 0, -1, -1, -1, -2].map((e) => e.toDouble()).toList();
+        _eqBands = [0, 0, 0, 0, 0, 0, -1, -1, -1, -2]
+            .map((e) => e.toDouble())
+            .toList();
         break;
       case 'electronic':
-        _eqBands = [4, 3, 0, -2, -1, 1, 3, 4, 4, 5].map((e) => e.toDouble()).toList();
+        _eqBands =
+            [4, 3, 0, -2, -1, 1, 3, 4, 4, 5].map((e) => e.toDouble()).toList();
         break;
       case 'bass':
-        _eqBands = [6, 5, 4, 2, 0, -1, -1, 0, 1, 2].map((e) => e.toDouble()).toList();
+        _eqBands =
+            [6, 5, 4, 2, 0, -1, -1, 0, 1, 2].map((e) => e.toDouble()).toList();
         break;
     }
   }

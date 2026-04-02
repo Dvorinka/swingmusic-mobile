@@ -5,13 +5,13 @@ import 'package:equatable/equatable.dart';
 class LogTrackRequest extends Equatable {
   /// Duration played in seconds
   final int duration;
-  
+
   /// Source of the track (e.g., "al:albumhash", "ar:artisthash", "fo:folderpath", "pl:playlistid", "favorite")
   final String source;
-  
+
   /// Unix timestamp when the track was played
   final int timestamp;
-  
+
   /// Unique hash identifier for the track
   final String trackhash;
 

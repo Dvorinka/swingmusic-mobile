@@ -10,9 +10,9 @@ class LibraryController extends ChangeNotifier {
     required SwingApiClient api,
     required SessionController session,
     required OfflineManager offline,
-  }) : _api = api,
-       _session = session,
-       _offline = offline;
+  })  : _api = api,
+        _session = session,
+        _offline = offline;
 
   final SwingApiClient _api;
   final SessionController _session;
@@ -399,8 +399,7 @@ class LibraryController extends ChangeNotifier {
   }
 
   MusicTrack _trackFromAny(Map<String, dynamic> raw) {
-    final hasCatalogShape =
-        raw.containsKey('spotify_id') ||
+    final hasCatalogShape = raw.containsKey('spotify_id') ||
         raw['item_type'] == 'track' ||
         raw.containsKey('duration_ms');
     if (hasCatalogShape) {
@@ -415,8 +414,7 @@ class LibraryController extends ChangeNotifier {
     }
 
     return MusicArtist(
-      id:
-          raw['id']?.toString() ??
+      id: raw['id']?.toString() ??
           raw['hash']?.toString() ??
           raw['name']?.toString() ??
           '',

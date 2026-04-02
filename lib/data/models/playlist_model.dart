@@ -90,7 +90,7 @@ class PlaylistModel extends Equatable {
     final hours = duration ~/ 3600;
     final minutes = (duration % 3600) ~/ 60;
     final seconds = duration % 60;
-    
+
     if (hours > 0) {
       return '$hours:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
     } else {
@@ -113,11 +113,12 @@ class PlaylistModel extends Equatable {
       description: json['description'] ?? '',
       image: json['image'] ?? '',
       tracks: (json['tracks'] as List<dynamic>?)
-          ?.map((track) => TrackModel.fromJson(track))
-          .toList() ?? [],
+              ?.map((track) => TrackModel.fromJson(track))
+              .toList() ??
+          [],
       trackcount: json['trackcount'] ?? 0,
       duration: json['duration'] ?? 0,
-      createdDate: json['created_date'] != null 
+      createdDate: json['created_date'] != null
           ? DateTime.parse(json['created_date'])
           : DateTime.now(),
       lastModified: json['last_modified'] != null

@@ -148,13 +148,14 @@ class AlbumModel extends Equatable {
       ];
 
   String get displayTitle => originalTitle.isNotEmpty ? originalTitle : title;
-  
-  String get artistNames => albumartists.map((artist) => artist.name).join(', ');
+
+  String get artistNames =>
+      albumartists.map((artist) => artist.name).join(', ');
   String get durationFormatted {
     final hours = duration ~/ 3600;
     final minutes = (duration % 3600) ~/ 60;
     final seconds = duration % 60;
-    
+
     if (hours > 0) {
       return '$hours:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
     } else {
@@ -171,8 +172,9 @@ class AlbumModel extends Equatable {
   factory AlbumModel.fromJson(Map<String, dynamic> json) {
     return AlbumModel(
       albumartists: (json['albumartists'] as List<dynamic>?)
-          ?.map((artist) => ArtistModel.fromJson(artist))
-          .toList() ?? [],
+              ?.map((artist) => ArtistModel.fromJson(artist))
+              .toList() ??
+          [],
       albumhash: json['albumhash'] ?? '',
       artisthashes: List<String>.from(json['artisthashes'] ?? []),
       baseTitle: json['base_title'] ?? '',
@@ -181,8 +183,9 @@ class AlbumModel extends Equatable {
       date: json['date'] ?? 0,
       duration: json['duration'] ?? 0,
       genres: (json['genres'] as List<dynamic>?)
-          ?.map((genre) => GenreModel.fromJson(genre))
-          .toList() ?? [],
+              ?.map((genre) => GenreModel.fromJson(genre))
+              .toList() ??
+          [],
       genrehashes: List<String>.from(json['genrehashes'] ?? []),
       originalTitle: json['original_title'] ?? '',
       title: json['title'] ?? '',

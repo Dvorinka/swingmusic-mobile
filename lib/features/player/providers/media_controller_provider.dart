@@ -20,7 +20,7 @@ enum QueueSource {
 class MediaControllerProvider extends ChangeNotifier {
   final AudioService _audioService;
   final EnhancedApiService _apiService;
-  
+
   MediaControllerProvider({
     required AudioService audioService,
     required EnhancedApiService apiService,
@@ -28,7 +28,7 @@ class MediaControllerProvider extends ChangeNotifier {
         _apiService = apiService {
     _initializeListeners();
   }
-  
+
   // Player state
   bool _isPlaying = false;
   final bool _isLoading = false;
@@ -37,28 +37,29 @@ class MediaControllerProvider extends ChangeNotifier {
   Duration _duration = Duration.zero;
   TrackModel? _currentTrack;
   String? _errorMessage;
-  
+
   // Playback modes
   RepeatMode _repeatMode = RepeatMode.off;
   ShuffleMode _shuffleMode = ShuffleMode.off;
   double _volume = 1.0;
   double _playbackSpeed = 1.0;
-  
+
   // Queue
   List<TrackModel> _queue = [];
   final int _currentIndex = 0;
-  
+
   // Playback logging state
   TrackModel? _trackToLog;
   DateTime? _trackStartTime;
   Duration _accumulatedPlayDuration = Duration.zero;
   QueueSource _queueSource = QueueSource.unknown;
-  String? _sourceIdentifier; // albumhash, artisthash, folder path, playlist id, etc.
+  String?
+      _sourceIdentifier; // albumhash, artisthash, folder path, playlist id, etc.
   Timer? _playDurationTimer;
-  
+
   /// Minimum play duration in seconds before logging (matches Android: 5 seconds)
   static const int _minPlayDurationSeconds = 5;
-  
+
   // Getters
   bool get isPlaying => _isPlaying;
   bool get isLoading => _isLoading;
@@ -73,99 +74,99 @@ class MediaControllerProvider extends ChangeNotifier {
   double get playbackSpeed => _playbackSpeed;
   List<TrackModel> get queue => _queue;
   int get currentIndex => _currentIndex;
-  
+
   bool get hasError => _errorMessage != null;
   bool get canPlay => _currentTrack != null && !hasError;
   bool get canPause => _isPlaying && !hasError;
   bool get canGoNext => _queue.isNotEmpty && _currentIndex < _queue.length - 1;
   bool get canGoPrevious => _queue.isNotEmpty && _currentIndex > 0;
-  
+
   String get positionFormatted {
     final minutes = _position.inMinutes;
     final seconds = _position.inSeconds % 60;
     return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
   }
-  
+
   String get durationFormatted {
     final minutes = _duration.inMinutes;
     final seconds = _duration.inSeconds % 60;
     return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
   }
-  
+
   double get progress {
     if (_duration.inMilliseconds == 0) return 0.0;
     return _position.inMilliseconds / _duration.inMilliseconds;
   }
-  
+
   void _initializeListeners() {
     // Initialize audio service
     _audioService.init();
-    
+
     // Listen to audio service streams
     _audioService.playingStateStream.listen((playing) {
       final wasPlaying = _isPlaying;
       _isPlaying = playing;
-      
+
       // Handle play duration tracking
       if (playing && !wasPlaying) {
         _startPlayDurationTimer();
       } else if (!playing && wasPlaying) {
         _stopPlayDurationTimer();
       }
-      
+
       notifyListeners();
     });
-    
+
     _audioService.positionStream.listen((position) {
       _position = position;
       notifyListeners();
     });
-    
+
     _audioService.durationStream.listen((duration) {
       _duration = duration;
       notifyListeners();
     });
-    
+
     _audioService.currentTrackStream.listen((track) {
       // Log previous track before switching
       if (_trackToLog != null && _trackToLog != track) {
         _logTrackPlay(reason: 'track_changed');
       }
-      
+
       _currentTrack = track;
       _trackToLog = track;
       _trackStartTime = DateTime.now();
       _accumulatedPlayDuration = Duration.zero;
-      
+
       notifyListeners();
     });
-    
+
     _audioService.queueStream.listen((queue) {
       _queue = queue;
       notifyListeners();
     });
-    
+
     _audioService.bufferingStream.listen((buffering) {
       _isBuffering = buffering;
       notifyListeners();
     });
-    
+
     _audioService.errorStream.listen((error) {
       _errorMessage = error;
       notifyListeners();
     });
-    
+
     _audioService.repeatModeStream.listen((mode) {
       _repeatMode = mode;
       notifyListeners();
     });
-    
+
     _audioService.shuffleModeStream.listen((mode) {
       _shuffleMode = mode;
       notifyListeners();
     });
   }
-  
+
   /// Start timer to track play duration
   void _startPlayDurationTimer() {
     _trackStartTime ??= DateTime.now();
@@ -176,13 +177,13 @@ class MediaControllerProvider extends ChangeNotifier {
       }
     });
   }
-  
+
   /// Stop play duration timer
   void _stopPlayDurationTimer() {
     _playDurationTimer?.cancel();
     _playDurationTimer = null;
   }
-  
+
   /// Build source string for logging (matches Android format)
   String _buildSourceString() {
     switch (_queueSource) {
@@ -202,40 +203,42 @@ class MediaControllerProvider extends ChangeNotifier {
         return '';
     }
   }
-  
+
   /// Log track play to server
   /// Called when track changes, playback stops, or app goes to background
   Future<void> _logTrackPlay({String? reason}) async {
     final track = _trackToLog;
     if (track == null) return;
-    
+
     final playDurationSeconds = _accumulatedPlayDuration.inSeconds;
-    
+
     if (playDurationSeconds < _minPlayDurationSeconds) {
-      debugPrint('LOG: [$reason] Track NOT logged -> ${track.title}, duration: ${playDurationSeconds}s too short');
+      debugPrint(
+          'LOG: [$reason] Track NOT logged -> ${track.title}, duration: ${playDurationSeconds}s too short');
       return;
     }
-    
+
     final source = _buildSourceString();
-    
-    debugPrint('LOG: [$reason] Logging track -> ${track.title}, duration: ${playDurationSeconds}s, source: $source');
-    
+
+    debugPrint(
+        'LOG: [$reason] Logging track -> ${track.title}, duration: ${playDurationSeconds}s, source: $source');
+
     await _apiService.logTrackPlay(
       trackhash: track.trackhash,
       durationSeconds: playDurationSeconds,
       source: source,
     );
-    
+
     // Reset accumulated duration after logging
     _accumulatedPlayDuration = Duration.zero;
   }
-  
+
   /// Set the queue source for logging purposes
   void setQueueSource(QueueSource source, {String? identifier}) {
     _queueSource = source;
     _sourceIdentifier = identifier;
   }
-  
+
   Future<void> play() async {
     try {
       await _audioService.play();
@@ -243,7 +246,7 @@ class MediaControllerProvider extends ChangeNotifier {
       _setError('Failed to play: $e');
     }
   }
-  
+
   Future<void> pause() async {
     try {
       await _audioService.pause();
@@ -251,7 +254,7 @@ class MediaControllerProvider extends ChangeNotifier {
       _setError('Failed to pause: $e');
     }
   }
-  
+
   Future<void> stop() async {
     try {
       await _audioService.stop();
@@ -259,7 +262,7 @@ class MediaControllerProvider extends ChangeNotifier {
       _setError('Failed to stop: $e');
     }
   }
-  
+
   Future<void> playNext() async {
     try {
       await _audioService.playNext();
@@ -267,7 +270,7 @@ class MediaControllerProvider extends ChangeNotifier {
       _setError('Failed to play next: $e');
     }
   }
-  
+
   Future<void> playPrevious() async {
     try {
       await _audioService.playPrevious();
@@ -275,7 +278,7 @@ class MediaControllerProvider extends ChangeNotifier {
       _setError('Failed to play previous: $e');
     }
   }
-  
+
   Future<void> seekTo(Duration position) async {
     try {
       await _audioService.seekTo(position);
@@ -283,7 +286,7 @@ class MediaControllerProvider extends ChangeNotifier {
       _setError('Failed to seek: $e');
     }
   }
-  
+
   Future<void> setVolume(double volume) async {
     try {
       _volume = volume.clamp(0.0, 1.0);
@@ -293,7 +296,7 @@ class MediaControllerProvider extends ChangeNotifier {
       _setError('Failed to set volume: $e');
     }
   }
-  
+
   Future<void> setPlaybackSpeed(double speed) async {
     try {
       _playbackSpeed = speed.clamp(0.5, 2.0);
@@ -303,39 +306,39 @@ class MediaControllerProvider extends ChangeNotifier {
       _setError('Failed to set playback speed: $e');
     }
   }
-  
+
   void toggleShuffle() {
     _audioService.toggleShuffle();
   }
-  
+
   void toggleRepeat() {
     _audioService.toggleRepeat();
   }
-  
+
   void setQueue(List<TrackModel> tracks) {
     _audioService.setQueue(tracks);
   }
-  
+
   void addToQueue(TrackModel track) {
     _audioService.addToQueue(track);
   }
-  
+
   void removeFromQueue(int index) {
     _audioService.removeFromQueue(index);
   }
-  
+
   void clearQueue() {
     _audioService.clearQueue();
   }
-  
+
   void reorderQueue(int oldIndex, int newIndex) {
     _audioService.reorderQueue(oldIndex, newIndex);
   }
-  
+
   void jumpToIndex(int index) {
     _audioService.jumpToIndex(index);
   }
-  
+
   void _setError(String error) {
     _errorMessage = error;
     if (kDebugMode) {
@@ -343,12 +346,12 @@ class MediaControllerProvider extends ChangeNotifier {
     }
     notifyListeners();
   }
-  
+
   void clearError() {
     _errorMessage = null;
     notifyListeners();
   }
-  
+
   @override
   void dispose() {
     // Log final track before disposing

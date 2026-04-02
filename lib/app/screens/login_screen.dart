@@ -146,8 +146,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   Text(
                     'Sign in with account credentials or pair using a QR code from web UI.',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: scheme.onSurfaceVariant,
-                    ),
+                          color: scheme.onSurfaceVariant,
+                        ),
                   ),
                   const SizedBox(height: 20),
                   Container(

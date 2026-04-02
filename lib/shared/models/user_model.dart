@@ -24,11 +24,11 @@ class UserModel {
       email: json['email'] ?? '',
       avatar: json['avatar'],
       roles: List<String>.from(json['roles'] ?? []),
-      createdAt: json['created_at'] != null 
-          ? DateTime.parse(json['created_at']) 
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'])
           : null,
-      updatedAt: json['updated_at'] != null 
-          ? DateTime.parse(json['updated_at']) 
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'])
           : null,
     );
   }

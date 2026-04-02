@@ -6,7 +6,7 @@ import 'mini_player.dart';
 
 class MainNavigation extends StatefulWidget {
   final Widget child;
-  
+
   const MainNavigation({
     super.key,
     required this.child,
@@ -56,7 +56,7 @@ class _MainNavigationState extends State<MainNavigation> {
           color: Theme.of(context).colorScheme.surface,
           boxShadow: [
             BoxShadow(
-              color: Theme.of(context).shadowColor.withOpacity(0.1),
+              color: Theme.of(context).shadowColor.withValues(alpha: 0.1),
               blurRadius: 8,
               offset: const Offset(0, -2),
             ),
@@ -64,11 +64,13 @@ class _MainNavigationState extends State<MainNavigation> {
         ),
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: _navigationItems.map((item) {
-                final isSelected = _currentIndex == _navigationItems.indexOf(item);
+                final isSelected =
+                    _currentIndex == _navigationItems.indexOf(item);
                 return Expanded(
                   child: InkWell(
                     onTap: () => _onItemTapped(_navigationItems.indexOf(item)),
@@ -80,21 +82,32 @@ class _MainNavigationState extends State<MainNavigation> {
                         children: [
                           Icon(
                             isSelected ? item.selectedIcon : item.icon,
-                            color: isSelected 
+                            color: isSelected
                                 ? Theme.of(context).colorScheme.primary
-                                : Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                                : Theme.of(context)
+                                    .colorScheme
+                                    .onSurface
+                                    .withValues(alpha: 0.6),
                             size: 24,
                           ),
                           const SizedBox(height: 4),
                           Text(
                             item.label,
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: isSelected 
-                                  ? Theme.of(context).colorScheme.primary
-                                  : Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-                              fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                              fontSize: 12,
-                            ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(
+                                  color: isSelected
+                                      ? Theme.of(context).colorScheme.primary
+                                      : Theme.of(context)
+                                          .colorScheme
+                                          .onSurface
+                                          .withValues(alpha: 0.6),
+                                  fontWeight: isSelected
+                                      ? FontWeight.w700
+                                      : FontWeight.w500,
+                                  fontSize: 12,
+                                ),
                           ),
                         ],
                       ),

@@ -15,7 +15,6 @@ class FoldersScreen extends StatefulWidget {
 }
 
 class _FoldersScreenState extends State<FoldersScreen> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +30,7 @@ class _FoldersScreenState extends State<FoldersScreen> {
               child: CircularProgressIndicator(),
             );
           }
-          
+
           if (provider.errorMessage != null) {
             return Center(
               child: Column(
@@ -51,8 +50,8 @@ class _FoldersScreenState extends State<FoldersScreen> {
                   Text(
                     provider.errorMessage!,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 16),
@@ -64,17 +63,17 @@ class _FoldersScreenState extends State<FoldersScreen> {
               ),
             );
           }
-          
+
           if (provider.hasCurrentFolder) {
             return _buildCurrentFolder(context, provider);
           }
-          
+
           return _buildFolderList(context, provider);
         },
       ),
     );
   }
-  
+
   Widget _buildFolderList(BuildContext context, FoldersProvider provider) {
     return RefreshIndicator(
       onRefresh: () => provider.loadFolders(),
@@ -90,8 +89,9 @@ class _FoldersScreenState extends State<FoldersScreen> {
             ),
     );
   }
-  
-  Widget _buildFolderTile(BuildContext context, FolderModel folder, FoldersProvider provider) {
+
+  Widget _buildFolderTile(
+      BuildContext context, FolderModel folder, FoldersProvider provider) {
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
       child: ListTile(
@@ -99,7 +99,7 @@ class _FoldersScreenState extends State<FoldersScreen> {
           width: 48,
           height: 48,
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
           ),
           child: folder.image != null
@@ -136,7 +136,7 @@ class _FoldersScreenState extends State<FoldersScreen> {
       ),
     );
   }
-  
+
   Widget _buildCurrentFolder(BuildContext context, FoldersProvider provider) {
     return Column(
       children: [
@@ -161,17 +161,20 @@ class _FoldersScreenState extends State<FoldersScreen> {
                         onTap: () => provider.clearCurrentFolder(),
                         child: Text(
                           'Library',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
                         ),
                       ),
                       const Text(' / '),
                       Text(
                         provider.currentFolderName!,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
+                              fontWeight: FontWeight.w600,
+                            ),
                       ),
                     ],
                   ),
@@ -180,7 +183,7 @@ class _FoldersScreenState extends State<FoldersScreen> {
             ],
           ),
         ),
-        
+
         // Tracks list
         Expanded(
           child: provider.currentFolderTracks.isEmpty
@@ -197,7 +200,7 @@ class _FoldersScreenState extends State<FoldersScreen> {
       ],
     );
   }
-  
+
   Widget _buildTrackTile(BuildContext context, track) {
     return ListTile(
       leading: ClipRRect(
@@ -226,82 +229,82 @@ class _FoldersScreenState extends State<FoldersScreen> {
       title: Text(track.title),
       subtitle: Text('${track.artist} • ${track.album}'),
       trailing: PopupMenuButton<String>(
-          icon: const Icon(Icons.more_vert),
-          onSelected: (value) {
-            switch (value) {
-              case 'play':
-                _playTrack(track);
-                break;
-              case 'add_to_queue':
-                _addTrackToQueue(track);
-                break;
-              case 'add_to_playlist':
-                _addTrackToPlaylist(track);
-                break;
-              case 'favorite':
-                _toggleFavorite(track);
-                break;
-              case 'download':
-                _downloadTrack(track);
-                break;
-            }
-          },
-          itemBuilder: (context) => [
-            const PopupMenuItem(
-              value: 'play',
-              child: Row(
-                children: [
-                  Icon(Icons.play_arrow),
-                  SizedBox(width: 8),
-                  Text('Play'),
-                ],
-              ),
+        icon: const Icon(Icons.more_vert),
+        onSelected: (value) {
+          switch (value) {
+            case 'play':
+              _playTrack(track);
+              break;
+            case 'add_to_queue':
+              _addTrackToQueue(track);
+              break;
+            case 'add_to_playlist':
+              _addTrackToPlaylist(track);
+              break;
+            case 'favorite':
+              _toggleFavorite(track);
+              break;
+            case 'download':
+              _downloadTrack(track);
+              break;
+          }
+        },
+        itemBuilder: (context) => [
+          const PopupMenuItem(
+            value: 'play',
+            child: Row(
+              children: [
+                Icon(Icons.play_arrow),
+                SizedBox(width: 8),
+                Text('Play'),
+              ],
             ),
-            const PopupMenuItem(
-              value: 'add_to_queue',
-              child: Row(
-                children: [
-                  Icon(Icons.queue_music),
-                  SizedBox(width: 8),
-                  Text('Add to Queue'),
-                ],
-              ),
+          ),
+          const PopupMenuItem(
+            value: 'add_to_queue',
+            child: Row(
+              children: [
+                Icon(Icons.queue_music),
+                SizedBox(width: 8),
+                Text('Add to Queue'),
+              ],
             ),
-            const PopupMenuItem(
-              value: 'add_to_playlist',
-              child: Row(
-                children: [
-                  Icon(Icons.playlist_add),
-                  SizedBox(width: 8),
-                  Text('Add to Playlist'),
-                ],
-              ),
+          ),
+          const PopupMenuItem(
+            value: 'add_to_playlist',
+            child: Row(
+              children: [
+                Icon(Icons.playlist_add),
+                SizedBox(width: 8),
+                Text('Add to Playlist'),
+              ],
             ),
-            const PopupMenuItem(
-              value: 'favorite',
-              child: Row(
-                children: [
-                  Icon(Icons.favorite_border),
-                  SizedBox(width: 8),
-                  Text('Add to Favorites'),
-                ],
-              ),
+          ),
+          const PopupMenuItem(
+            value: 'favorite',
+            child: Row(
+              children: [
+                Icon(Icons.favorite_border),
+                SizedBox(width: 8),
+                Text('Add to Favorites'),
+              ],
             ),
-            const PopupMenuItem(
-              value: 'download',
-              child: Row(
-                children: [
-                  Icon(Icons.download),
-                  SizedBox(width: 8),
-                  Text('Download'),
-                ],
-              ),
+          ),
+          const PopupMenuItem(
+            value: 'download',
+            child: Row(
+              children: [
+                Icon(Icons.download),
+                SizedBox(width: 8),
+                Text('Download'),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
+      ),
     );
   }
-  
+
   Widget _buildEmptyState(BuildContext context) {
     return Center(
       child: Column(
@@ -321,14 +324,15 @@ class _FoldersScreenState extends State<FoldersScreen> {
           Text(
             'Make sure your music library is properly configured',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
           ElevatedButton.icon(
             onPressed: () {
-              final foldersProvider = Provider.of<FoldersProvider>(context, listen: false);
+              final foldersProvider =
+                  Provider.of<FoldersProvider>(context, listen: false);
               foldersProvider.loadFolders();
             },
             icon: const Icon(Icons.refresh),
@@ -338,7 +342,7 @@ class _FoldersScreenState extends State<FoldersScreen> {
       ),
     );
   }
-  
+
   Widget _buildEmptyFolderState(BuildContext context) {
     return Center(
       child: Column(
@@ -358,8 +362,8 @@ class _FoldersScreenState extends State<FoldersScreen> {
           Text(
             'This folder appears to be empty',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
           ),
         ],
       ),
@@ -369,13 +373,15 @@ class _FoldersScreenState extends State<FoldersScreen> {
   void _playTrack(TrackModel track) {
     final audioProvider = Provider.of<AudioProvider>(context, listen: false);
     // Set queue source for playback logging
-    final mediaController = Provider.of<MediaControllerProvider>(context, listen: false);
-    mediaController.setQueueSource(QueueSource.folder, identifier: track.folder);
-    
+    final mediaController =
+        Provider.of<MediaControllerProvider>(context, listen: false);
+    mediaController.setQueueSource(QueueSource.folder,
+        identifier: track.folder);
+
     audioProvider.setQueue([track]);
     audioProvider.loadTrack(track);
     audioProvider.play();
-    
+
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Playing: ${track.title}')),
@@ -386,7 +392,7 @@ class _FoldersScreenState extends State<FoldersScreen> {
   void _addTrackToQueue(TrackModel track) {
     final audioProvider = Provider.of<AudioProvider>(context, listen: false);
     audioProvider.addToQueue(track);
-    
+
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Added to queue: ${track.title}')),

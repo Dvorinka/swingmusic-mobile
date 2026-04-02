@@ -7,33 +7,42 @@ import 'dart:io';
 import 'audio_player_handler.dart';
 
 class EnhancedAudioService {
-  static final EnhancedAudioService _instance = EnhancedAudioService._internal();
+  static final EnhancedAudioService _instance =
+      EnhancedAudioService._internal();
   factory EnhancedAudioService() => _instance;
   EnhancedAudioService._internal();
-  
+
   final AudioPlayer _audioPlayer = AudioPlayer();
   final AudioPlayerHandler _audioHandler = AudioPlayerHandler();
   final List<MediaItem> _queue = [];
   int _currentQueueIndex = 0;
   bool _isInitialized = false;
   StreamSubscription? _playerSubscription;
-  
+
   // Authentication and configuration
   String? _authToken;
   bool _crossfadeEnabled = false;
   Duration _crossfadeDuration = const Duration(seconds: 2);
   bool _gaplessPlayback = true;
-  
+
   // Player state streams
-  final StreamController<bool> _playingStateController = StreamController<bool>.broadcast();
-  final StreamController<MediaItem?> _currentItemController = StreamController<MediaItem?>.broadcast();
-  final StreamController<Duration> _positionController = StreamController<Duration>.broadcast();
-  final StreamController<Duration?> _durationController = StreamController<Duration?>.broadcast();
-  final StreamController<List<MediaItem>> _queueController = StreamController<List<MediaItem>>.broadcast();
-  final StreamController<bool> _shuffleModeController = StreamController<bool>.broadcast();
-  final StreamController<AudioServiceRepeatMode> _repeatModeController = StreamController<AudioServiceRepeatMode>.broadcast();
-  final StreamController<bool> _bufferingController = StreamController<bool>.broadcast();
-  
+  final StreamController<bool> _playingStateController =
+      StreamController<bool>.broadcast();
+  final StreamController<MediaItem?> _currentItemController =
+      StreamController<MediaItem?>.broadcast();
+  final StreamController<Duration> _positionController =
+      StreamController<Duration>.broadcast();
+  final StreamController<Duration?> _durationController =
+      StreamController<Duration?>.broadcast();
+  final StreamController<List<MediaItem>> _queueController =
+      StreamController<List<MediaItem>>.broadcast();
+  final StreamController<bool> _shuffleModeController =
+      StreamController<bool>.broadcast();
+  final StreamController<AudioServiceRepeatMode> _repeatModeController =
+      StreamController<AudioServiceRepeatMode>.broadcast();
+  final StreamController<bool> _bufferingController =
+      StreamController<bool>.broadcast();
+
   // Getters for streams
   Stream<bool> get playingStateStream => _playingStateController.stream;
   Stream<MediaItem?> get currentItemStream => _currentItemController.stream;
@@ -41,27 +50,34 @@ class EnhancedAudioService {
   Stream<Duration?> get durationStream => _durationController.stream;
   Stream<List<MediaItem>> get queueStream => _queueController.stream;
   Stream<bool> get shuffleModeStream => _shuffleModeController.stream;
-  Stream<AudioServiceRepeatMode> get repeatModeStream => _repeatModeController.stream;
+  Stream<AudioServiceRepeatMode> get repeatModeStream =>
+      _repeatModeController.stream;
   Stream<bool> get bufferingStream => _bufferingController.stream;
-  
+
   // Current state getters
   bool get isPlaying => _audioPlayer.playing;
   bool get isPaused => !_audioPlayer.playing;
-  bool get isBuffering => _audioPlayer.playerState.playing && _audioPlayer.playerState.processingState == ProcessingState.buffering;
-  bool get isLoading => _audioPlayer.playerState.processingState == ProcessingState.loading;
-  bool get hasError => _audioPlayer.playerState.processingState == ProcessingState.idle; // Use idle as error state
+  bool get isBuffering =>
+      _audioPlayer.playerState.playing &&
+      _audioPlayer.playerState.processingState == ProcessingState.buffering;
+  bool get isLoading =>
+      _audioPlayer.playerState.processingState == ProcessingState.loading;
+  bool get hasError =>
+      _audioPlayer.playerState.processingState ==
+      ProcessingState.idle; // Use idle as error state
   List<MediaItem> get queue => List.unmodifiable(_queue);
-  MediaItem? get currentItem => _currentQueueIndex < _queue.length ? _queue[_currentQueueIndex] : null;
+  MediaItem? get currentItem =>
+      _currentQueueIndex < _queue.length ? _queue[_currentQueueIndex] : null;
   Duration get currentPosition => _audioPlayer.position;
   Duration? get currentDuration => _audioPlayer.duration;
   double get volume => _audioPlayer.volume;
   int get currentIndex => _currentQueueIndex;
-  
+
   // Configuration getters
   bool get crossfadeEnabled => _crossfadeEnabled;
   Duration get crossfadeDuration => _crossfadeDuration;
   bool get gaplessPlayback => _gaplessPlayback;
-  
+
   Future<void> init({
     String? authToken,
     bool crossfadeEnabled = false,
@@ -69,12 +85,12 @@ class EnhancedAudioService {
     bool gaplessPlayback = true,
   }) async {
     if (_isInitialized) return;
-    
+
     _authToken = authToken;
     _crossfadeEnabled = crossfadeEnabled;
     _crossfadeDuration = crossfadeDuration;
     _gaplessPlayback = gaplessPlayback;
-    
+
     try {
       // Request notification permissions
       if (Platform.isAndroid) {
@@ -83,7 +99,7 @@ class EnhancedAudioService {
           debugPrint('Notification permission not granted');
         }
       }
-      
+
       // Initialize audio service with enhanced configuration similar to Android reference
       await AudioService.init(
         builder: () => AudioPlayerHandler(),
@@ -101,10 +117,10 @@ class EnhancedAudioService {
           androidNotificationClickStartsActivity: true,
         ),
       );
-      
+
       // Set up player listeners
       _setupPlayerListeners();
-      
+
       _isInitialized = true;
       debugPrint('EnhancedAudioService initialized successfully');
     } catch (e) {
@@ -115,34 +131,37 @@ class EnhancedAudioService {
   void _setupPlayerListeners() {
     _playerSubscription = _audioPlayer.playerStateStream.listen((state) {
       _playingStateController.add(state.playing);
-      
+
       // Update buffering state
-      final isBuffering = state.playing && state.processingState == ProcessingState.buffering;
+      final isBuffering =
+          state.playing && state.processingState == ProcessingState.buffering;
       _bufferingController.add(isBuffering);
-      
+
       // Handle errors
-      if (state.processingState == ProcessingState.idle && state.playing == false) {
+      if (state.processingState == ProcessingState.idle &&
+          state.playing == false) {
         debugPrint('Audio player may be in error state');
       }
     });
-    
+
     _audioPlayer.positionStream.listen((position) {
       _positionController.add(position);
     });
-    
+
     _audioPlayer.durationStream.listen((duration) {
       _durationController.add(duration);
     });
-    
+
     // Handle player completion for gapless playback
     _audioPlayer.playerStateStream.listen((state) {
-      if (state.processingState == ProcessingState.completed && _gaplessPlayback) {
+      if (state.processingState == ProcessingState.completed &&
+          _gaplessPlayback) {
         // Auto-play next track if gapless playback is enabled
         _handleTrackCompletion();
       }
     });
   }
-  
+
   void _handleTrackCompletion() {
     if (_repeatModeController.hasListener) {
       // Check repeat mode and play next accordingly
@@ -192,7 +211,8 @@ class EnhancedAudioService {
 
   Future<void> setShuffleMode(bool enabled) async {
     try {
-      await _audioHandler.setShuffleMode(enabled ? AudioServiceShuffleMode.all : AudioServiceShuffleMode.none);
+      await _audioHandler.setShuffleMode(
+          enabled ? AudioServiceShuffleMode.all : AudioServiceShuffleMode.none);
       _shuffleModeController.add(enabled);
     } catch (e) {
       _shuffleModeController.add(enabled);
@@ -215,14 +235,14 @@ class EnhancedAudioService {
         _queue.add(mediaItem);
         _queueController.add(_queue);
       }
-      
+
       _currentQueueIndex = _queue.indexWhere((item) => item.id == mediaItem.id);
       _currentItemController.add(mediaItem);
-      
+
       // Load with authentication headers similar to Android reference
       final headers = _buildAuthenticatedHeaders();
       final trackUrl = mediaItem.extras?['url']?.toString();
-      
+
       if (trackUrl != null) {
         if (_crossfadeEnabled && _audioPlayer.playing) {
           await _crossfadeToTrack(trackUrl, headers, mediaItem);
@@ -231,7 +251,7 @@ class EnhancedAudioService {
           await play();
         }
       }
-      
+
       // Update AudioService
       try {
         await _audioHandler.updateMediaItem(mediaItem);
@@ -242,30 +262,31 @@ class EnhancedAudioService {
       // Failed to load track: $e
     }
   }
-  
+
   Map<String, String>? _buildAuthenticatedHeaders() {
     if (_authToken == null) return null;
-    
+
     return {
       'Authorization': 'Bearer $_authToken',
       'User-Agent': 'SwingMusic-Mobile/1.0',
       'Accept': '*/*',
     };
   }
-  
-  Future<void> _crossfadeToTrack(String url, Map<String, String>? headers, MediaItem mediaItem) async {
+
+  Future<void> _crossfadeToTrack(
+      String url, Map<String, String>? headers, MediaItem mediaItem) async {
     // Implement crossfade functionality
     final originalVolume = _audioPlayer.volume;
-    
+
     // Fade out current track
     await _audioPlayer.setVolume(0.0);
-    
+
     // Load new track
     await _audioPlayer.setUrl(url, headers: headers);
-    
+
     // Fade in new track
     await _audioPlayer.setVolume(originalVolume);
-    
+
     // Update media item
     await _audioHandler.updateMediaItem(mediaItem);
   }
@@ -275,9 +296,9 @@ class EnhancedAudioService {
       _queue.clear();
       _queue.addAll(mediaItems);
       _currentQueueIndex = 0;
-      
+
       _queueController.add(_queue);
-      
+
       // Update AudioService
       try {
         await _audioHandler.updateQueue(mediaItems);
@@ -292,19 +313,20 @@ class EnhancedAudioService {
   Future<void> playNext() async {
     try {
       if (_queue.isEmpty) return;
-      
+
       if (_currentQueueIndex < _queue.length - 1) {
         _currentQueueIndex++;
       } else {
         // Handle repeat mode
-        final repeatMode = AudioServiceRepeatMode.all; // Get current repeat mode
+        final repeatMode =
+            AudioServiceRepeatMode.all; // Get current repeat mode
         if (repeatMode == AudioServiceRepeatMode.all) {
           _currentQueueIndex = 0;
         } else {
           return; // Stop if not repeating all
         }
       }
-      
+
       final nextItem = _queue[_currentQueueIndex];
       await loadTrack(nextItem);
     } catch (e) {
@@ -315,7 +337,7 @@ class EnhancedAudioService {
   Future<void> playPrevious() async {
     try {
       if (_queue.isEmpty) return;
-      
+
       if (_currentQueueIndex > 0) {
         _currentQueueIndex--;
         final prevItem = _queue[_currentQueueIndex];
@@ -329,18 +351,18 @@ class EnhancedAudioService {
   Future<void> addToQueue(MediaItem mediaItem) async {
     _queue.add(mediaItem);
     _queueController.add(_queue);
-    
+
     try {
       await _audioHandler.addQueueItem(mediaItem);
     } catch (e) {
       // Failed to add to AudioService queue: $e
     }
   }
-  
+
   Future<void> removeFromQueue(String trackId) async {
     _queue.removeWhere((item) => item.id == trackId);
     _queueController.add(_queue);
-    
+
     try {
       final itemToRemove = _queue.firstWhere((item) => item.id == trackId);
       await _audioHandler.removeQueueItem(itemToRemove);
@@ -348,19 +370,19 @@ class EnhancedAudioService {
       // Failed to remove from AudioService queue: $e
     }
   }
-  
+
   Future<void> clearQueue() async {
     _queue.clear();
     _currentQueueIndex = 0;
     _queueController.add(_queue);
-    
+
     try {
       await _audioHandler.updateQueue([]);
     } catch (e) {
       // Failed to clear AudioService queue: $e
     }
   }
-  
+
   void jumpToIndex(int index) {
     if (index >= 0 && index < _queue.length) {
       _currentQueueIndex = index;
@@ -372,7 +394,7 @@ class EnhancedAudioService {
   Future<void> dispose() async {
     _playerSubscription?.cancel();
     await _audioPlayer.dispose();
-    
+
     await _playingStateController.close();
     await _currentItemController.close();
     await _positionController.close();
@@ -382,36 +404,36 @@ class EnhancedAudioService {
     await _repeatModeController.close();
     await _bufferingController.close();
   }
-  
+
   // Configuration methods
   void updateAuthToken(String? token) {
     _authToken = token;
   }
-  
+
   void setCrossfadeEnabled(bool enabled) {
     _crossfadeEnabled = enabled;
   }
-  
+
   void setCrossfadeDuration(Duration duration) {
     _crossfadeDuration = duration;
   }
-  
+
   void setGaplessPlayback(bool enabled) {
     _gaplessPlayback = enabled;
   }
-  
+
   // Utility methods
   String get positionFormatted {
     final position = _audioPlayer.position;
     return '${position.inMinutes.toString().padLeft(2, '0')}:${(position.inSeconds % 60).toString().padLeft(2, '0')}';
   }
-  
+
   String get durationFormatted {
     final duration = _audioPlayer.duration;
     if (duration == null) return '00:00';
     return '${duration.inMinutes.toString().padLeft(2, '0')}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}';
   }
-  
+
   double get progress {
     final duration = _audioPlayer.duration;
     if (duration == null || duration.inMilliseconds == 0) return 0.0;

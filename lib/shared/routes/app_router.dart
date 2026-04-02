@@ -18,19 +18,19 @@ class AppRouter {
     initialLocation: AppConstants.homeRoute,
     redirect: (context, state) {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
-      final isAuthRoute = state.uri.path.startsWith('/login') || 
-                         state.uri.path.startsWith('/qr-login');
-      
+      final isAuthRoute = state.uri.path.startsWith('/login') ||
+          state.uri.path.startsWith('/qr-login');
+
       // If not authenticated and not on auth route, redirect to login
       if (!authProvider.isLoggedIn && !isAuthRoute) {
         return '/login';
       }
-      
+
       // If authenticated and on auth route, redirect to home
       if (authProvider.isLoggedIn && isAuthRoute) {
         return AppConstants.homeRoute;
       }
-      
+
       return null;
     },
     routes: [
@@ -45,7 +45,7 @@ class AppRouter {
         name: 'qr-login',
         builder: (context, state) => const QRLoginScreen(),
       ),
-      
+
       // Protected routes (authentication required)
       GoRoute(
         path: '/',

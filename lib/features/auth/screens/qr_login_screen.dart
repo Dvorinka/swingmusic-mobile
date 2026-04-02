@@ -18,6 +18,7 @@ class _QRLoginScreenState extends State<QRLoginScreen> {
     _qrCodeController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,35 +41,39 @@ class _QRLoginScreenState extends State<QRLoginScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const Spacer(flex: 2),
-              
+
               // Title
               Text(
                 'QR Code Login',
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                      fontWeight: FontWeight.bold,
+                    ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16),
               Text(
                 'Scan the QR code from your SwingMusic server to login',
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                 textAlign: TextAlign.center,
               ),
-              
+
               const Spacer(flex: 3),
-              
+
               // QR Code placeholder
               Container(
                 width: 250,
                 height: 250,
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                  borderRadius: BorderRadius.circular(AppConstants.cardBorderRadius),
+                  borderRadius:
+                      BorderRadius.circular(AppConstants.cardBorderRadius),
                   border: Border.all(
-                    color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
+                    color: Theme.of(context)
+                        .colorScheme
+                        .outline
+                        .withValues(alpha: 0.3),
                   ),
                 ),
                 child: Column(
@@ -83,22 +88,24 @@ class _QRLoginScreenState extends State<QRLoginScreen> {
                     Text(
                       'QR Scanner',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
                     ),
                     const SizedBox(height: 8),
                     Text(
                       'Tap to scan',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
                     ),
                   ],
                 ),
               ),
-              
+
               const Spacer(flex: 2),
-              
+
               // Manual QR code entry
               OutlinedButton.icon(
                 onPressed: _showManualEntry,
@@ -107,13 +114,14 @@ class _QRLoginScreenState extends State<QRLoginScreen> {
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppConstants.borderRadius),
+                    borderRadius:
+                        BorderRadius.circular(AppConstants.borderRadius),
                   ),
                 ),
               ),
-              
+
               const SizedBox(height: 16),
-              
+
               // Error message
               Consumer<SessionController>(
                 builder: (context, session, child) {
@@ -122,7 +130,8 @@ class _QRLoginScreenState extends State<QRLoginScreen> {
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.errorContainer,
-                        borderRadius: BorderRadius.circular(AppConstants.borderRadius),
+                        borderRadius:
+                            BorderRadius.circular(AppConstants.borderRadius),
                       ),
                       child: Row(
                         children: [
@@ -135,9 +144,12 @@ class _QRLoginScreenState extends State<QRLoginScreen> {
                           Expanded(
                             child: Text(
                               session.error!,
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: Theme.of(context).colorScheme.error,
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
+                                    color: Theme.of(context).colorScheme.error,
+                                  ),
                             ),
                           ),
                         ],
@@ -147,7 +159,7 @@ class _QRLoginScreenState extends State<QRLoginScreen> {
                   return const SizedBox.shrink();
                 },
               ),
-              
+
               const Spacer(),
             ],
           ),
@@ -155,7 +167,7 @@ class _QRLoginScreenState extends State<QRLoginScreen> {
       ),
     );
   }
-  
+
   void _showManualEntry() {
     showDialog(
       context: context,

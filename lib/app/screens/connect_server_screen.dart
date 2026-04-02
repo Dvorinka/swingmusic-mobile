@@ -77,8 +77,8 @@ class _ConnectServerScreenState extends State<ConnectServerScreen> {
                     Text(
                       'Enter your instance URL. Setup is completed in the web UI first.',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: scheme.onSurfaceVariant,
-                      ),
+                            color: scheme.onSurfaceVariant,
+                          ),
                     ),
                     const SizedBox(height: 20),
                     TextField(

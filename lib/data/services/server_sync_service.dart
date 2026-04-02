@@ -148,7 +148,10 @@ class ServerSyncService {
   Map<String, dynamic>? _parseEvent(String eventStr) {
     try {
       // Simple JSON parse - in production use proper serialization
-      return {'raw': eventStr, 'timestamp': DateTime.now().millisecondsSinceEpoch};
+      return {
+        'raw': eventStr,
+        'timestamp': DateTime.now().millisecondsSinceEpoch
+      };
     } catch (e) {
       return null;
     }

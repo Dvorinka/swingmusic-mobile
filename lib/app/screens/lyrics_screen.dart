@@ -124,64 +124,67 @@ class _LyricsScreenState extends State<LyricsScreen> {
                 child: player.lyricsLoading
                     ? const Center(child: CircularProgressIndicator())
                     : cues.isEmpty
-                    ? Center(
-                        child: Text(
-                          'No lyrics found for this track.',
-                          style: TextStyle(color: scheme.onSurfaceVariant),
-                        ),
-                      )
-                    : ListView.builder(
-                        controller: _scroll,
-                        padding: const EdgeInsets.fromLTRB(16, 6, 16, 24),
-                        itemCount: cues.length,
-                        itemBuilder: (context, index) {
-                          final cue = cues[index];
-                          final isCurrent = index == activeIndex;
-                          final isPast =
-                              activeIndex >= 0 && index < activeIndex;
-                          final distance = activeIndex == -1
-                              ? 99
-                              : (index - activeIndex).abs();
-
-                          var alpha = 0.82;
-                          if (!isCurrent && distance >= 5) {
-                            alpha = 0.45;
-                          } else if (!isCurrent && distance >= 3) {
-                            alpha = 0.60;
-                          }
-
-                          final color = isCurrent
-                              ? scheme.onSurface
-                              : isPast
-                              ? scheme.onSurface.withOpacity(alpha)
-                              : scheme.onSurfaceVariant.withOpacity(
-                                  alpha,
-                                );
-
-                          return InkWell(
-                            onTap: () {
-                              final seek = _seekTargetForIndex(player, index);
-                              if (seek != null) {
-                                player.seek(Duration(milliseconds: seek));
-                              }
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 8),
-                              child: AnimatedDefaultTextStyle(
-                                duration: const Duration(milliseconds: 180),
-                                curve: Curves.easeOut,
-                                style: TextStyle(
-                                  fontSize: isCurrent ? 29 : 24,
-                                  fontWeight: FontWeight.w700,
-                                  height: 1.16,
-                                  color: color,
-                                ),
-                                child: Text(cue.text),
-                              ),
+                        ? Center(
+                            child: Text(
+                              'No lyrics found for this track.',
+                              style: TextStyle(color: scheme.onSurfaceVariant),
                             ),
-                          );
-                        },
-                      ),
+                          )
+                        : ListView.builder(
+                            controller: _scroll,
+                            padding: const EdgeInsets.fromLTRB(16, 6, 16, 24),
+                            itemCount: cues.length,
+                            itemBuilder: (context, index) {
+                              final cue = cues[index];
+                              final isCurrent = index == activeIndex;
+                              final isPast =
+                                  activeIndex >= 0 && index < activeIndex;
+                              final distance = activeIndex == -1
+                                  ? 99
+                                  : (index - activeIndex).abs();
+
+                              var alpha = 0.82;
+                              if (!isCurrent && distance >= 5) {
+                                alpha = 0.45;
+                              } else if (!isCurrent && distance >= 3) {
+                                alpha = 0.60;
+                              }
+
+                              final color = isCurrent
+                                  ? scheme.onSurface
+                                  : isPast
+                                      ? scheme.onSurface
+                                          .withValues(alpha: alpha)
+                                      : scheme.onSurfaceVariant.withValues(
+                                          alpha: alpha,
+                                        );
+
+                              return InkWell(
+                                onTap: () {
+                                  final seek =
+                                      _seekTargetForIndex(player, index);
+                                  if (seek != null) {
+                                    player.seek(Duration(milliseconds: seek));
+                                  }
+                                },
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 8),
+                                  child: AnimatedDefaultTextStyle(
+                                    duration: const Duration(milliseconds: 180),
+                                    curve: Curves.easeOut,
+                                    style: TextStyle(
+                                      fontSize: isCurrent ? 29 : 24,
+                                      fontWeight: FontWeight.w700,
+                                      height: 1.16,
+                                      color: color,
+                                    ),
+                                    child: Text(cue.text),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
               ),
             ],
           ),
@@ -211,9 +214,9 @@ class _LyricsScreenState extends State<LyricsScreen> {
 
     if (cues.length == 1) return 0;
     return ((cues.length - 1) * player.progress).round().clamp(
-      0,
-      cues.length - 1,
-    );
+          0,
+          cues.length - 1,
+        );
   }
 
   int? _seekTargetForIndex(PlayerController player, int index) {

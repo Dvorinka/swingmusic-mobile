@@ -15,9 +15,9 @@ class OfflineManager {
     required SwingApiClient api,
     required SessionController session,
     required LocalCacheService cache,
-  }) : _api = api,
-       _session = session,
-       _cache = cache;
+  })  : _api = api,
+        _session = session,
+        _cache = cache;
 
   final SwingApiClient _api;
   final SessionController _session;
@@ -162,7 +162,8 @@ class OfflineManager {
       );
       await _cache.upsertOfflineTrack(offlineTrack);
 
-      await _syncOfflineTrackAdded(offlineTrack, collectionLabel: collectionLabel);
+      await _syncOfflineTrackAdded(offlineTrack,
+          collectionLabel: collectionLabel);
 
       task = task.copyWith(progress: 1, state: 'completed');
       onProgress(task);
@@ -176,9 +177,8 @@ class OfflineManager {
 
   Future<void> removeOfflineTrack(String trackhash) async {
     final tracks = await _cache.getOfflineTracks();
-    final target = tracks
-        .where((entry) => entry.trackhash == trackhash)
-        .toList();
+    final target =
+        tracks.where((entry) => entry.trackhash == trackhash).toList();
 
     for (final track in target) {
       final file = File(track.localPath);
@@ -511,9 +511,8 @@ class OfflineManager {
         ? null
         : _sanitizeFilePart(track.album, fallback: 'Unknown Album');
 
-    final targetPath = child == null
-        ? '${base.path}/$parent'
-        : '${base.path}/$parent/$child';
+    final targetPath =
+        child == null ? '${base.path}/$parent' : '${base.path}/$parent/$child';
     final target = Directory(targetPath);
     if (!target.existsSync()) {
       await target.create(recursive: true);

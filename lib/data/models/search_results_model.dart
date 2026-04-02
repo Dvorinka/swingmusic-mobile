@@ -39,20 +39,25 @@ class SearchResultsModel extends Equatable {
   factory SearchResultsModel.fromJson(Map<String, dynamic> json) {
     return SearchResultsModel(
       tracks: (json['tracks'] as List<dynamic>?)
-          ?.map((track) => TrackModel.fromJson(track))
-          .toList() ?? [],
+              ?.map((track) => TrackModel.fromJson(track))
+              .toList() ??
+          [],
       albums: (json['albums'] as List<dynamic>?)
-          ?.map((album) => AlbumModel.fromJson(album))
-          .toList() ?? [],
+              ?.map((album) => AlbumModel.fromJson(album))
+              .toList() ??
+          [],
       artists: (json['artists'] as List<dynamic>?)
-          ?.map((artist) => ArtistModel.fromJson(artist))
-          .toList() ?? [],
+              ?.map((artist) => ArtistModel.fromJson(artist))
+              .toList() ??
+          [],
       folders: (json['folders'] as List<dynamic>?)
-          ?.map((folder) => FolderModel.fromJson(folder))
-          .toList() ?? [],
+              ?.map((folder) => FolderModel.fromJson(folder))
+              .toList() ??
+          [],
       playlists: (json['playlists'] as List<dynamic>?)
-          ?.map((playlist) => PlaylistModel.fromJson(playlist))
-          .toList() ?? [],
+              ?.map((playlist) => PlaylistModel.fromJson(playlist))
+              .toList() ??
+          [],
     );
   }
 
@@ -66,11 +71,11 @@ class SearchResultsModel extends Equatable {
     };
   }
 
-  bool get isEmpty => 
-      tracks.isEmpty && 
-      albums.isEmpty && 
-      artists.isEmpty && 
-      folders.isEmpty && 
+  bool get isEmpty =>
+      tracks.isEmpty &&
+      albums.isEmpty &&
+      artists.isEmpty &&
+      folders.isEmpty &&
       playlists.isEmpty;
 
   bool get isNotEmpty => !isEmpty;
@@ -97,8 +102,9 @@ class TopSearchResultsModel extends Equatable {
   factory TopSearchResultsModel.fromJson(Map<String, dynamic> json) {
     return TopSearchResultsModel(
       topResults: (json['top_results'] as List<dynamic>?)
-          ?.map((item) => TopResultItemModel.fromJson(item))
-          .toList() ?? [],
+              ?.map((item) => TopResultItemModel.fromJson(item))
+              .toList() ??
+          [],
       allResults: SearchResultsModel.fromJson(json['all_results'] ?? {}),
     );
   }

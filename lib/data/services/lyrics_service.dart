@@ -45,7 +45,7 @@ class LyricsService {
         'q': query,
         'limit': limit,
       });
-      
+
       if (response.statusCode == 200) {
         final data = response.data;
         final results = data['results'] as List<dynamic>? ?? [];
@@ -59,14 +59,15 @@ class LyricsService {
     }
   }
 
-  Future<bool> saveLyrics(String trackHash, String lyrics, {String? filepath}) async {
+  Future<bool> saveLyrics(String trackHash, String lyrics,
+      {String? filepath}) async {
     try {
       final response = await _dio.post('/lyrics/save', data: {
         'trackhash': trackHash,
         'filepath': filepath,
         'lyrics': lyrics,
       });
-      
+
       return response.statusCode == 200;
     } catch (e) {
       debugPrint('Error saving lyrics: $e');
@@ -74,14 +75,15 @@ class LyricsService {
     }
   }
 
-  Future<bool> updateLyrics(String trackHash, String lyrics, {String? filepath}) async {
+  Future<bool> updateLyrics(String trackHash, String lyrics,
+      {String? filepath}) async {
     try {
       final response = await _dio.put('/lyrics/update', data: {
         'trackhash': trackHash,
         'filepath': filepath,
         'lyrics': lyrics,
       });
-      
+
       return response.statusCode == 200;
     } catch (e) {
       debugPrint('Error updating lyrics: $e');
@@ -95,7 +97,7 @@ class LyricsService {
         'trackhash': trackHash,
         'filepath': filepath,
       });
-      
+
       return response.statusCode == 200;
     } catch (e) {
       debugPrint('Error deleting lyrics: $e');
@@ -106,7 +108,7 @@ class LyricsService {
   Future<Map<String, dynamic>> getLyricsStats() async {
     try {
       final response = await _dio.get('/lyrics/stats');
-      
+
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>? ?? {};
       } else {
@@ -123,7 +125,7 @@ class LyricsService {
       final response = await _dio.get('/lyrics/history', queryParameters: {
         'limit': limit,
       });
-      
+
       if (response.statusCode == 200) {
         final data = response.data;
         return (data['history'] as List<dynamic>? ?? [])
@@ -138,13 +140,14 @@ class LyricsService {
     }
   }
 
-  Future<Map<String, dynamic>> getSyncedLyrics(String trackHash, {String? filepath}) async {
+  Future<Map<String, dynamic>> getSyncedLyrics(String trackHash,
+      {String? filepath}) async {
     try {
       final response = await _dio.get('/lyrics/synced', queryParameters: {
         'trackhash': trackHash,
         'filepath': filepath,
       });
-      
+
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>? ?? {};
       } else {
@@ -156,14 +159,16 @@ class LyricsService {
     }
   }
 
-  Future<bool> saveSyncedLyrics(String trackHash, Map<String, dynamic> syncedLyrics, {String? filepath}) async {
+  Future<bool> saveSyncedLyrics(
+      String trackHash, Map<String, dynamic> syncedLyrics,
+      {String? filepath}) async {
     try {
       final response = await _dio.post('/lyrics/synced/save', data: {
         'trackhash': trackHash,
         'filepath': filepath,
         'synced_lyrics': syncedLyrics,
       });
-      
+
       return response.statusCode == 200;
     } catch (e) {
       debugPrint('Error saving synced lyrics: $e');
@@ -176,7 +181,7 @@ class LyricsService {
       final response = await _dio.get('/lyrics/popular', queryParameters: {
         'limit': limit,
       });
-      
+
       if (response.statusCode == 200) {
         final data = response.data;
         return (data['popular'] as List<dynamic>? ?? [])
@@ -191,12 +196,13 @@ class LyricsService {
     }
   }
 
-  Future<List<Map<String, dynamic>>> getRecentlyAddedLyrics({int limit = 10}) async {
+  Future<List<Map<String, dynamic>>> getRecentlyAddedLyrics(
+      {int limit = 10}) async {
     try {
       final response = await _dio.get('/lyrics/recent', queryParameters: {
         'limit': limit,
       });
-      
+
       if (response.statusCode == 200) {
         final data = response.data;
         return (data['recent'] as List<dynamic>? ?? [])
@@ -225,13 +231,13 @@ class LyricsService {
     // Parse LRC format synced lyrics
     final lines = syncedLyrics.split('\n');
     final parsedLyrics = <Map<String, dynamic>>[];
-    
+
     for (final line in lines) {
       if (line.startsWith('[') && line.contains(']')) {
         final timestampEnd = line.indexOf(']');
         final timestamp = line.substring(1, timestampEnd);
         final text = line.substring(timestampEnd + 1).trim();
-        
+
         // Parse timestamp (format: [mm:ss.xx] or [mm:ss])
         final timeParts = timestamp.split(':');
         if (timeParts.length == 2) {
@@ -239,10 +245,12 @@ class LyricsService {
             final minutes = int.parse(timeParts[0]);
             final secondsParts = timeParts[1].split('.');
             final seconds = int.parse(secondsParts[0]);
-            final milliseconds = secondsParts.length > 1 ? int.parse(secondsParts[1]) * 10 : 0;
-            
-            final totalMilliseconds = (minutes * 60 * 1000) + (seconds * 1000) + milliseconds;
-            
+            final milliseconds =
+                secondsParts.length > 1 ? int.parse(secondsParts[1]) * 10 : 0;
+
+            final totalMilliseconds =
+                (minutes * 60 * 1000) + (seconds * 1000) + milliseconds;
+
             parsedLyrics.add({
               'time': totalMilliseconds,
               'text': text,
@@ -254,7 +262,7 @@ class LyricsService {
         }
       }
     }
-    
+
     return {
       'lines': parsedLyrics,
       'hasSync': parsedLyrics.isNotEmpty,
@@ -266,15 +274,16 @@ class LyricsService {
     final minutes = duration.inMinutes;
     final seconds = duration.inSeconds % 60;
     final ms = (duration.inMilliseconds % 1000) ~/ 10;
-    
+
     return '[${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}.${ms.toString().padLeft(2, '0')}]';
   }
 
-  String convertToSyncedLyrics(List<String> plainLyrics, {int durationPerLine = 3000}) {
+  String convertToSyncedLyrics(List<String> plainLyrics,
+      {int durationPerLine = 3000}) {
     // Convert plain lyrics to synced lyrics format
     final syncedLines = <String>[];
     int currentTime = 0;
-    
+
     for (final line in plainLyrics) {
       if (line.trim().isNotEmpty) {
         final timestamp = formatTimestamp(currentTime);
@@ -282,7 +291,7 @@ class LyricsService {
         currentTime += durationPerLine;
       }
     }
-    
+
     return syncedLines.join('\n');
   }
 }

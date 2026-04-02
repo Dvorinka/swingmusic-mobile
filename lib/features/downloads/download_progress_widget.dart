@@ -63,7 +63,9 @@ class _DownloadProgressWidgetState extends State<DownloadProgressWidget> {
 
     final overallProgress = activeDownloads.isEmpty
         ? 0.0
-        : activeDownloads.map((d) => d.progressPercent).reduce((a, b) => a + b) /
+        : activeDownloads
+                .map((d) => d.progressPercent)
+                .reduce((a, b) => a + b) /
             activeDownloads.length;
 
     return Card(
@@ -98,7 +100,8 @@ class _DownloadProgressWidgetState extends State<DownloadProgressWidget> {
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.primary,
                       borderRadius: BorderRadius.circular(10),
@@ -222,7 +225,7 @@ class _DownloadProgressWidgetState extends State<DownloadProgressWidget> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: _getStatusColor(download.status).withOpacity(0.2),
+              color: _getStatusColor(download.status).withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(4),
             ),
             child: Text(

@@ -75,15 +75,13 @@ class OfflineController extends ChangeNotifier {
     required List<MusicTrack> tracks,
   }) async {
     final seen = <String>{};
-    final candidates = tracks
-        .where((track) {
-          if (track.trackhash.isEmpty || track.filepath.isEmpty) return false;
-          if (isDownloaded(track.trackhash)) return false;
-          if (seen.contains(track.trackhash)) return false;
-          seen.add(track.trackhash);
-          return true;
-        })
-        .toList(growable: false);
+    final candidates = tracks.where((track) {
+      if (track.trackhash.isEmpty || track.filepath.isEmpty) return false;
+      if (isDownloaded(track.trackhash)) return false;
+      if (seen.contains(track.trackhash)) return false;
+      seen.add(track.trackhash);
+      return true;
+    }).toList(growable: false);
 
     if (candidates.isEmpty) {
       _error = 'No downloadable local tracks available for $label.';

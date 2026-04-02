@@ -25,8 +25,8 @@ class HomeScreen extends StatelessWidget {
               Text(
                 greeting,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: scheme.onSurfaceVariant,
-                ),
+                      color: scheme.onSurfaceVariant,
+                    ),
               ),
               const SizedBox(height: 12),
               if (library.loadingHome) const LinearProgressIndicator(),
@@ -63,8 +63,8 @@ class HomeScreen extends StatelessWidget {
                           final crossAxisCount = width >= 700
                               ? 4
                               : width >= 460
-                              ? 3
-                              : 2;
+                                  ? 3
+                                  : 2;
 
                           return GridView.builder(
                             shrinkWrap: true,
@@ -75,11 +75,11 @@ class HomeScreen extends StatelessWidget {
                             ),
                             gridDelegate:
                                 SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: crossAxisCount,
-                                  crossAxisSpacing: 10,
-                                  mainAxisSpacing: 10,
-                                  childAspectRatio: 0.78,
-                                ),
+                              crossAxisCount: crossAxisCount,
+                              crossAxisSpacing: 10,
+                              mainAxisSpacing: 10,
+                              childAspectRatio: 0.78,
+                            ),
                             itemBuilder: (context, index) {
                               final artist = library.recommendedArtists[index];
                               return _RecommendedArtistCard(artist: artist);
@@ -253,8 +253,7 @@ class _RecentItemChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final type = entry['type']?.toString() ?? 'item';
-    final title =
-        entry['title']?.toString() ??
+    final title = entry['title']?.toString() ??
         entry['name']?.toString() ??
         entry['hash']?.toString() ??
         type;

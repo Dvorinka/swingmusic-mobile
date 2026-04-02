@@ -39,7 +39,7 @@ class LibraryProvider extends ChangeNotifier {
   // Error states
   String? _error;
 
-  LibraryProvider({EnhancedApiService? apiService}) 
+  LibraryProvider({EnhancedApiService? apiService})
       : _apiService = apiService ?? EnhancedApiService();
 
   // Getters
@@ -79,10 +79,15 @@ class LibraryProvider extends ChangeNotifier {
   }
 
   // Track methods
-  Future<void> loadTracks({String? search, String? artist, String? album, String? folder, int? limit}) async {
+  Future<void> loadTracks(
+      {String? search,
+      String? artist,
+      String? album,
+      String? folder,
+      int? limit}) async {
     _setLoadingTracks(true);
     _clearError();
-    
+
     try {
       _tracks = await _apiService.getTracks(
         search: search,
@@ -120,22 +125,25 @@ class LibraryProvider extends ChangeNotifier {
   Future<void> toggleFavoriteTrack(String trackHash) async {
     try {
       await _apiService.toggleFavoriteTrack(trackHash);
-      
+
       // Update track in local list
       final index = _tracks.indexWhere((t) => t.trackhash == trackHash);
       if (index != -1) {
         final track = _tracks[index];
         _tracks[index] = track.copyWith(isFavorite: !track.isFavorite);
       }
-      
+
       // Update in favorites list
-      final favIndex = _favoriteTracks.indexWhere((t) => t.trackhash == trackHash);
+      final favIndex =
+          _favoriteTracks.indexWhere((t) => t.trackhash == trackHash);
       if (favIndex != -1) {
-        _favoriteTracks[favIndex] = _favoriteTracks[favIndex].copyWith(isFavorite: !_favoriteTracks[favIndex].isFavorite);
+        _favoriteTracks[favIndex] = _favoriteTracks[favIndex]
+            .copyWith(isFavorite: !_favoriteTracks[favIndex].isFavorite);
       } else {
-        _favoriteTracks.add(_tracks.firstWhere((t) => t.trackhash == trackHash));
+        _favoriteTracks
+            .add(_tracks.firstWhere((t) => t.trackhash == trackHash));
       }
-      
+
       notifyListeners();
     } catch (e) {
       _setError('Failed to toggle favorite: $e');
@@ -146,9 +154,10 @@ class LibraryProvider extends ChangeNotifier {
   Future<void> loadAlbums({String? search, String? artist, int? limit}) async {
     _setLoadingAlbums(true);
     _clearError();
-    
+
     try {
-      _albums = await _apiService.getAlbums(search: search, artist: artist, limit: limit ?? 50);
+      _albums = await _apiService.getAlbums(
+          search: search, artist: artist, limit: limit ?? 50);
       _setLoadingAlbums(false);
     } catch (e) {
       _setError('Failed to load albums: $e');
@@ -177,7 +186,7 @@ class LibraryProvider extends ChangeNotifier {
   Future<void> loadAlbumTracks(String albumHash) async {
     _setLoadingTracks(true);
     _clearError();
-    
+
     try {
       final tracks = await _apiService.getAlbumTracks(albumHash);
       _tracks = tracks;
@@ -190,22 +199,25 @@ class LibraryProvider extends ChangeNotifier {
   Future<void> toggleFavoriteAlbum(String albumHash) async {
     try {
       await _apiService.toggleFavoriteAlbum(albumHash);
-      
+
       // Update album in local list
       final index = _albums.indexWhere((a) => a.albumhash == albumHash);
       if (index != -1) {
         final album = _albums[index];
         _albums[index] = album.copyWith(isFavorite: !album.isFavorite);
       }
-      
+
       // Update in favorites list
-      final favIndex = _favoriteAlbums.indexWhere((a) => a.albumhash == albumHash);
+      final favIndex =
+          _favoriteAlbums.indexWhere((a) => a.albumhash == albumHash);
       if (favIndex != -1) {
-        _favoriteAlbums[favIndex] = _favoriteAlbums[favIndex].copyWith(isFavorite: !_favoriteAlbums[favIndex].isFavorite);
+        _favoriteAlbums[favIndex] = _favoriteAlbums[favIndex]
+            .copyWith(isFavorite: !_favoriteAlbums[favIndex].isFavorite);
       } else {
-        _favoriteAlbums.add(_albums.firstWhere((a) => a.albumhash == albumHash));
+        _favoriteAlbums
+            .add(_albums.firstWhere((a) => a.albumhash == albumHash));
       }
-      
+
       notifyListeners();
     } catch (e) {
       _setError('Failed to toggle favorite album: $e');
@@ -216,9 +228,10 @@ class LibraryProvider extends ChangeNotifier {
   Future<void> loadArtists({String? search, int? limit}) async {
     _setLoadingArtists(true);
     _clearError();
-    
+
     try {
-      final artistsData = await _apiService.getArtists(search: search, limit: limit ?? 50);
+      final artistsData =
+          await _apiService.getArtists(search: search, limit: limit ?? 50);
       _artists = artistsData.cast<artist.ArtistModel>();
       _setLoadingArtists(false);
     } catch (e) {
@@ -248,7 +261,7 @@ class LibraryProvider extends ChangeNotifier {
   Future<void> loadArtistAlbums(String artistHash) async {
     _setLoadingAlbums(true);
     _clearError();
-    
+
     try {
       final albums = await _apiService.getArtistAlbums(artistHash);
       _albums = albums;
@@ -261,7 +274,7 @@ class LibraryProvider extends ChangeNotifier {
   Future<void> loadArtistTracks(String artistHash) async {
     _setLoadingTracks(true);
     _clearError();
-    
+
     try {
       final tracks = await _apiService.getArtistTracks(artistHash);
       _tracks = tracks;
@@ -274,22 +287,25 @@ class LibraryProvider extends ChangeNotifier {
   Future<void> toggleFavoriteArtist(String artistHash) async {
     try {
       await _apiService.toggleFavoriteArtist(artistHash);
-      
+
       // Update artist in local list
       final index = _artists.indexWhere((a) => a.artisthash == artistHash);
       if (index != -1) {
         final artist = _artists[index];
         _artists[index] = artist.copyWith(isFavorite: !artist.isFavorite);
       }
-      
+
       // Update in favorites list
-      final favIndex = _favoriteArtists.indexWhere((a) => a.artisthash == artistHash);
+      final favIndex =
+          _favoriteArtists.indexWhere((a) => a.artisthash == artistHash);
       if (favIndex != -1) {
-        _favoriteArtists[favIndex] = _favoriteArtists[favIndex].copyWith(isFavorite: !_favoriteArtists[favIndex].isFavorite);
+        _favoriteArtists[favIndex] = _favoriteArtists[favIndex]
+            .copyWith(isFavorite: !_favoriteArtists[favIndex].isFavorite);
       } else {
-        _favoriteArtists.add(_artists.firstWhere((a) => a.artisthash == artistHash));
+        _favoriteArtists
+            .add(_artists.firstWhere((a) => a.artisthash == artistHash));
       }
-      
+
       notifyListeners();
     } catch (e) {
       _setError('Failed to toggle favorite artist: $e');
@@ -300,7 +316,7 @@ class LibraryProvider extends ChangeNotifier {
   Future<void> loadPlaylists() async {
     _setLoadingPlaylists(true);
     _clearError();
-    
+
     try {
       _playlists = await _apiService.getPlaylists();
       _setLoadingPlaylists(false);
@@ -331,7 +347,7 @@ class LibraryProvider extends ChangeNotifier {
   Future<void> createPlaylist(String name, String description) async {
     _setLoadingPlaylists(true);
     _clearError();
-    
+
     try {
       final newPlaylist = await _apiService.createPlaylist(name, description);
       _playlists.insert(0, newPlaylist);
@@ -361,7 +377,7 @@ class LibraryProvider extends ChangeNotifier {
   Future<void> loadFolders() async {
     _setLoadingFolders(true);
     _clearError();
-    
+
     try {
       _folders = await _apiService.getFolders();
       _setLoadingFolders(false);
@@ -373,7 +389,7 @@ class LibraryProvider extends ChangeNotifier {
   Future<void> loadFolderTracks(String folderHash) async {
     _setLoadingTracks(true);
     _clearError();
-    
+
     try {
       final tracks = await _apiService.getFolderTracks(folderHash);
       _tracks = tracks;
@@ -387,7 +403,7 @@ class LibraryProvider extends ChangeNotifier {
   Future<void> loadFavoriteTracks() async {
     _setLoadingFavorites(true);
     _clearError();
-    
+
     try {
       _favoriteTracks = await _apiService.getFavoriteTracks();
       _setLoadingFavorites(false);
@@ -399,7 +415,7 @@ class LibraryProvider extends ChangeNotifier {
   Future<void> loadFavoriteAlbums() async {
     _setLoadingFavorites(true);
     _clearError();
-    
+
     try {
       _favoriteAlbums = await _apiService.getFavoriteAlbums();
       _setLoadingFavorites(false);
@@ -411,7 +427,7 @@ class LibraryProvider extends ChangeNotifier {
   Future<void> loadFavoriteArtists() async {
     _setLoadingFavorites(true);
     _clearError();
-    
+
     try {
       final artistsData = await _apiService.getFavoriteArtists();
       _favoriteArtists = artistsData.cast<artist.ArtistModel>();
@@ -425,7 +441,7 @@ class LibraryProvider extends ChangeNotifier {
   Future<void> loadUserInfo() async {
     _setLoadingUserInfo(true);
     _clearError();
-    
+
     try {
       _userInfo = await _apiService.getUserInfo();
       _setLoadingUserInfo(false);
@@ -446,7 +462,7 @@ class LibraryProvider extends ChangeNotifier {
   Future<void> loadUserPreferences() async {
     _setLoadingUserInfo(true);
     _clearError();
-    
+
     try {
       _userPreferences = await _apiService.getUserPreferences();
       _setLoadingUserInfo(false);
@@ -459,7 +475,7 @@ class LibraryProvider extends ChangeNotifier {
   Future<void> loadStatistics() async {
     _setLoadingStatistics(true);
     _clearError();
-    
+
     try {
       _statistics = await _apiService.getStatistics();
       _setLoadingStatistics(false);
@@ -472,7 +488,7 @@ class LibraryProvider extends ChangeNotifier {
   Future<void> loadDownloads() async {
     _setLoadingDownloads(true);
     _clearError();
-    
+
     try {
       _downloads = await _apiService.getDownloads();
       _setLoadingDownloads(false);
@@ -486,7 +502,7 @@ class LibraryProvider extends ChangeNotifier {
   Future<void> loadDownloadSettings() async {
     _setLoadingUserInfo(true);
     _clearError();
-    
+
     try {
       _downloadSettings = await _apiService.getDownloadSettings();
       _setLoadingUserInfo(false);
@@ -565,10 +581,11 @@ class LibraryProvider extends ChangeNotifier {
       _setError('Failed to delete download: $e');
     }
   }
+
   Future<void> loadQueue() async {
     _setLoadingQueue(true);
     _clearError();
-    
+
     try {
       _queue = await _apiService.getQueue();
       _setLoadingQueue(false);
@@ -580,13 +597,13 @@ class LibraryProvider extends ChangeNotifier {
   Future<void> addToQueue(String trackHash) async {
     try {
       await _apiService.addToQueue(trackHash);
-      
+
       // Add to queue from tracks if available
       final track = _tracks.where((t) => t.trackhash == trackHash).firstOrNull;
       if (track != null && !_queue.any((q) => q.trackhash == trackHash)) {
         _queue.add(track);
       }
-      
+
       notifyListeners();
     } catch (e) {
       _setError('Failed to add to queue: $e');
@@ -616,7 +633,7 @@ class LibraryProvider extends ChangeNotifier {
   Future<void> reorderQueue(List<String> trackHashes) async {
     try {
       await _apiService.reorderQueue(trackHashes);
-      
+
       // Reorder local queue
       final reorderedQueue = <TrackModel>[];
       for (final hash in trackHashes) {

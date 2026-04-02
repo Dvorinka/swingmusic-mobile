@@ -136,9 +136,9 @@ class _SocialFeaturesScreenState extends State<SocialFeaturesScreen> {
           Text(
             'My 2024 in Music 🎵',
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
           ),
           const SizedBox(height: AppSpacing.sm),
           Row(
@@ -193,8 +193,8 @@ class _SocialFeaturesScreenState extends State<SocialFeaturesScreen> {
               Text(
                 'No playlists to share',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
               )
             else
               Column(
@@ -356,15 +356,15 @@ class _StatPreviewItem extends StatelessWidget {
         Text(
           value,
           style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
         ),
         Text(
           label,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: Colors.white70,
-          ),
+                color: Colors.white70,
+              ),
         ),
       ],
     );
@@ -444,8 +444,8 @@ class _SocialConnectItem extends StatelessWidget {
                   Text(
                     subtitle,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
                   ),
                 ],
               ),

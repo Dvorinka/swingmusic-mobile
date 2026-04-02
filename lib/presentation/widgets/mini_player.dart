@@ -12,7 +12,7 @@ class MiniPlayer extends StatelessWidget {
     return Consumer<MediaControllerProvider>(
       builder: (context, provider, child) {
         final currentTrack = provider.currentTrack;
-        
+
         if (currentTrack == null) {
           return const SizedBox.shrink();
         }
@@ -22,7 +22,7 @@ class MiniPlayer extends StatelessWidget {
             color: Theme.of(context).colorScheme.surface,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: Colors.black.withValues(alpha: 0.1),
                 blurRadius: 4,
                 offset: const Offset(0, -2),
               ),
@@ -34,13 +34,14 @@ class MiniPlayer extends StatelessWidget {
               // Progress bar
               LinearProgressIndicator(
                 value: provider.progress,
-                backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                backgroundColor:
+                    Theme.of(context).colorScheme.surfaceContainerHighest,
                 valueColor: AlwaysStoppedAnimation<Color>(
                   Theme.of(context).colorScheme.primary,
                 ),
                 minHeight: 2,
               ),
-              
+
               // Player controls
               InkWell(
                 onTap: () {
@@ -70,20 +71,26 @@ class MiniPlayer extends StatelessWidget {
                               width: 48,
                               height: 48,
                               decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .surfaceContainerHighest
+                                    .withValues(alpha: 0.3),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Icon(
                                 Icons.music_note,
-                                color: Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.3),
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant
+                                    .withValues(alpha: 0.3),
                               ),
                             );
                           },
                         ),
                       ),
-                      
+
                       const SizedBox(width: 12),
-                      
+
                       // Track info
                       Expanded(
                         child: Column(
@@ -92,30 +99,38 @@ class MiniPlayer extends StatelessWidget {
                           children: [
                             Text(
                               currentTrack.title,
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                fontWeight: FontWeight.w500,
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                  ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
                             const SizedBox(height: 2),
                             Text(
                               currentTrack.artistNames,
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.3),
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant
+                                        .withValues(alpha: 0.3),
+                                  ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ],
                         ),
                       ),
-                      
+
                       // Play/Pause button
                       IconButton(
-                        onPressed: provider.isPlaying
-                            ? provider.pause
-                            : provider.play,
+                        onPressed:
+                            provider.isPlaying ? provider.pause : provider.play,
                         icon: provider.isLoading
                             ? SizedBox(
                                 width: 24,
@@ -135,15 +150,19 @@ class MiniPlayer extends StatelessWidget {
                                 color: Theme.of(context).colorScheme.primary,
                               ),
                       ),
-                      
+
                       // Next button
                       IconButton(
-                        onPressed: provider.canGoNext ? provider.playNext : null,
+                        onPressed:
+                            provider.canGoNext ? provider.playNext : null,
                         icon: Icon(
                           Icons.skip_next,
                           color: provider.canGoNext
                               ? Theme.of(context).colorScheme.onSurface
-                              : Theme.of(context).colorScheme.onSurface.withOpacity(0.3),
+                              : Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withValues(alpha: 0.3),
                         ),
                       ),
                     ],

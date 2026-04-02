@@ -57,7 +57,8 @@ class DownloadProgress {
     return '${_formatBytes(bytesDownloaded)} / ${_formatBytes(totalBytes)}';
   }
 
-  String get formattedSpeed => speedBps > 0 ? '${_formatBytes(speedBps)}/s' : '';
+  String get formattedSpeed =>
+      speedBps > 0 ? '${_formatBytes(speedBps)}/s' : '';
 
   String get formattedETA {
     if (etaSeconds <= 0) return '';
@@ -138,7 +139,8 @@ class DownloadProgressService {
   /// Get download history
   Future<List<DownloadProgress>> getHistory({int limit = 50}) async {
     try {
-      final response = await _dio.get('/api/downloads/history', queryParameters: {'limit': limit});
+      final response = await _dio
+          .get('/api/downloads/history', queryParameters: {'limit': limit});
       final history = response.data['history'] as List?;
       return history?.map((h) => DownloadProgress.fromJson(h)).toList() ?? [];
     } catch (e) {

@@ -9,18 +9,19 @@ import 'package:path_provider/path_provider.dart';
 
 class PerformanceOptimizationService {
   late final SharedPreferences _prefs;
-  
+
   // Cache management
   final Map<String, Timer> _cacheTimers = {};
-  
+
   // Memory monitoring
   Timer? _memoryMonitorTimer;
   int _currentMemoryUsage = 0;
   int _maxMemoryThreshold = 512 * 1024 * 1024; // 512MB
-  
+
   static PerformanceOptimizationService? _instance;
-  static PerformanceOptimizationService get instance => _instance ??= PerformanceOptimizationService._();
-  
+  static PerformanceOptimizationService get instance =>
+      _instance ??= PerformanceOptimizationService._();
+
   PerformanceOptimizationService._();
 
   Future<void> initialize() async {
@@ -30,7 +31,7 @@ class PerformanceOptimizationService {
       await _setupMemoryMonitoring();
       await _optimizeDatabase();
       await _preloadCriticalData();
-      
+
       debugPrint('Performance optimization service initialized');
     } catch (e) {
       debugPrint('Error initializing performance optimization: $e');
@@ -41,8 +42,9 @@ class PerformanceOptimizationService {
     try {
       // Configure image cache settings
       PaintingBinding.instance.imageCache.maximumSize = 100;
-      PaintingBinding.instance.imageCache.maximumSizeBytes = 50 * 1024 * 1024; // 50MB
-      
+      PaintingBinding.instance.imageCache.maximumSizeBytes =
+          50 * 1024 * 1024; // 50MB
+
       // Clean old cache
       await _cleanImageCache();
     } catch (e) {
@@ -54,11 +56,11 @@ class PerformanceOptimizationService {
     try {
       final tempDir = await getTemporaryDirectory();
       final imageCacheDir = Directory('${tempDir.path}/cached_network_images');
-      
+
       if (await imageCacheDir.exists()) {
         final now = DateTime.now();
         final files = await imageCacheDir.list().toList();
-        
+
         for (final file in files) {
           if (file is File) {
             final stat = await file.stat();
@@ -84,7 +86,7 @@ class PerformanceOptimizationService {
       // In debug mode, we can monitor memory usage
       // In release mode, this would be handled by platform-specific code
       _currentMemoryUsage = _estimateMemoryUsage();
-      
+
       if (_currentMemoryUsage > _maxMemoryThreshold) {
         _performMemoryCleanup();
       }
@@ -100,13 +102,13 @@ class PerformanceOptimizationService {
   Future<void> _performMemoryCleanup() async {
     try {
       debugPrint('Performing memory cleanup...');
-      
+
       // Clear image cache
       PaintingBinding.instance.imageCache.clear();
-      
+
       // Clear network image cache
       await _clearNetworkImageCache();
-      
+
       // Force garbage collection
       if (kDebugMode) {
         // In debug mode, we can hint to the GC
@@ -114,7 +116,7 @@ class PerformanceOptimizationService {
           // Allow time for cleanup
         });
       }
-      
+
       debugPrint('Memory cleanup completed');
     } catch (e) {
       debugPrint('Error during memory cleanup: $e');
@@ -140,16 +142,16 @@ class PerformanceOptimizationService {
         'settings',
         'cache',
       ];
-      
+
       for (final boxName in boxes) {
         try {
           final box = await Hive.openBox(boxName);
-          
+
           // Compact the box if it's getting large
           if (box.length > 1000) {
             await box.compact();
           }
-          
+
           // Clean old cache entries
           if (boxName == 'cache') {
             await _cleanCacheBox(box);
@@ -167,21 +169,22 @@ class PerformanceOptimizationService {
     try {
       final now = DateTime.now();
       final keysToDelete = <dynamic>[];
-      
+
       for (final key in box.keys) {
         final value = box.get(key);
         if (value is Map && value.containsKey('timestamp')) {
-          final timestamp = DateTime.fromMillisecondsSinceEpoch(value['timestamp']);
+          final timestamp =
+              DateTime.fromMillisecondsSinceEpoch(value['timestamp']);
           if (now.difference(timestamp).inDays > 7) {
             keysToDelete.add(key);
           }
         }
       }
-      
+
       for (final key in keysToDelete) {
         await box.delete(key);
       }
-      
+
       if (keysToDelete.isNotEmpty) {
         debugPrint('Cleaned ${keysToDelete.length} old cache entries');
       }
@@ -198,7 +201,7 @@ class PerformanceOptimizationService {
         _preloadRecentlyPlayed(),
         _preloadFavoriteTracks(),
       ];
-      
+
       await Future.wait(futures);
       debugPrint('Critical data preloaded');
     } catch (e) {
@@ -221,7 +224,7 @@ class PerformanceOptimizationService {
   Future<void> _preloadRecentlyPlayed() async {
     try {
       final cacheBox = await Hive.openBox('cache');
-      
+
       // Check if recently played is cached
       final cached = cacheBox.get('recently_played');
       if (cached == null) {
@@ -239,7 +242,7 @@ class PerformanceOptimizationService {
   Future<void> _preloadFavoriteTracks() async {
     try {
       final cacheBox = await Hive.openBox('cache');
-      
+
       // Check if favorites are cached
       final cached = cacheBox.get('favorite_tracks');
       if (cached == null) {
@@ -255,17 +258,17 @@ class PerformanceOptimizationService {
   }
 
   // Public API methods
-  
+
   Future<void> optimizePerformance() async {
     try {
       debugPrint('Starting performance optimization...');
-      
+
       await Future.wait([
         _cleanImageCache(),
         _optimizeDatabase(),
         _performMemoryCleanup(),
       ]);
-      
+
       debugPrint('Performance optimization completed');
     } catch (e) {
       debugPrint('Error during performance optimization: $e');
@@ -275,13 +278,13 @@ class PerformanceOptimizationService {
   Future<void> clearAllCaches() async {
     try {
       debugPrint('Clearing all caches...');
-      
+
       await Future.wait([
         _clearNetworkImageCache(),
         _clearDatabaseCache(),
         _clearSharedPreferencesCache(),
       ]);
-      
+
       debugPrint('All caches cleared');
     } catch (e) {
       debugPrint('Error clearing caches: $e');
@@ -299,10 +302,11 @@ class PerformanceOptimizationService {
 
   Future<void> _clearSharedPreferencesCache() async {
     try {
-      final keys = _prefs.getKeys().where((key) => 
-        key.startsWith('cache_') || key.startsWith('temp_')
-      ).toList();
-      
+      final keys = _prefs
+          .getKeys()
+          .where((key) => key.startsWith('cache_') || key.startsWith('temp_'))
+          .toList();
+
       for (final key in keys) {
         await _prefs.remove(key);
       }
@@ -337,27 +341,30 @@ class PerformanceOptimizationService {
         case PerformanceMode.highPerformance:
           _maxMemoryThreshold = 1024 * 1024 * 1024; // 1GB
           PaintingBinding.instance.imageCache.maximumSize = 200;
-          PaintingBinding.instance.imageCache.maximumSizeBytes = 100 * 1024 * 1024; // 100MB
+          PaintingBinding.instance.imageCache.maximumSizeBytes =
+              100 * 1024 * 1024; // 100MB
           break;
-          
+
         case PerformanceMode.balanced:
           _maxMemoryThreshold = 512 * 1024 * 1024; // 512MB
           PaintingBinding.instance.imageCache.maximumSize = 100;
-          PaintingBinding.instance.imageCache.maximumSizeBytes = 50 * 1024 * 1024; // 50MB
+          PaintingBinding.instance.imageCache.maximumSizeBytes =
+              50 * 1024 * 1024; // 50MB
           break;
-          
+
         case PerformanceMode.lowMemory:
           _maxMemoryThreshold = 256 * 1024 * 1024; // 256MB
           PaintingBinding.instance.imageCache.maximumSize = 50;
-          PaintingBinding.instance.imageCache.maximumSizeBytes = 25 * 1024 * 1024; // 25MB
+          PaintingBinding.instance.imageCache.maximumSizeBytes =
+              25 * 1024 * 1024; // 25MB
           break;
       }
-      
+
       await _prefs.setString('performance_mode', mode.name);
-      
+
       // Apply optimizations
       await optimizePerformance();
-      
+
       debugPrint('Performance mode set to: ${mode.name}');
     } catch (e) {
       debugPrint('Error setting performance mode: $e');
@@ -365,13 +372,14 @@ class PerformanceOptimizationService {
   }
 
   Future<PerformanceMode> getPerformanceMode() async {
-    final modeName = _prefs.getString('performance_mode') ?? PerformanceMode.balanced.name;
+    final modeName =
+        _prefs.getString('performance_mode') ?? PerformanceMode.balanced.name;
     return PerformanceMode.values.firstWhere((mode) => mode.name == modeName);
   }
 
   Future<void> enableAdaptivePerformance(bool enabled) async {
     await _prefs.setBool('adaptive_performance', enabled);
-    
+
     if (enabled) {
       // Start adaptive performance monitoring
       _startAdaptiveMonitoring();
@@ -384,7 +392,8 @@ class PerformanceOptimizationService {
   Timer? _adaptiveMonitorTimer;
 
   void _startAdaptiveMonitoring() {
-    _adaptiveMonitorTimer = Timer.periodic(const Duration(minutes: 10), (timer) {
+    _adaptiveMonitorTimer =
+        Timer.periodic(const Duration(minutes: 10), (timer) {
       _adaptPerformanceSettings();
     });
   }
@@ -398,7 +407,7 @@ class PerformanceOptimizationService {
     final memoryUsage = _currentMemoryUsage;
     final threshold = _maxMemoryThreshold;
     final usageRatio = memoryUsage / threshold;
-    
+
     if (usageRatio > 0.8) {
       // High memory usage - switch to low memory mode
       setPerformanceMode(PerformanceMode.lowMemory);
@@ -414,7 +423,7 @@ class PerformanceOptimizationService {
   void dispose() {
     _memoryMonitorTimer?.cancel();
     _adaptiveMonitorTimer?.cancel();
-    
+
     for (final timer in _cacheTimers.values) {
       timer.cancel();
     }
@@ -444,10 +453,10 @@ class PerformanceMetrics {
   });
 
   double get memoryUsageRatio => memoryUsage / memoryThreshold;
-  
+
   bool get isHighMemoryUsage => memoryUsageRatio > 0.8;
   bool get isMediumMemoryUsage => memoryUsageRatio > 0.5;
-  
+
   @override
   String toString() {
     return 'PerformanceMetrics('

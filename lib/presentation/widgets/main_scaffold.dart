@@ -17,7 +17,7 @@ class MainScaffold extends StatelessWidget {
     final authProvider = context.watch<AuthProvider>();
     final mediaControllerProvider = context.watch<MediaControllerProvider>();
     final location = GoRouterState.of(context).uri.path;
-    
+
     // Routes where bottom nav should be hidden (matching Android app)
     const hideBottomNavRoutes = [
       '/login',
@@ -27,7 +27,8 @@ class MainScaffold extends StatelessWidget {
       '/lyrics',
     ];
 
-    final showBottomNav = !hideBottomNavRoutes.contains(location) && authProvider.isLoggedIn;
+    final showBottomNav =
+        !hideBottomNavRoutes.contains(location) && authProvider.isLoggedIn;
 
     return Scaffold(
       body: AnimatedSwitcher(
@@ -47,7 +48,7 @@ class MainScaffold extends StatelessWidget {
           : null,
     );
   }
-  
+
   Widget _buildBody(BuildContext context, String location) {
     switch (location) {
       case '/':

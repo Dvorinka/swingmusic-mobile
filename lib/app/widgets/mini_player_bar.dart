@@ -38,17 +38,17 @@ class MiniPlayerBar extends StatelessWidget {
                           height: 44,
                           child:
                               track.imageUrl == null || track.imageUrl!.isEmpty
-                              ? Container(
-                                  color: scheme.surface,
-                                  child: Icon(
-                                    Icons.music_note,
-                                    color: scheme.onSurfaceVariant,
-                                  ),
-                                )
-                              : Image.network(
-                                  track.imageUrl!,
-                                  fit: BoxFit.cover,
-                                ),
+                                  ? Container(
+                                      color: scheme.surface,
+                                      child: Icon(
+                                        Icons.music_note,
+                                        color: scheme.onSurfaceVariant,
+                                      ),
+                                    )
+                                  : Image.network(
+                                      track.imageUrl!,
+                                      fit: BoxFit.cover,
+                                    ),
                         ),
                       ),
                       const SizedBox(width: 10),

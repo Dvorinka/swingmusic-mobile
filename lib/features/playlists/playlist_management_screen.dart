@@ -10,14 +10,16 @@ class PlaylistManagementScreen extends StatefulWidget {
   const PlaylistManagementScreen({super.key});
 
   @override
-  State<PlaylistManagementScreen> createState() => _PlaylistManagementScreenState();
+  State<PlaylistManagementScreen> createState() =>
+      _PlaylistManagementScreenState();
 }
 
-class _PlaylistManagementScreenState extends State<PlaylistManagementScreen> with TickerProviderStateMixin {
+class _PlaylistManagementScreenState extends State<PlaylistManagementScreen>
+    with TickerProviderStateMixin {
   late TabController _tabController;
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
-  
+
   List<Playlist> _playlists = [];
   List<TrackModel> _favoriteTracks = [];
   final TextEditingController _playlistNameController = TextEditingController();
@@ -105,7 +107,8 @@ class _PlaylistManagementScreenState extends State<PlaylistManagementScreen> wit
                     borderSide: BorderSide.none,
                   ),
                   filled: true,
-                  fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                  fillColor:
+                      Theme.of(context).colorScheme.surfaceContainerHighest,
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 12,
@@ -136,7 +139,9 @@ class _PlaylistManagementScreenState extends State<PlaylistManagementScreen> wit
                         },
                         backgroundColor: isSelected
                             ? Theme.of(context).colorScheme.primaryContainer
-                            : Theme.of(context).colorScheme.surfaceContainerHighest,
+                            : Theme.of(context)
+                                .colorScheme
+                                .surfaceContainerHighest,
                         labelStyle: TextStyle(
                           color: isSelected
                               ? Theme.of(context).colorScheme.onPrimaryContainer
@@ -172,7 +177,7 @@ class _PlaylistManagementScreenState extends State<PlaylistManagementScreen> wit
   }
 
   Widget _buildPlaylistsList(String type) {
-    final playlists = type == 'favorites' 
+    final playlists = type == 'favorites'
         ? _playlists.where((p) => p.isFavorite).toList()
         : _playlists.where((p) => !p.isFavorite).toList();
 
@@ -255,28 +260,30 @@ class _PlaylistManagementScreenState extends State<PlaylistManagementScreen> wit
             Text(
               title,
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
             ),
             const SizedBox(height: 8),
             Text(
               subtitle,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
             ElevatedButton.icon(
-              onPressed: type == 'favorites' 
-                  ? _showAddToFavoritesDialog 
+              onPressed: type == 'favorites'
+                  ? _showAddToFavoritesDialog
                   : _showCreatePlaylistDialog,
               icon: Icon(
                 type == 'favorites' ? Icons.favorite : Icons.add,
               ),
-              label: Text(type == 'favorites' ? 'Add Favorites' : 'Create Playlist'),
+              label: Text(
+                  type == 'favorites' ? 'Add Favorites' : 'Create Playlist'),
               style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -302,16 +309,20 @@ class _PlaylistManagementScreenState extends State<PlaylistManagementScreen> wit
       title: title,
       album: album,
       albumhash: 'album_$id',
-      artists: [artist.ArtistModel(
-        name: artistName,
-        artisthash: 'artist_$id',
-        image: image,
-      )],
-      albumartists: [artist.ArtistModel(
-        name: artistName,
-        artisthash: 'artist_$id',
-        image: image,
-      )],
+      artists: [
+        artist.ArtistModel(
+          name: artistName,
+          artisthash: 'artist_$id',
+          image: image,
+        )
+      ],
+      albumartists: [
+        artist.ArtistModel(
+          name: artistName,
+          artisthash: 'artist_$id',
+          image: image,
+        )
+      ],
       artisthashes: ['artist_$id'],
       track: 1,
       disc: 1,
@@ -334,7 +345,7 @@ class _PlaylistManagementScreenState extends State<PlaylistManagementScreen> wit
     try {
       // Simulate API calls
       await Future.delayed(const Duration(milliseconds: 1000));
-      
+
       final samplePlaylists = [
         Playlist(
           id: '1',
@@ -476,7 +487,7 @@ class _PlaylistManagementScreenState extends State<PlaylistManagementScreen> wit
           _playlists[index] = playlist.copyWith(name: newName);
         }
       });
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Playlist updated'),
@@ -530,27 +541,30 @@ class _PlaylistManagementScreenState extends State<PlaylistManagementScreen> wit
     // Get the tracks for this playlist (for demo, use favorite tracks)
     final audioProvider = Provider.of<AudioProvider>(context, listen: false);
     // Set queue source for playback logging
-    final mediaController = Provider.of<MediaControllerProvider>(context, listen: false);
-    
+    final mediaController =
+        Provider.of<MediaControllerProvider>(context, listen: false);
+
     if (_favoriteTracks.isNotEmpty) {
       // Determine if this is favorites or a regular playlist
       if (playlist.isFavorite) {
         mediaController.setQueueSource(QueueSource.favorite);
       } else {
-        mediaController.setQueueSource(QueueSource.playlist, identifier: playlist.id);
+        mediaController.setQueueSource(QueueSource.playlist,
+            identifier: playlist.id);
       }
-      
+
       audioProvider.setQueue(_favoriteTracks);
       audioProvider.loadTrack(_favoriteTracks.first);
       audioProvider.play();
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Playing ${playlist.name} (${_favoriteTracks.length} tracks)'),
+          content: Text(
+              'Playing ${playlist.name} (${_favoriteTracks.length} tracks)'),
           duration: const Duration(seconds: 2),
         ),
       );
-      
+
       // Navigate to player screen
       Navigator.pushNamed(context, '/player');
     } else {
@@ -566,13 +580,14 @@ class _PlaylistManagementScreenState extends State<PlaylistManagementScreen> wit
   void _playTrack(TrackModel track) {
     final audioProvider = Provider.of<AudioProvider>(context, listen: false);
     // Set queue source for playback logging (single track from playlist/favorites)
-    final mediaController = Provider.of<MediaControllerProvider>(context, listen: false);
+    final mediaController =
+        Provider.of<MediaControllerProvider>(context, listen: false);
     mediaController.setQueueSource(QueueSource.unknown);
-    
+
     audioProvider.setQueue([track]);
     audioProvider.loadTrack(track);
     audioProvider.play();
-    
+
     Navigator.pushNamed(context, '/player');
   }
 
@@ -580,7 +595,7 @@ class _PlaylistManagementScreenState extends State<PlaylistManagementScreen> wit
     setState(() {
       _favoriteTracks.removeWhere((t) => t.id == track.id);
     });
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Removed from favorites'),
@@ -650,7 +665,7 @@ class _PlaylistManagementScreenState extends State<PlaylistManagementScreen> wit
 
       _playlistNameController.clear();
       Navigator.pop(context);
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Playlist "$name" created'),
@@ -665,7 +680,8 @@ class _PlaylistManagementScreenState extends State<PlaylistManagementScreen> wit
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Add to Favorites'),
-        content: const Text('Feature coming soon! Add tracks to favorites from the player screen.'),
+        content: const Text(
+            'Feature coming soon! Add tracks to favorites from the player screen.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -751,7 +767,7 @@ class PlaylistTile extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
+                      color: Colors.black.withValues(alpha: 0.2),
                       blurRadius: 6,
                       offset: const Offset(0, 2),
                     ),
@@ -768,7 +784,10 @@ class PlaylistTile extends StatelessWidget {
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   colors: [
-                                    Theme.of(context).colorScheme.primary.withOpacity(0.8),
+                                    Theme.of(context)
+                                        .colorScheme
+                                        .primary
+                                        .withValues(alpha: 0.8),
                                     Theme.of(context).colorScheme.primary,
                                   ],
                                 ),
@@ -785,7 +804,10 @@ class PlaylistTile extends StatelessWidget {
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               colors: [
-                                Theme.of(context).colorScheme.primary.withOpacity(0.8),
+                                Theme.of(context)
+                                    .colorScheme
+                                    .primary
+                                    .withValues(alpha: 0.8),
                                 Theme.of(context).colorScheme.primary,
                               ],
                             ),
@@ -811,9 +833,12 @@ class PlaylistTile extends StatelessWidget {
                         Expanded(
                           child: Text(
                             playlist.name,
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -822,10 +847,14 @@ class PlaylistTile extends StatelessWidget {
                         IconButton(
                           onPressed: onToggleFavorite,
                           icon: Icon(
-                            playlist.isFavorite ? Icons.favorite : Icons.favorite_border,
-                            color: playlist.isFavorite 
+                            playlist.isFavorite
+                                ? Icons.favorite
+                                : Icons.favorite_border,
+                            color: playlist.isFavorite
                                 ? Theme.of(context).colorScheme.error
-                                : Theme.of(context).colorScheme.onSurfaceVariant,
+                                : Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant,
                           ),
                         ),
                       ],
@@ -834,8 +863,11 @@ class PlaylistTile extends StatelessWidget {
                     Text(
                       playlist.description,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
-                      ),
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurface
+                                .withValues(alpha: 0.8),
+                          ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -850,16 +882,22 @@ class PlaylistTile extends StatelessWidget {
                         const SizedBox(width: 4),
                         Text(
                           '${playlist.trackCount} tracks',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
+                                  ),
                         ),
                         const SizedBox(width: 8),
                         Text(
                           _formatDate(playlist.createdDate),
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
+                                  ),
                         ),
                       ],
                     ),
@@ -876,7 +914,7 @@ class PlaylistTile extends StatelessWidget {
   String _formatDate(DateTime date) {
     final now = DateTime.now();
     final difference = now.difference(date);
-    
+
     if (difference.inDays == 0) {
       return 'Today';
     } else if (difference.inDays == 1) {
@@ -915,7 +953,7 @@ class TrackListTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(6),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.2),
+              color: Colors.black.withValues(alpha: 0.2),
               blurRadius: 4,
               offset: const Offset(0, 2),
             ),
@@ -932,7 +970,10 @@ class TrackListTile extends StatelessWidget {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            Theme.of(context).colorScheme.primary.withOpacity(0.8),
+                            Theme.of(context)
+                                .colorScheme
+                                .primary
+                                .withValues(alpha: 0.8),
                             Theme.of(context).colorScheme.primary,
                           ],
                         ),
@@ -949,7 +990,10 @@ class TrackListTile extends StatelessWidget {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        Theme.of(context).colorScheme.primary.withOpacity(0.8),
+                        Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withValues(alpha: 0.8),
                         Theme.of(context).colorScheme.primary,
                       ],
                     ),
@@ -965,16 +1009,16 @@ class TrackListTile extends StatelessWidget {
       title: Text(
         track.title,
         style: Theme.of(context).textTheme.titleMedium?.copyWith(
-          fontWeight: FontWeight.w500,
-        ),
+              fontWeight: FontWeight.w500,
+            ),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       ),
       subtitle: Text(
         '${track.artistNames} • ${track.album}',
         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
-        ),
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
       ),

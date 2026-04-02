@@ -25,8 +25,6 @@ class _AppShellState extends State<AppShell> {
     const HomeScreen(),
     const SearchScreen(),
     const LibraryScreen(),
-    const DownloadsScreen(),
-    const SettingsScreen(),
   ];
 
   @override
@@ -91,19 +89,75 @@ class _AppShellState extends State<AppShell> {
                 onTap: () => setState(() => _index = 2),
               ),
               _NavButton(
-                label: 'Downloads',
-                icon: Icons.download,
-                selected: _index == 3,
-                onTap: () => setState(() => _index = 3),
-              ),
-              _NavButton(
-                label: 'Settings',
-                icon: Icons.settings,
-                selected: _index == 4,
-                onTap: () => setState(() => _index = 4),
+                label: 'Profile',
+                icon: Icons.person_outline,
+                selected: false,
+                onTap: () => _showProfileSheet(context),
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  void _showProfileSheet(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: scheme.surfaceContainerHigh,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    backgroundColor: scheme.primary.withValues(alpha: 0.2),
+                    child: Icon(Icons.person, color: scheme.primary),
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    'Profile & Settings',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: scheme.onSurface,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Divider(height: 1),
+            ListTile(
+              leading: Icon(Icons.download, color: scheme.onSurfaceVariant),
+              title: const Text('Downloads'),
+              subtitle: const Text('Manage offline tracks'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const DownloadsScreen()),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.settings, color: scheme.onSurfaceVariant),
+              title: const Text('Settings'),
+              subtitle: const Text('App preferences'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const SettingsScreen()),
+                );
+              },
+            ),
+            const SizedBox(height: 16),
+          ],
         ),
       ),
     );
@@ -135,7 +189,7 @@ class _NavButton extends StatelessWidget {
           duration: const Duration(milliseconds: 160),
           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
           decoration: BoxDecoration(
-            color: selected ? scheme.primary.withOpacity(0.2) : null,
+            color: selected ? scheme.primary.withValues(alpha: 0.2) : null,
             borderRadius: BorderRadius.circular(8),
           ),
           child: Column(

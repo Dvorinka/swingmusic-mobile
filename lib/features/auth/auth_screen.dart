@@ -74,7 +74,7 @@ class _AuthScreenState extends State<AuthScreen> {
     });
 
     await Future.delayed(const Duration(seconds: 2));
-    
+
     setState(() {
       _isLoading = false;
     });

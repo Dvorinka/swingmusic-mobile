@@ -26,7 +26,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
       body: Consumer<AudioProvider>(
         builder: (context, audioProvider, child) {
           final currentTrack = audioProvider.currentTrack;
-          
+
           if (currentTrack == null) {
             return _buildEmptyPlayer();
           }
@@ -36,7 +36,8 @@ class _PlayerScreenState extends State<PlayerScreen> {
               // App Bar
               SafeArea(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 8.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -69,7 +70,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.3),
+                          color: Colors.black.withValues(alpha: 0.3),
                           blurRadius: 20,
                           offset: const Offset(0, 8),
                         ),
@@ -83,8 +84,14 @@ class _PlayerScreenState extends State<PlayerScreen> {
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                             colors: [
-                              Theme.of(context).colorScheme.primary.withOpacity(0.7),
-                              Theme.of(context).colorScheme.secondary.withOpacity(0.7),
+                              Theme.of(context)
+                                  .colorScheme
+                                  .primary
+                                  .withValues(alpha: 0.7),
+                              Theme.of(context)
+                                  .colorScheme
+                                  .secondary
+                                  .withValues(alpha: 0.7),
                             ],
                           ),
                         ),
@@ -112,9 +119,10 @@ class _PlayerScreenState extends State<PlayerScreen> {
                     children: [
                       Text(
                         currentTrack.displayTitle,
-                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style:
+                            Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
                         textAlign: TextAlign.center,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -122,9 +130,12 @@ class _PlayerScreenState extends State<PlayerScreen> {
                       const SizedBox(height: 8),
                       Text(
                         currentTrack.artistNames,
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
+                        style:
+                            Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurfaceVariant,
+                                ),
                         textAlign: TextAlign.center,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -133,9 +144,12 @@ class _PlayerScreenState extends State<PlayerScreen> {
                         const SizedBox(height: 4),
                         Text(
                           currentTrack.displayAlbum,
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
+                                  ),
                           textAlign: TextAlign.center,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -153,14 +167,17 @@ class _PlayerScreenState extends State<PlayerScreen> {
                   children: [
                     SliderTheme(
                       data: SliderTheme.of(context).copyWith(
-                        thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8),
+                        thumbShape:
+                            const RoundSliderThumbShape(enabledThumbRadius: 8),
                         trackHeight: 4,
                       ),
                       child: Slider(
                         value: audioProvider.progress,
                         onChanged: (value) {
                           final newPosition = Duration(
-                            milliseconds: (value * audioProvider.duration.inMilliseconds).round(),
+                            milliseconds:
+                                (value * audioProvider.duration.inMilliseconds)
+                                    .round(),
                           );
                           audioProvider.seekTo(newPosition);
                         },
@@ -185,7 +202,9 @@ class _PlayerScreenState extends State<PlayerScreen> {
                               children: [
                                 Icon(
                                   Icons.volume_up,
-                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurfaceVariant,
                                   size: 20,
                                 ),
                                 Expanded(
@@ -254,12 +273,16 @@ class _PlayerScreenState extends State<PlayerScreen> {
                                   height: 24,
                                   child: CircularProgressIndicator(
                                     strokeWidth: 2,
-                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white),
                                   ),
                                 )
                               : Icon(
-                                  audioProvider.isPlaying ? Icons.pause : Icons.play_arrow,
-                                  color: Theme.of(context).colorScheme.onPrimary,
+                                  audioProvider.isPlaying
+                                      ? Icons.pause
+                                      : Icons.play_arrow,
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary,
                                   size: 32,
                                 ),
                         ),
@@ -276,7 +299,9 @@ class _PlayerScreenState extends State<PlayerScreen> {
                       IconButton(
                         onPressed: () => audioProvider.toggleRepeat(),
                         icon: Icon(
-                          audioProvider.isRepeatMode ? Icons.repeat_one : Icons.repeat,
+                          audioProvider.isRepeatMode
+                              ? Icons.repeat_one
+                              : Icons.repeat,
                           color: audioProvider.isRepeatMode
                               ? Theme.of(context).colorScheme.primary
                               : Theme.of(context).colorScheme.onSurfaceVariant,
@@ -335,15 +360,15 @@ class _PlayerScreenState extends State<PlayerScreen> {
           Text(
             'No track playing',
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
           ),
           const SizedBox(height: 8),
           Text(
             'Select a track from your library to start playing',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
             textAlign: TextAlign.center,
           ),
         ],
@@ -358,8 +383,8 @@ class _PlayerScreenState extends State<PlayerScreen> {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Theme.of(context).colorScheme.primary.withOpacity(0.7),
-            Theme.of(context).colorScheme.secondary.withOpacity(0.7),
+            Theme.of(context).colorScheme.primary.withValues(alpha: 0.7),
+            Theme.of(context).colorScheme.secondary.withValues(alpha: 0.7),
           ],
         ),
       ),

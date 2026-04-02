@@ -25,7 +25,7 @@ class _SearchScreenState extends State<SearchScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
     });
-    
+
     _searchController.addListener(_onSearchChanged);
   }
 
@@ -44,9 +44,9 @@ class _SearchScreenState extends State<SearchScreen> {
       Future.delayed(const Duration(milliseconds: 300), () {
         if (mounted && _searchController.text == query) {
           context.read<SearchProvider>().search(
-            _searchController.text,
-            type: _selectedType,
-          );
+                _searchController.text,
+                type: _selectedType,
+              );
         }
       });
     }
@@ -85,15 +85,15 @@ class _SearchScreenState extends State<SearchScreen> {
                       ),
                     ),
                   ),
-                  
+
                   const SizedBox(height: 16),
-                  
+
                   // Search type filters
                   _buildSearchTypeFilters(),
                 ],
               ),
             ),
-            
+
             // Search results
             Expanded(
               child: Consumer<SearchProvider>(
@@ -103,7 +103,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       child: CircularProgressIndicator(),
                     );
                   }
-                  
+
                   if (provider.errorMessage != null) {
                     return Center(
                       child: Column(
@@ -122,9 +122,14 @@ class _SearchScreenState extends State<SearchScreen> {
                           const SizedBox(height: 8),
                           Text(
                             provider.errorMessage!,
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
-                            ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurfaceVariant,
+                                ),
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 16),
@@ -136,11 +141,11 @@ class _SearchScreenState extends State<SearchScreen> {
                       ),
                     );
                   }
-                  
+
                   if (!provider.hasQuery) {
                     return _buildSearchSuggestions(context);
                   }
-                  
+
                   if (!provider.hasResults) {
                     return Center(
                       child: Column(
@@ -149,7 +154,8 @@ class _SearchScreenState extends State<SearchScreen> {
                           Icon(
                             Icons.search_off,
                             size: 64,
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
                           const SizedBox(height: 16),
                           Text(
@@ -159,15 +165,20 @@ class _SearchScreenState extends State<SearchScreen> {
                           const SizedBox(height: 8),
                           Text(
                             'Try different keywords or filters',
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
-                            ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurfaceVariant,
+                                ),
                           ),
                         ],
                       ),
                     );
                   }
-                  
+
                   return _buildSearchResults(context, searchProviderState);
                 },
               ),
@@ -177,7 +188,7 @@ class _SearchScreenState extends State<SearchScreen> {
       ),
     );
   }
-  
+
   Widget _buildSearchTypeFilters() {
     return Consumer<SearchProvider>(
       builder: (context, provider, child) {
@@ -207,7 +218,7 @@ class _SearchScreenState extends State<SearchScreen> {
       },
     );
   }
-  
+
   String _getSearchTypeLabel(SearchType type) {
     switch (type) {
       case SearchType.all:
@@ -220,7 +231,7 @@ class _SearchScreenState extends State<SearchScreen> {
         return 'Artists';
     }
   }
-  
+
   Widget _buildSearchSuggestions(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -230,22 +241,34 @@ class _SearchScreenState extends State<SearchScreen> {
           Text(
             'Search Suggestions',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+                  fontWeight: FontWeight.bold,
+                ),
           ),
           const SizedBox(height: 16),
           Wrap(
             spacing: 8,
             runSpacing: 8,
             children: [
-              'Rock', 'Pop', 'Jazz', 'Classical', 'Electronic', 'Hip Hop',
-              '2023', '2024', 'Best of', 'Greatest Hits', 'Live', 'Acoustic'
+              'Rock',
+              'Pop',
+              'Jazz',
+              'Classical',
+              'Electronic',
+              'Hip Hop',
+              '2023',
+              '2024',
+              'Best of',
+              'Greatest Hits',
+              'Live',
+              'Acoustic'
             ].map((suggestion) {
               return ActionChip(
                 label: Text(suggestion),
                 onPressed: () {
                   _searchController.text = suggestion;
-                  context.read<SearchProvider>().search(suggestion, type: _selectedType);
+                  context
+                      .read<SearchProvider>()
+                      .search(suggestion, type: _selectedType);
                 },
               );
             }).toList(),
@@ -254,8 +277,7 @@ class _SearchScreenState extends State<SearchScreen> {
       ),
     );
   }
-  
-    
+
   Widget _buildTrackTile(BuildContext context, TrackModel track) {
     return ListTile(
       leading: ClipRRect(
@@ -291,20 +313,21 @@ class _SearchScreenState extends State<SearchScreen> {
       ),
     );
   }
-  
+
   void _playTrack(TrackModel track) {
     final audioProvider = Provider.of<AudioProvider>(context, listen: false);
     // Set queue source for playback logging
-    final mediaController = Provider.of<MediaControllerProvider>(context, listen: false);
+    final mediaController =
+        Provider.of<MediaControllerProvider>(context, listen: false);
     mediaController.setQueueSource(QueueSource.search);
-    
+
     audioProvider.setQueue([track]);
     audioProvider.loadTrack(track);
     audioProvider.play();
-    
+
     Navigator.pushNamed(context, '/player');
   }
-  
+
   Widget _buildAlbumTile(BuildContext context, AlbumModel album) {
     return ListTile(
       leading: ClipRRect(
@@ -335,7 +358,7 @@ class _SearchScreenState extends State<SearchScreen> {
       trailing: const Icon(Icons.chevron_right),
     );
   }
-  
+
   Widget _buildArtistTile(BuildContext context, ArtistModel artist) {
     return ListTile(
       leading: CircleAvatar(
@@ -349,36 +372,36 @@ class _SearchScreenState extends State<SearchScreen> {
       trailing: const Icon(Icons.chevron_right),
     );
   }
-  
+
   Widget _buildSearchResults(BuildContext context, SearchProvider provider) {
     if (provider.isLoading) {
       return const Center(
         child: CircularProgressIndicator(),
       );
     }
-    
+
     if (provider.errorMessage != null) {
       return Center(
         child: Text(
           provider.errorMessage ?? 'An error occurred',
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: Theme.of(context).colorScheme.error,
-          ),
+                color: Theme.of(context).colorScheme.error,
+              ),
         ),
       );
     }
-    
+
     if (!provider.hasResults) {
       return Center(
         child: Text(
           'No results found',
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
         ),
       );
     }
-    
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -390,7 +413,8 @@ class _SearchScreenState extends State<SearchScreen> {
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 8),
-            ...provider.trackResults.map((track) => _buildTrackTile(context, track)),
+            ...provider.trackResults
+                .map((track) => _buildTrackTile(context, track)),
             const SizedBox(height: 16),
           ],
           if (provider.albumResults.isNotEmpty) ...[
@@ -399,7 +423,8 @@ class _SearchScreenState extends State<SearchScreen> {
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 8),
-            ...provider.albumResults.map((album) => _buildAlbumTile(context, album)),
+            ...provider.albumResults
+                .map((album) => _buildAlbumTile(context, album)),
             const SizedBox(height: 16),
           ],
           if (provider.artistResults.isNotEmpty) ...[
@@ -408,7 +433,8 @@ class _SearchScreenState extends State<SearchScreen> {
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 8),
-            ...provider.artistResults.map((artist) => _buildArtistTile(context, artist)),
+            ...provider.artistResults
+                .map((artist) => _buildArtistTile(context, artist)),
           ],
         ],
       ),

@@ -108,9 +108,9 @@ class _FolderTab extends StatelessWidget {
                 onDownload: track.filepath.isEmpty
                     ? () => library.queueServerDownloadForTrack(track)
                     : () => offline.downloadTrack(
-                        track,
-                        collectionLabel: 'folder ${library.currentFolder}',
-                      ),
+                          track,
+                          collectionLabel: 'folder ${library.currentFolder}',
+                        ),
               ),
             ),
           ],
@@ -155,8 +155,8 @@ class _PlaylistsTab extends StatelessWidget {
                 leading: CircleAvatar(
                   backgroundImage:
                       playlist.imageUrl == null || playlist.imageUrl!.isEmpty
-                      ? null
-                      : NetworkImage(playlist.imageUrl!),
+                          ? null
+                          : NetworkImage(playlist.imageUrl!),
                   child: playlist.imageUrl == null || playlist.imageUrl!.isEmpty
                       ? const Icon(Icons.playlist_play)
                       : null,
@@ -190,8 +190,8 @@ class _PlaylistsTab extends StatelessWidget {
                                         );
                                         await library
                                             .queueServerDownloadsForTracks(
-                                              tracks,
-                                            );
+                                          tracks,
+                                        );
                                       },
                                 icon: const Icon(
                                   Icons.download_for_offline_outlined,
@@ -210,13 +210,13 @@ class _PlaylistsTab extends StatelessWidget {
                                     library.toggleFavoriteTrack(track),
                                 onDownload: track.filepath.isEmpty
                                     ? () => library.queueServerDownloadForTrack(
-                                        track,
-                                      )
+                                          track,
+                                        )
                                     : () => offline.downloadTrack(
-                                        track,
-                                        collectionLabel:
-                                            'playlist ${playlist.name}',
-                                      ),
+                                          track,
+                                          collectionLabel:
+                                              'playlist ${playlist.name}',
+                                        ),
                               ),
                             ),
                           ],
@@ -305,9 +305,9 @@ class _FavoritesTab extends StatelessWidget {
                 onDownload: track.filepath.isEmpty
                     ? () => library.queueServerDownloadForTrack(track)
                     : () => offline.downloadTrack(
-                        track,
-                        collectionLabel: 'favorites',
-                      ),
+                          track,
+                          collectionLabel: 'favorites',
+                        ),
               ),
             ),
             const SizedBox(height: 24),
@@ -317,8 +317,8 @@ class _FavoritesTab extends StatelessWidget {
                 leading: CircleAvatar(
                   backgroundImage:
                       album.imageUrl == null || album.imageUrl!.isEmpty
-                      ? null
-                      : NetworkImage(album.imageUrl!),
+                          ? null
+                          : NetworkImage(album.imageUrl!),
                   child: album.imageUrl == null || album.imageUrl!.isEmpty
                       ? const Icon(Icons.album)
                       : null,
@@ -334,8 +334,8 @@ class _FavoritesTab extends StatelessWidget {
                 leading: CircleAvatar(
                   backgroundImage:
                       artist.imageUrl == null || artist.imageUrl!.isEmpty
-                      ? null
-                      : NetworkImage(artist.imageUrl!),
+                          ? null
+                          : NetworkImage(artist.imageUrl!),
                   child: artist.imageUrl == null || artist.imageUrl!.isEmpty
                       ? const Icon(Icons.person)
                       : null,

@@ -61,9 +61,8 @@ class _SearchScreenState extends State<SearchScreen> {
       builder: (context, library, player, offline, _) {
         final scheme = Theme.of(context).colorScheme;
         final hasQuery = _controller.text.trim().isNotEmpty;
-        final topTrack = library.searchTracks.isNotEmpty
-            ? library.searchTracks.first
-            : null;
+        final topTrack =
+            library.searchTracks.isNotEmpty ? library.searchTracks.first : null;
         final remainingTracks = library.searchTracks
             .skip(topTrack == null ? 0 : 1)
             .take(_tracksPreviewCount)
@@ -139,9 +138,9 @@ class _SearchScreenState extends State<SearchScreen> {
                   onDownload: topTrack.filepath.isEmpty
                       ? () => library.queueServerDownloadForTrack(topTrack)
                       : () => offline.downloadTrack(
-                          topTrack,
-                          collectionLabel: 'search',
-                        ),
+                            topTrack,
+                            collectionLabel: 'search',
+                          ),
                 ),
                 const SizedBox(height: 14),
               ],
@@ -163,9 +162,9 @@ class _SearchScreenState extends State<SearchScreen> {
                   onDownload: track.filepath.isEmpty
                       ? () => library.queueServerDownloadForTrack(track)
                       : () => offline.downloadTrack(
-                          track,
-                          collectionLabel: 'search',
-                        ),
+                            track,
+                            collectionLabel: 'search',
+                          ),
                 ),
               ),
               const SizedBox(height: 12),
@@ -175,9 +174,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 onViewAll: () => _openViewAll(CatalogSearchType.artists),
               ),
               const SizedBox(height: 8),
-              ...library.searchArtists
-                  .take(_artistsPreviewCount)
-                  .map(
+              ...library.searchArtists.take(_artistsPreviewCount).map(
                     (artist) => _EntityRow(
                       imageUrl: artist.imageUrl,
                       fallbackIcon: Icons.person,
@@ -186,13 +183,13 @@ class _SearchScreenState extends State<SearchScreen> {
                       onTap: artist.spotifyId == null
                           ? null
                           : () => Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) => ArtistDetailScreen(
-                                  artistId: artist.spotifyId!,
-                                  artistName: artist.name,
+                                MaterialPageRoute(
+                                  builder: (_) => ArtistDetailScreen(
+                                    artistId: artist.spotifyId!,
+                                    artistName: artist.name,
+                                  ),
                                 ),
                               ),
-                            ),
                     ),
                   ),
               const SizedBox(height: 12),
@@ -202,9 +199,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 onViewAll: () => _openViewAll(CatalogSearchType.albums),
               ),
               const SizedBox(height: 8),
-              ...library.searchAlbums
-                  .take(_albumsPreviewCount)
-                  .map(
+              ...library.searchAlbums.take(_albumsPreviewCount).map(
                     (album) => _EntityRow(
                       imageUrl: album.imageUrl,
                       fallbackIcon: Icons.album,
@@ -213,13 +208,13 @@ class _SearchScreenState extends State<SearchScreen> {
                       onTap: album.spotifyId == null
                           ? null
                           : () => Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) => AlbumDetailScreen(
-                                  albumId: album.spotifyId!,
-                                  albumName: album.title,
+                                MaterialPageRoute(
+                                  builder: (_) => AlbumDetailScreen(
+                                    albumId: album.spotifyId!,
+                                    albumName: album.title,
+                                  ),
                                 ),
                               ),
-                            ),
                     ),
                   ),
               const SizedBox(height: 12),
@@ -227,9 +222,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 title: 'Playlists (${library.searchPlaylists.length})',
               ),
               const SizedBox(height: 8),
-              ...library.searchPlaylists
-                  .take(_playlistsPreviewCount)
-                  .map(
+              ...library.searchPlaylists.take(_playlistsPreviewCount).map(
                     (playlist) => _EntityRow(
                       imageUrl: playlist.imageUrl,
                       fallbackIcon: Icons.playlist_play,

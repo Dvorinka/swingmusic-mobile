@@ -10,11 +10,12 @@ class AnalyticsService {
   Future<Map<String, dynamic>> getAnalyticsData(String period) async {
     try {
       final analyticsData = await _apiService.getAnalyticsData(period);
-      
+
       // Process and format the analytics data
       return {
         'totalPlays': analyticsData['total_plays'] ?? 0,
-        'totalListeningTime': analyticsData['total_listening_time'] ?? 0, // minutes
+        'totalListeningTime':
+            analyticsData['total_listening_time'] ?? 0, // minutes
         'uniqueTracksPlayed': analyticsData['unique_tracks_played'] ?? 0,
         'averageSessionLength': analyticsData['average_session_length'] ?? 0,
         'mostActiveDay': analyticsData['most_active_day'] ?? 'Monday',
@@ -22,10 +23,14 @@ class AnalyticsService {
         'favoriteGenre': analyticsData['favorite_genre'] ?? 'Unknown',
         'topArtist': analyticsData['top_artist'] ?? 'Unknown',
         'topTracks': await _processTopTracks(analyticsData['top_tracks'] ?? []),
-        'topArtists': await _processTopArtists(analyticsData['top_artists'] ?? []),
-        'trendingUp': await _processTrendingTracks(analyticsData['trending_up'] ?? []),
-        'trendingDown': await _processTrendingTracks(analyticsData['trending_down'] ?? []),
-        'newDiscoveries': await _processTrendingTracks(analyticsData['new_discoveries'] ?? []),
+        'topArtists':
+            await _processTopArtists(analyticsData['top_artists'] ?? []),
+        'trendingUp':
+            await _processTrendingTracks(analyticsData['trending_up'] ?? []),
+        'trendingDown':
+            await _processTrendingTracks(analyticsData['trending_down'] ?? []),
+        'newDiscoveries': await _processTrendingTracks(
+            analyticsData['new_discoveries'] ?? []),
       };
     } catch (e) {
       // Fallback to basic data if API fails
@@ -35,7 +40,7 @@ class AnalyticsService {
 
   Future<List<TrackModel>> _processTopTracks(List<dynamic> tracksData) async {
     final tracks = <TrackModel>[];
-    
+
     for (final trackData in tracksData) {
       try {
         final track = TrackModel.fromJson(trackData);
@@ -45,13 +50,14 @@ class AnalyticsService {
         continue;
       }
     }
-    
+
     return tracks;
   }
 
-  Future<List<Map<String, dynamic>>> _processTopArtists(List<dynamic> artistsData) async {
+  Future<List<Map<String, dynamic>>> _processTopArtists(
+      List<dynamic> artistsData) async {
     final artists = <Map<String, dynamic>>[];
-    
+
     for (final artistData in artistsData) {
       try {
         artists.add({
@@ -74,13 +80,14 @@ class AnalyticsService {
         continue;
       }
     }
-    
+
     return artists;
   }
 
-  Future<List<TrackModel>> _processTrendingTracks(List<dynamic> tracksData) async {
+  Future<List<TrackModel>> _processTrendingTracks(
+      List<dynamic> tracksData) async {
     final tracks = <TrackModel>[];
-    
+
     for (final trackData in tracksData) {
       try {
         final track = TrackModel.fromJson(trackData);
@@ -90,7 +97,7 @@ class AnalyticsService {
         continue;
       }
     }
-    
+
     return tracks;
   }
 
@@ -116,7 +123,7 @@ class AnalyticsService {
   Future<List<TrackModel>> getTopTracks({int limit = 10}) async {
     try {
       final tracksData = await _apiService.getTopTracks(limit: limit);
-      
+
       final tracks = <TrackModel>[];
       for (final trackData in tracksData) {
         try {
@@ -126,7 +133,7 @@ class AnalyticsService {
           continue;
         }
       }
-      
+
       return tracks;
     } catch (e) {
       return [];
@@ -136,7 +143,7 @@ class AnalyticsService {
   Future<List<Map<String, dynamic>>> getTopArtists({int limit = 10}) async {
     try {
       final artistsData = await _apiService.getTopArtists(limit: limit);
-      
+
       return _processTopArtists(artistsData);
     } catch (e) {
       return [];
@@ -146,7 +153,7 @@ class AnalyticsService {
   Future<Map<String, dynamic>> getListeningStats() async {
     try {
       final analyticsData = await _apiService.getAnalyticsData('all_time');
-      
+
       return {
         'totalTracks': analyticsData['total_tracks'] ?? 0,
         'totalArtists': analyticsData['total_artists'] ?? 0,
@@ -180,7 +187,7 @@ class AnalyticsService {
     try {
       final analyticsData = await _apiService.getAnalyticsData('all_time');
       final genreData = analyticsData['genre_distribution'] ?? {};
-      
+
       // Process genre distribution
       final processedGenres = <String, dynamic>{};
       for (final genre in genreData.keys) {
@@ -190,7 +197,7 @@ class AnalyticsService {
           'totalPlayTime': genreData[genre]['total_play_time'] ?? 0,
         };
       }
-      
+
       return processedGenres;
     } catch (e) {
       return {};
@@ -201,7 +208,7 @@ class AnalyticsService {
     try {
       final analyticsData = await _apiService.getAnalyticsData('$days days');
       final historyData = analyticsData['listening_history'] ?? [];
-      
+
       // Process listening history
       final processedHistory = <Map<String, dynamic>>[];
       for (final dayData in historyData) {
@@ -213,7 +220,7 @@ class AnalyticsService {
           'topArtist': dayData['top_artist'] ?? {},
         });
       }
-      
+
       return {
         'history': processedHistory,
         'totalDays': processedHistory.length,

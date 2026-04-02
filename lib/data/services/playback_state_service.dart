@@ -21,7 +21,7 @@ class PlaybackStateService {
       final prefs = await _prefs;
       final queueJson = queue.map((track) => track.toJson()).toList();
       await prefs.setString(_keyQueue, jsonEncode(queueJson));
-      
+
       if (kDebugMode) {
         debugPrint('Saved queue with ${queue.length} tracks');
       }
@@ -109,10 +109,10 @@ class PlaybackStateService {
   }) async {
     try {
       final prefs = await _prefs;
-      
+
       // Save all state in batch
       final queueJson = queue.map((track) => track.toJson()).toList();
-      
+
       await Future.wait([
         prefs.setString(_keyQueue, jsonEncode(queueJson)),
         prefs.setInt(_keyCurrentIndex, currentIndex),
@@ -123,7 +123,7 @@ class PlaybackStateService {
         prefs.setDouble(_keyVolume, volume),
         prefs.setInt(_keyLastSaved, DateTime.now().millisecondsSinceEpoch),
       ]);
-      
+
       if (kDebugMode) {
         debugPrint('Saved complete playback state');
       }
@@ -138,11 +138,13 @@ class PlaybackStateService {
     try {
       final prefs = await _prefs;
       final queueStr = prefs.getString(_keyQueue);
-      
+
       if (queueStr == null) return [];
-      
+
       final queueJson = jsonDecode(queueStr) as List<dynamic>;
-      return queueJson.map((json) => TrackModel.fromJson(json as Map<String, dynamic>)).toList();
+      return queueJson
+          .map((json) => TrackModel.fromJson(json as Map<String, dynamic>))
+          .toList();
     } catch (e) {
       if (kDebugMode) {
         debugPrint('Failed to load queue: $e');
@@ -183,9 +185,9 @@ class PlaybackStateService {
     try {
       final prefs = await _prefs;
       final modeStr = prefs.getString(_keyRepeatMode);
-      
+
       if (modeStr == null) return RepeatMode.off;
-      
+
       return RepeatMode.values.firstWhere(
         (mode) => mode.toString() == modeStr,
         orElse: () => RepeatMode.off,
@@ -199,9 +201,9 @@ class PlaybackStateService {
     try {
       final prefs = await _prefs;
       final modeStr = prefs.getString(_keyShuffleMode);
-      
+
       if (modeStr == null) return ShuffleMode.off;
-      
+
       return ShuffleMode.values.firstWhere(
         (mode) => mode.toString() == modeStr,
         orElse: () => ShuffleMode.off,
@@ -224,7 +226,7 @@ class PlaybackStateService {
     try {
       final queue = await loadQueue();
       if (queue.isEmpty) return null;
-      
+
       return PlaybackState(
         queue: queue,
         currentIndex: await loadCurrentIndex(),
@@ -255,7 +257,7 @@ class PlaybackStateService {
         prefs.remove(_keyVolume),
         prefs.remove(_keyLastSaved),
       ]);
-      
+
       if (kDebugMode) {
         debugPrint('Cleared playback state');
       }
@@ -279,7 +281,8 @@ class PlaybackStateService {
   Future<bool> hasSavedState() async {
     try {
       final prefs = await _prefs;
-      return prefs.containsKey(_keyQueue) && prefs.containsKey(_keyCurrentTrackHash);
+      return prefs.containsKey(_keyQueue) &&
+          prefs.containsKey(_keyCurrentTrackHash);
     } catch (e) {
       return false;
     }

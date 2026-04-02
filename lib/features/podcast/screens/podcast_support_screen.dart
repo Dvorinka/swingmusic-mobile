@@ -29,7 +29,8 @@ class _PodcastSupportScreenState extends State<PodcastSupportScreen> {
       final episodesFuture = _getEpisodes();
       final subscriptionsFuture = _getSubscriptions();
 
-      final results = await Future.wait([podcastsFuture, episodesFuture, subscriptionsFuture]);
+      final results = await Future.wait(
+          [podcastsFuture, episodesFuture, subscriptionsFuture]);
 
       if (mounted) {
         setState(() {
@@ -96,7 +97,8 @@ class _PodcastSupportScreenState extends State<PodcastSupportScreen> {
       {
         'id': 'ep1',
         'title': 'The Future of AI in Music',
-        'description': 'How artificial intelligence is changing the music industry',
+        'description':
+            'How artificial intelligence is changing the music industry',
         'podcastId': '1',
         'podcastTitle': 'Tech Talks Daily',
         'duration': 2845, // seconds
@@ -189,8 +191,16 @@ class _PodcastSupportScreenState extends State<PodcastSupportScreen> {
   }
 
   Widget _buildCategoryFilter() {
-    final categories = ['all', 'technology', 'music', 'true crime', 'comedy', 'news', 'education'];
-    
+    final categories = [
+      'all',
+      'technology',
+      'music',
+      'true crime',
+      'comedy',
+      'news',
+      'education'
+    ];
+
     return Container(
       height: 60,
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
@@ -201,7 +211,7 @@ class _PodcastSupportScreenState extends State<PodcastSupportScreen> {
         itemBuilder: (context, index) {
           final category = categories[index];
           final isSelected = _selectedCategory == category;
-          
+
           return Padding(
             padding: const EdgeInsets.only(right: AppSpacing.sm),
             child: FilterChip(
@@ -212,7 +222,8 @@ class _PodcastSupportScreenState extends State<PodcastSupportScreen> {
                   _selectedCategory = category;
                 });
               },
-              backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+              backgroundColor:
+                  Theme.of(context).colorScheme.surfaceContainerHighest,
               selectedColor: Theme.of(context).colorScheme.primary,
             ),
           );
@@ -228,8 +239,14 @@ class _PodcastSupportScreenState extends State<PodcastSupportScreen> {
 
     if (_searchQuery.isNotEmpty) {
       filteredPodcasts.retainWhere((podcast) =>
-          podcast['title'].toString().toLowerCase().contains(_searchQuery.toLowerCase()) ||
-          podcast['description'].toString().toLowerCase().contains(_searchQuery.toLowerCase()));
+          podcast['title']
+              .toString()
+              .toLowerCase()
+              .contains(_searchQuery.toLowerCase()) ||
+          podcast['description']
+              .toString()
+              .toLowerCase()
+              .contains(_searchQuery.toLowerCase()));
     }
 
     if (filteredPodcasts.isEmpty) {
@@ -250,8 +267,8 @@ class _PodcastSupportScreenState extends State<PodcastSupportScreen> {
             Text(
               'Try adjusting your filters or search',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
             ),
           ],
         ),
@@ -295,8 +312,9 @@ class _PodcastSupportScreenState extends State<PodcastSupportScreen> {
       itemCount: _subscriptions.length,
       itemBuilder: (context, index) {
         final subscription = _subscriptions[index];
-        final podcast = _podcasts.firstWhere((p) => p['id'] == subscription['podcastId']);
-        
+        final podcast =
+            _podcasts.firstWhere((p) => p['id'] == subscription['podcastId']);
+
         return _SubscriptionTile(
           podcast: podcast,
           subscription: subscription,
@@ -379,7 +397,8 @@ class _PodcastCard extends StatelessWidget {
                 ),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                    color:
+                        Theme.of(context).colorScheme.surfaceContainerHighest,
                   ),
                   child: Icon(
                     Icons.podcasts,
@@ -406,8 +425,9 @@ class _PodcastCard extends StatelessWidget {
                     Text(
                       podcast['author'] ?? 'Unknown Author',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -422,9 +442,12 @@ class _PodcastCard extends StatelessWidget {
                         const SizedBox(width: 4),
                         Text(
                           '${podcast['episodeCount'] ?? 0}',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
+                                  ),
                         ),
                         const SizedBox(width: 8),
                         Icon(
@@ -435,9 +458,12 @@ class _PodcastCard extends StatelessWidget {
                         const SizedBox(width: 4),
                         Text(
                           _formatSubscribers(podcast['subscribers'] ?? 0),
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
+                                  ),
                         ),
                       ],
                     ),
@@ -471,7 +497,8 @@ class _EpisodeTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final duration = Duration(seconds: episode['duration'] ?? 0);
-    final durationText = '${duration.inHours}:${(duration.inMinutes % 60).toString().padLeft(2, '0')}';
+    final durationText =
+        '${duration.inHours}:${(duration.inMinutes % 60).toString().padLeft(2, '0')}';
 
     return ListTile(
       leading: ClipRRect(
@@ -511,8 +538,8 @@ class _EpisodeTile extends StatelessWidget {
               Text(
                 durationText,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
               ),
               const SizedBox(width: 12),
               Icon(
@@ -524,8 +551,8 @@ class _EpisodeTile extends StatelessWidget {
               Text(
                 '${episode['playCount'] ?? 0}',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
               ),
             ],
           ),
@@ -592,8 +619,8 @@ class _SubscriptionTile extends StatelessWidget {
               child: Text(
                 '${subscription['newEpisodesCount']} new episodes',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Colors.white,
-                ),
+                      color: Colors.white,
+                    ),
               ),
             ),
           ],
@@ -612,7 +639,7 @@ class _SubscriptionTile extends StatelessWidget {
   String _getRelativeTime(DateTime date) {
     final now = DateTime.now();
     final difference = now.difference(date);
-    
+
     if (difference.inDays > 0) {
       return '${difference.inDays} day${difference.inDays > 1 ? 's' : ''} ago';
     } else if (difference.inHours > 0) {
@@ -642,7 +669,8 @@ class PodcastDetailsScreen extends StatelessWidget {
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
-                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                    color:
+                        Theme.of(context).colorScheme.surfaceContainerHighest,
                     child: Icon(
                       Icons.podcasts,
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -667,8 +695,8 @@ class PodcastDetailsScreen extends StatelessWidget {
                   Text(
                     podcast['author'] ?? 'Unknown Author',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
                   ),
                   const SizedBox(height: AppSpacing.md),
                   Text(

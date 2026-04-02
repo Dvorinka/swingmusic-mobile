@@ -17,7 +17,7 @@ class _MobileScannerScreenState extends State<MobileScannerScreen> {
   void initState() {
     super.initState();
     controller.start();
-    
+
     controller.barcodes.listen((capture) {
       if (capture.barcodes.isNotEmpty && _isScanning) {
         final barcode = capture.barcodes.first;
@@ -26,10 +26,10 @@ class _MobileScannerScreenState extends State<MobileScannerScreen> {
             _isScanning = false;
             _capturedCode = barcode.rawValue!;
           });
-          
+
           // Stop scanning after successful capture
           controller.stop();
-          
+
           // Return the scanned code and close the screen
           if (mounted) {
             Navigator.of(context).pop(barcode.rawValue);
@@ -69,7 +69,7 @@ class _MobileScannerScreenState extends State<MobileScannerScreen> {
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-        // Camera preview
+          // Camera preview
           Stack(
             children: [
               MobileScanner(
@@ -78,7 +78,7 @@ class _MobileScannerScreenState extends State<MobileScannerScreen> {
               _buildScannerOverlay(),
             ],
           ),
-          
+
           // Scanning indicator
           if (_isScanning)
             const Positioned(
@@ -104,7 +104,7 @@ class _MobileScannerScreenState extends State<MobileScannerScreen> {
                 ),
               ),
             ),
-          
+
           // Captured code display
           if (_capturedCode != null)
             Positioned(
@@ -185,10 +185,10 @@ class _MobileScannerScreenState extends State<MobileScannerScreen> {
         // Dark overlay
         Container(
           decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.5),
+            color: Colors.black.withValues(alpha: 0.5),
           ),
         ),
-        
+
         // Scanning window (transparent square)
         Center(
           child: Container(
@@ -200,7 +200,7 @@ class _MobileScannerScreenState extends State<MobileScannerScreen> {
             ),
           ),
         ),
-        
+
         // Corner markers
         Center(
           child: SizedBox(
@@ -272,7 +272,7 @@ class _MobileScannerScreenState extends State<MobileScannerScreen> {
             ),
           ),
         ),
-        
+
         // Instructions
         Positioned(
           bottom: 100,

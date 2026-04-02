@@ -25,8 +25,8 @@ class _RecapScreenState extends State<RecapScreen> {
         title: Text(
           'Recap',
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+                fontWeight: FontWeight.bold,
+              ),
         ),
         actions: [
           IconButton(
@@ -64,8 +64,8 @@ class _RecapScreenState extends State<RecapScreen> {
           Text(
             'Select Period',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+                  fontWeight: FontWeight.bold,
+                ),
           ),
           SizedBox(height: AppSpacing.md),
           Row(
@@ -150,7 +150,7 @@ class _RecapScreenState extends State<RecapScreen> {
         color: Theme.of(context).colorScheme.surfaceContainer,
         borderRadius: BorderRadius.circular(AppBorderRadius.lg),
         border: Border.all(
-          color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+          color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
           width: 1,
         ),
       ),
@@ -178,24 +178,25 @@ class _RecapScreenState extends State<RecapScreen> {
                   children: [
                     Text(
                       'Your Year in Music',
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style:
+                          Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
                     ),
                     SizedBox(height: AppSpacing.sm),
                     Text(
                       '${provider.totalPlays} total plays',
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        color: Theme.of(context).colorScheme.primary,
-                        fontWeight: FontWeight.bold,
-                      ),
+                            color: Theme.of(context).colorScheme.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
                     ),
                     SizedBox(height: AppSpacing.xs),
                     Text(
                       '${_formatDuration(provider.totalListeningTime)} total listening time',
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
                     ),
                   ],
                 ),
@@ -214,7 +215,7 @@ class _RecapScreenState extends State<RecapScreen> {
         color: Theme.of(context).colorScheme.surfaceContainer,
         borderRadius: BorderRadius.circular(AppBorderRadius.lg),
         border: Border.all(
-          color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+          color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
           width: 1,
         ),
       ),
@@ -224,12 +225,17 @@ class _RecapScreenState extends State<RecapScreen> {
           Text(
             'Top Artists',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+                  fontWeight: FontWeight.bold,
+                ),
           ),
           SizedBox(height: AppSpacing.md),
           Column(
-            children: provider.topArtists.take(5).toList().asMap().entries.map((entry) {
+            children: provider.topArtists
+                .take(5)
+                .toList()
+                .asMap()
+                .entries
+                .map((entry) {
               return _buildArtistItem(entry.key + 1, entry.value);
             }).toList(),
           ),
@@ -261,15 +267,15 @@ class _RecapScreenState extends State<RecapScreen> {
                 Text(
                   artist.name,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
                 SizedBox(height: AppSpacing.xs),
                 Text(
                   '${artist.playcount} plays • ${artist.trackcount} tracks',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
                 ),
               ],
             ),
@@ -286,7 +292,7 @@ class _RecapScreenState extends State<RecapScreen> {
         color: Theme.of(context).colorScheme.surfaceContainer,
         borderRadius: BorderRadius.circular(AppBorderRadius.lg),
         border: Border.all(
-          color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+          color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
           width: 1,
         ),
       ),
@@ -296,12 +302,17 @@ class _RecapScreenState extends State<RecapScreen> {
           Text(
             'Top Tracks',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+                  fontWeight: FontWeight.bold,
+                ),
           ),
           SizedBox(height: AppSpacing.md),
           Column(
-            children: provider.topTracks.take(5).toList().asMap().entries.map((entry) {
+            children: provider.topTracks
+                .take(5)
+                .toList()
+                .asMap()
+                .entries
+                .map((entry) {
               return _buildTrackItem(entry.key + 1, entry.value);
             }).toList(),
           ),
@@ -333,22 +344,24 @@ class _RecapScreenState extends State<RecapScreen> {
                 Text(
                   track.title,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
                 SizedBox(height: AppSpacing.xs),
                 Text(
-                  track.artists.isNotEmpty ? track.artists.first.name : 'Unknown Artist',
+                  track.artists.isNotEmpty
+                      ? track.artists.first.name
+                      : 'Unknown Artist',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
                 ),
                 SizedBox(height: AppSpacing.xs),
                 Text(
                   '${track.playcount} plays • ${_formatDuration(track.playduration)}',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
                 ),
               ],
             ),
@@ -365,7 +378,7 @@ class _RecapScreenState extends State<RecapScreen> {
         color: Theme.of(context).colorScheme.surfaceContainer,
         borderRadius: BorderRadius.circular(AppBorderRadius.lg),
         border: Border.all(
-          color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+          color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
           width: 1,
         ),
       ),
@@ -375,14 +388,18 @@ class _RecapScreenState extends State<RecapScreen> {
           Text(
             'Listening Habits',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+                  fontWeight: FontWeight.bold,
+                ),
           ),
           SizedBox(height: AppSpacing.md),
-          _buildHabitItem('Most Active Day', provider.mostActiveDay, Icons.calendar_today),
-          _buildHabitItem('Peak Hour', '${provider.peakHour}:00', Icons.schedule),
-          _buildHabitItem('Favorite Genre', provider.favoriteGenre, Icons.category),
-          _buildHabitItem('Average Session', '${provider.averageSessionLength} min', Icons.timer),
+          _buildHabitItem(
+              'Most Active Day', provider.mostActiveDay, Icons.calendar_today),
+          _buildHabitItem(
+              'Peak Hour', '${provider.peakHour}:00', Icons.schedule),
+          _buildHabitItem(
+              'Favorite Genre', provider.favoriteGenre, Icons.category),
+          _buildHabitItem('Average Session',
+              '${provider.averageSessionLength} min', Icons.timer),
         ],
       ),
     );
@@ -413,15 +430,15 @@ class _RecapScreenState extends State<RecapScreen> {
                 Text(
                   label,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
                 SizedBox(height: AppSpacing.xs),
                 Text(
                   value,
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                 ),
               ],
             ),
@@ -438,7 +455,7 @@ class _RecapScreenState extends State<RecapScreen> {
         color: Theme.of(context).colorScheme.surfaceContainer,
         borderRadius: BorderRadius.circular(AppBorderRadius.lg),
         border: Border.all(
-          color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+          color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
           width: 1,
         ),
       ),
@@ -448,15 +465,15 @@ class _RecapScreenState extends State<RecapScreen> {
           Text(
             'New Discoveries',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+                  fontWeight: FontWeight.bold,
+                ),
           ),
           SizedBox(height: AppSpacing.md),
           Text(
             '${provider.uniqueTracksPlayed} new artists discovered',
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: Theme.of(context).colorScheme.primary,
-            ),
+                  color: Theme.of(context).colorScheme.primary,
+                ),
           ),
           SizedBox(height: AppSpacing.md),
           Column(
@@ -493,15 +510,17 @@ class _RecapScreenState extends State<RecapScreen> {
                 Text(
                   track.title,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
                 SizedBox(height: AppSpacing.xs),
                 Text(
-                  track.artists.isNotEmpty ? track.artists.first.name : 'Unknown Artist',
+                  track.artists.isNotEmpty
+                      ? track.artists.first.name
+                      : 'Unknown Artist',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
                 ),
               ],
             ),
@@ -524,7 +543,7 @@ class _RecapScreenState extends State<RecapScreen> {
     setState(() {
       _isLoading = true;
     });
-    
+
     // Simulate API call
     Future.delayed(const Duration(seconds: 1), () {
       setState(() {

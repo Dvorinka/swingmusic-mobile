@@ -16,7 +16,7 @@ class AuthProvider extends ChangeNotifier {
   Timer? _refreshTimer;
   final EnhancedApiService _apiService;
 
-  AuthProvider({EnhancedApiService? apiService}) 
+  AuthProvider({EnhancedApiService? apiService})
       : _apiService = apiService ?? EnhancedApiService();
 
   // Getters
@@ -52,7 +52,7 @@ class AuthProvider extends ChangeNotifier {
   ) async {
     try {
       _setAuthenticating();
-      
+
       // Validate URL
       if (!_isValidUrl(baseUrl)) {
         _setError('Please enter a valid server URL');
@@ -79,7 +79,7 @@ class AuthProvider extends ChangeNotifier {
         _accessToken = data['access_token'];
         _refreshToken = data['refresh_token'];
         _baseUrl = baseUrl;
-        
+
         // Calculate token expiry (default 1 hour if not specified)
         final expiresIn = data['expires_in'] ?? 3600;
         _tokenExpiry = DateTime.now().add(Duration(seconds: expiresIn));
@@ -107,17 +107,17 @@ class AuthProvider extends ChangeNotifier {
   Future<void> loginWithQrCode(String qrCode) async {
     try {
       _setAuthenticating();
-      
+
       // Parse QR code data (format: url|pairCode)
       final parts = qrCode.split('|');
       if (parts.length != 2) {
         _setError('Invalid QR code format');
         return;
       }
-      
+
       final url = parts[0];
       final pairCode = parts[1];
-      
+
       if (!_isValidUrl(url)) {
         _setError('Invalid server URL in QR code');
         return;
@@ -137,7 +137,7 @@ class AuthProvider extends ChangeNotifier {
         _accessToken = data['access_token'];
         _refreshToken = data['refresh_token'];
         _baseUrl = url;
-        
+
         // Calculate token expiry
         final expiresIn = data['expires_in'] ?? 3600;
         _tokenExpiry = DateTime.now().add(Duration(seconds: expiresIn));
@@ -210,7 +210,7 @@ class AuthProvider extends ChangeNotifier {
         final data = jsonDecode(response.body);
         _accessToken = data['access_token'];
         _refreshToken = data['refresh_token'] ?? _refreshToken;
-        
+
         // Update token expiry
         final expiresIn = data['expires_in'] ?? 3600;
         _tokenExpiry = DateTime.now().add(Duration(seconds: expiresIn));
@@ -280,12 +280,12 @@ class AuthProvider extends ChangeNotifier {
       _accessToken = prefs.getString('access_token');
       _refreshToken = prefs.getString('refresh_token');
       _baseUrl = prefs.getString('base_url');
-      
+
       final expiryString = prefs.getString('token_expiry');
       if (expiryString != null) {
         _tokenExpiry = DateTime.parse(expiryString);
       }
-      
+
       if (_accessToken != null && !isTokenExpired) {
         _setupTokenRefresh();
         _setAuthenticated();
@@ -300,7 +300,7 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> _checkLoginStatus() async {
     if (_accessToken == null) return;
-    
+
     try {
       // Validate token by making a lightweight API call
       final userInfo = await _apiService.getUserInfo();
@@ -319,13 +319,13 @@ class AuthProvider extends ChangeNotifier {
 
   void _setupTokenRefresh() {
     _refreshTimer?.cancel();
-    
+
     if (_tokenExpiry == null) return;
-    
+
     // Schedule refresh 5 minutes before expiry
     final refreshTime = _tokenExpiry!.subtract(const Duration(minutes: 5));
     final durationUntilRefresh = refreshTime.difference(DateTime.now());
-    
+
     if (durationUntilRefresh.inMilliseconds > 0) {
       _refreshTimer = Timer(durationUntilRefresh, () {
         refreshTokens();
@@ -347,20 +347,20 @@ class AuthProvider extends ChangeNotifier {
   // Get valid access token (refresh if needed)
   Future<String?> getValidAccessToken() async {
     if (_accessToken == null) return null;
-    
+
     if (shouldRefreshToken) {
       await refreshTokens();
     }
-    
+
     return _accessToken;
   }
 }
 
 class _AuthenticatedClient extends http.BaseClient {
   final AuthProvider _authProvider;
-  
+
   _AuthenticatedClient(this._authProvider);
-  
+
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) {
     request.headers['Authorization'] = 'Bearer ${_authProvider._accessToken}';

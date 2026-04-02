@@ -23,8 +23,8 @@ class _OfflineModeScreenState extends State<OfflineModeScreen> {
         title: Text(
           'Offline Mode',
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+                fontWeight: FontWeight.bold,
+              ),
         ),
         actions: [
           IconButton(
@@ -55,7 +55,7 @@ class _OfflineModeScreenState extends State<OfflineModeScreen> {
         color: Theme.of(context).colorScheme.surfaceContainer,
         borderRadius: BorderRadius.circular(AppBorderRadius.lg),
         border: Border.all(
-          color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+          color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
           width: 1,
         ),
       ),
@@ -84,22 +84,23 @@ class _OfflineModeScreenState extends State<OfflineModeScreen> {
                     Text(
                       'Offline Mode Active',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                            fontWeight: FontWeight.bold,
+                          ),
                     ),
                     const SizedBox(height: AppSpacing.xs),
                     Text(
                       '${_downloadedTracks.length} tracks downloaded',
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
                     ),
                     const SizedBox(height: AppSpacing.xs),
                     Text(
                       '${(_totalDownloadSize / 1024 / 1024).toStringAsFixed(1)} MB used',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
                     ),
                   ],
                 ),
@@ -128,8 +129,8 @@ class _OfflineModeScreenState extends State<OfflineModeScreen> {
             Text(
               'Downloaded Tracks',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             Row(
               children: [
@@ -180,31 +181,31 @@ class _OfflineModeScreenState extends State<OfflineModeScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
-              Icons.cloud_download,
-              size: 64,
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
+            Icons.cloud_download,
+            size: 64,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
           const SizedBox(height: AppSpacing.lg),
           Text(
-              'No downloaded tracks',
-              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
-            ),
+            'No downloaded tracks',
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+          ),
           const SizedBox(height: AppSpacing.md),
           Text(
-              'Download tracks to listen offline',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
-            ),
+            'Download tracks to listen offline',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+          ),
           const SizedBox(height: AppSpacing.lg),
           ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('Browse Library'),
-              ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('Browse Library'),
+          ),
         ],
       ),
     );
@@ -226,14 +227,14 @@ class _OfflineModeScreenState extends State<OfflineModeScreen> {
       title: Text(
         track.title,
         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-          fontWeight: FontWeight.bold,
-        ),
+              fontWeight: FontWeight.bold,
+            ),
       ),
       subtitle: Text(
         track.artists.isNotEmpty ? track.artists.first.name : 'Unknown Artist',
         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
-        ),
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
       ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
@@ -268,13 +269,15 @@ class _OfflineModeScreenState extends State<OfflineModeScreen> {
 
   void _sortByArtist() {
     setState(() {
-      _downloadedTracks.sort((a, b) => a.artists.first.name.compareTo(b.artists.first.name));
+      _downloadedTracks
+          .sort((a, b) => a.artists.first.name.compareTo(b.artists.first.name));
     });
   }
 
   void _sortByDate() {
     setState(() {
-      _downloadedTracks.sort((a, b) => a.lastModified.compareTo(b.lastModified));
+      _downloadedTracks
+          .sort((a, b) => a.lastModified.compareTo(b.lastModified));
     });
   }
 

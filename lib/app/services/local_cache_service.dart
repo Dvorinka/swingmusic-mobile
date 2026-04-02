@@ -25,9 +25,8 @@ class LocalCacheService {
 
   Future<void> saveOfflineTracks(List<OfflineTrack> tracks) async {
     final prefs = await SharedPreferences.getInstance();
-    final payload = tracks
-        .map((track) => track.toMap())
-        .toList(growable: false);
+    final payload =
+        tracks.map((track) => track.toMap()).toList(growable: false);
     await prefs.setString(_kOfflineTracks, jsonEncode(payload));
   }
 
@@ -73,9 +72,8 @@ class LocalCacheService {
 
   Future<void> savePendingScrobbles(List<PendingScrobble> entries) async {
     final prefs = await SharedPreferences.getInstance();
-    final payload = entries
-        .map((entry) => entry.toMap())
-        .toList(growable: false);
+    final payload =
+        entries.map((entry) => entry.toMap()).toList(growable: false);
     await prefs.setString(_kPendingScrobbles, jsonEncode(payload));
   }
 
@@ -112,9 +110,8 @@ class LocalCacheService {
 
   Future<void> savePendingActions(List<PendingAction> actions) async {
     final prefs = await SharedPreferences.getInstance();
-    final payload = actions
-        .map((entry) => entry.toMap())
-        .toList(growable: false);
+    final payload =
+        actions.map((entry) => entry.toMap()).toList(growable: false);
     await prefs.setString(_kPendingActions, jsonEncode(payload));
   }
 

@@ -25,13 +25,13 @@ class QueueScreen extends StatelessWidget {
           if (provider.queue.isEmpty) {
             return _buildEmptyQueue(context);
           }
-          
+
           return Column(
             children: [
               // Currently playing section
               if (provider.currentTrack != null)
                 _buildCurrentlyPlaying(context, provider),
-              
+
               // Queue list
               Expanded(
                 child: ReorderableListView.builder(
@@ -41,7 +41,7 @@ class QueueScreen extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final track = provider.queue[index];
                     final isCurrentTrack = index == provider.currentIndex;
-                    
+
                     return _buildQueueItem(
                       context,
                       track,
@@ -58,7 +58,7 @@ class QueueScreen extends StatelessWidget {
       ),
     );
   }
-  
+
   Widget _buildEmptyQueue(BuildContext context) {
     return Center(
       child: Column(
@@ -78,30 +78,31 @@ class QueueScreen extends StatelessWidget {
           Text(
             'Add tracks to your queue to see them here',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(context).colorScheme.surfaceTint,
-            ),
+                  color: Theme.of(context).colorScheme.surfaceTint,
+                ),
           ),
         ],
       ),
     );
   }
-  
-  Widget _buildCurrentlyPlaying(BuildContext context, MediaControllerProvider provider) {
+
+  Widget _buildCurrentlyPlaying(
+      BuildContext context, MediaControllerProvider provider) {
     final currentTrack = provider.currentTrack!;
-    
+
     return Container(
       margin: const EdgeInsets.all(AppConstants.defaultPadding),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Theme.of(context).colorScheme.primary.withOpacity(0.1),
-            Theme.of(context).colorScheme.secondary.withOpacity(0.1),
+            Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+            Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1),
           ],
         ),
         borderRadius: BorderRadius.circular(AppConstants.cardBorderRadius),
         border: Border.all(
-          color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
         ),
       ),
       child: Column(
@@ -118,9 +119,9 @@ class QueueScreen extends StatelessWidget {
                 child: Text(
                   'NOW PLAYING',
                   style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                  ),
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
                 ),
               ),
               const Spacer(),
@@ -146,12 +147,17 @@ class QueueScreen extends StatelessWidget {
                       width: 56,
                       height: 56,
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surfaceTint.withAlpha((0.6 * 255).round()),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .surfaceTint
+                            .withAlpha((0.6 * 255).round()),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Icon(
                         Icons.music_note,
-                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                        color: Theme.of(context)
+                            .colorScheme
+                            .surfaceContainerHighest,
                       ),
                     );
                   },
@@ -165,8 +171,8 @@ class QueueScreen extends StatelessWidget {
                     Text(
                       currentTrack.title,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                            fontWeight: FontWeight.w600,
+                          ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -174,8 +180,10 @@ class QueueScreen extends StatelessWidget {
                     Text(
                       currentTrack.artistNames,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                      ),
+                            color: Theme.of(context)
+                                .colorScheme
+                                .surfaceContainerHighest,
+                          ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -188,7 +196,7 @@ class QueueScreen extends StatelessWidget {
       ),
     );
   }
-  
+
   Widget _buildQueueItem(
     BuildContext context,
     track,
@@ -199,8 +207,11 @@ class QueueScreen extends StatelessWidget {
     return Card(
       key: ValueKey(track.trackhash ?? index),
       margin: const EdgeInsets.only(bottom: 8),
-      color: isCurrentTrack 
-          ? Theme.of(context).colorScheme.primaryContainer.withOpacity(0.3)
+      color: isCurrentTrack
+          ? Theme.of(context)
+              .colorScheme
+              .primaryContainer
+              .withValues(alpha: 0.3)
           : null,
       child: ListTile(
         leading: isCurrentTrack
@@ -229,12 +240,16 @@ class QueueScreen extends StatelessWidget {
                       width: 40,
                       height: 40,
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                        color: Theme.of(context)
+                            .colorScheme
+                            .surfaceContainerHighest,
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: Icon(
                         Icons.music_note,
-                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                        color: Theme.of(context)
+                            .colorScheme
+                            .surfaceContainerHighest,
                         size: 20,
                       ),
                     );
@@ -252,16 +267,16 @@ class QueueScreen extends StatelessWidget {
           track.title,
           style: isCurrentTrack
               ? Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                )
+                    fontWeight: FontWeight.w600,
+                  )
               : null,
         ),
         subtitle: Text(
           '${track.artistNames} • ${track.album ?? 'Unknown Album'}',
           style: isCurrentTrack
               ? Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.primary,
-                )
+                    color: Theme.of(context).colorScheme.primary,
+                  )
               : null,
         ),
         onTap: () {

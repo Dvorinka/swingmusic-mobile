@@ -9,7 +9,7 @@ import '../../../data/services/enhanced_api_service.dart';
 
 class AlbumScreen extends StatefulWidget {
   final String albumHash;
-  
+
   const AlbumScreen({super.key, required this.albumHash});
 
   @override
@@ -18,7 +18,7 @@ class AlbumScreen extends StatefulWidget {
 
 class _AlbumScreenState extends State<AlbumScreen> {
   bool _isFavorite = false;
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,12 +37,13 @@ class _AlbumScreenState extends State<AlbumScreen> {
                 onPressed: () => _playAlbum(),
               ),
               IconButton(
-                icon: Icon(_isFavorite ? Icons.favorite : Icons.favorite_border),
+                icon:
+                    Icon(_isFavorite ? Icons.favorite : Icons.favorite_border),
                 onPressed: () => _toggleFavorite(),
               ),
             ],
           ),
-          
+
           // Album content
           SliverToBoxAdapter(
             child: Padding(
@@ -52,9 +53,9 @@ class _AlbumScreenState extends State<AlbumScreen> {
                 children: [
                   // Album info
                   _buildAlbumInfo(context),
-                  
+
                   const SizedBox(height: 32),
-                  
+
                   // Track list
                   _buildTrackList(context),
                 ],
@@ -65,7 +66,7 @@ class _AlbumScreenState extends State<AlbumScreen> {
       ),
     );
   }
-  
+
   Widget _buildAlbumHeader(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
@@ -91,7 +92,7 @@ class _AlbumScreenState extends State<AlbumScreen> {
               ),
             ),
           ),
-          
+
           // Gradient overlay
           Positioned.fill(
             child: Container(
@@ -107,7 +108,7 @@ class _AlbumScreenState extends State<AlbumScreen> {
               ),
             ),
           ),
-          
+
           // Album art and info
           Positioned(
             bottom: 20,
@@ -120,7 +121,8 @@ class _AlbumScreenState extends State<AlbumScreen> {
                   width: 120,
                   height: 120,
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                    color:
+                        Theme.of(context).colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(8),
                     boxShadow: [
                       BoxShadow(
@@ -136,9 +138,9 @@ class _AlbumScreenState extends State<AlbumScreen> {
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
-                
+
                 const SizedBox(width: 20),
-                
+
                 // Album details
                 Expanded(
                   child: Column(
@@ -146,24 +148,26 @@ class _AlbumScreenState extends State<AlbumScreen> {
                     children: [
                       Text(
                         'Album Title',
-                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style:
+                            Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
                       ),
                       const SizedBox(height: 8),
                       Text(
                         'Artist Name',
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          color: Colors.white.withAlpha(230),
-                        ),
+                        style:
+                            Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  color: Colors.white.withAlpha(230),
+                                ),
                       ),
                       const SizedBox(height: 8),
                       Text(
                         '2024 • 12 tracks • 48 min',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.white.withAlpha(204),
-                        ),
+                              color: Colors.white.withAlpha(204),
+                            ),
                       ),
                     ],
                   ),
@@ -175,7 +179,7 @@ class _AlbumScreenState extends State<AlbumScreen> {
       ),
     );
   }
-  
+
   Widget _buildAlbumInfo(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -184,19 +188,19 @@ class _AlbumScreenState extends State<AlbumScreen> {
         Text(
           'Album Title',
           style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+                fontWeight: FontWeight.bold,
+              ),
         ),
         const SizedBox(height: 8),
         Text(
           'Artist Name',
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         // Album metadata
         Row(
           children: [
@@ -216,9 +220,9 @@ class _AlbumScreenState extends State<AlbumScreen> {
             ),
           ],
         ),
-        
+
         const SizedBox(height: 24),
-        
+
         // Action buttons
         Row(
           children: [
@@ -237,7 +241,8 @@ class _AlbumScreenState extends State<AlbumScreen> {
               onPressed: () => _shufflePlay(),
               icon: const Icon(Icons.shuffle),
               style: IconButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                backgroundColor:
+                    Theme.of(context).colorScheme.surfaceContainerHighest,
                 padding: const EdgeInsets.all(16),
               ),
             ),
@@ -246,7 +251,7 @@ class _AlbumScreenState extends State<AlbumScreen> {
       ],
     );
   }
-  
+
   Widget _buildTrackList(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -254,11 +259,10 @@ class _AlbumScreenState extends State<AlbumScreen> {
         Text(
           'Tracks',
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+                fontWeight: FontWeight.bold,
+              ),
         ),
         const SizedBox(height: 16),
-        
         ListView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -270,15 +274,15 @@ class _AlbumScreenState extends State<AlbumScreen> {
       ],
     );
   }
-  
+
   Widget _buildTrackTile(BuildContext context, int trackNumber) {
     return ListTile(
       dense: true,
       leading: Text(
         '$trackNumber',
         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
-        ),
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
       ),
       title: Text('Track $trackNumber Title'),
       subtitle: Text('Artist Name'),
@@ -298,21 +302,27 @@ class _AlbumScreenState extends State<AlbumScreen> {
       onTap: () => _playTrack(trackNumber),
     );
   }
-  
+
   void _playAlbum() async {
     try {
       // Get real album tracks from API
       final apiService = EnhancedApiService();
       final tracksData = await apiService.getAlbumTracks(widget.albumHash);
-      
-      final tracks = tracksData.map((trackData) => TrackModel.fromJson(trackData as Map<String, dynamic>)).toList();
-      
+
+      final tracks = tracksData
+          .map((trackData) =>
+              TrackModel.fromJson(trackData as Map<String, dynamic>))
+          .toList();
+
       if (mounted) {
-        final audioProvider = Provider.of<AudioProvider>(context, listen: false);
+        final audioProvider =
+            Provider.of<AudioProvider>(context, listen: false);
         // Set queue source for playback logging
-        final mediaController = Provider.of<MediaControllerProvider>(context, listen: false);
-        mediaController.setQueueSource(QueueSource.album, identifier: widget.albumHash);
-        
+        final mediaController =
+            Provider.of<MediaControllerProvider>(context, listen: false);
+        mediaController.setQueueSource(QueueSource.album,
+            identifier: widget.albumHash);
+
         audioProvider.setQueue(tracks);
         if (tracks.isNotEmpty) {
           await audioProvider.loadTrack(tracks.first);
@@ -327,22 +337,28 @@ class _AlbumScreenState extends State<AlbumScreen> {
       }
     }
   }
-  
+
   void _shufflePlay() async {
     try {
       // Get real album tracks from API
       final apiService = EnhancedApiService();
       final tracksData = await apiService.getAlbumTracks(widget.albumHash);
-      
-      final tracks = tracksData.map((trackData) => TrackModel.fromJson(trackData as Map<String, dynamic>)).toList();
+
+      final tracks = tracksData
+          .map((trackData) =>
+              TrackModel.fromJson(trackData as Map<String, dynamic>))
+          .toList();
       tracks.shuffle(); // Shuffle the tracks
-      
+
       if (mounted) {
-        final audioProvider = Provider.of<AudioProvider>(context, listen: false);
+        final audioProvider =
+            Provider.of<AudioProvider>(context, listen: false);
         // Set queue source for playback logging
-        final mediaController = Provider.of<MediaControllerProvider>(context, listen: false);
-        mediaController.setQueueSource(QueueSource.album, identifier: widget.albumHash);
-        
+        final mediaController =
+            Provider.of<MediaControllerProvider>(context, listen: false);
+        mediaController.setQueueSource(QueueSource.album,
+            identifier: widget.albumHash);
+
         audioProvider.setQueue(tracks);
         if (tracks.isNotEmpty) {
           await audioProvider.loadTrack(tracks.first);
@@ -357,7 +373,7 @@ class _AlbumScreenState extends State<AlbumScreen> {
       }
     }
   }
-  
+
   void _playTrack(int trackNumber) {
     final track = TrackModel(
       id: trackNumber,
@@ -365,7 +381,9 @@ class _AlbumScreenState extends State<AlbumScreen> {
       album: 'Album Title',
       albumhash: 'album_hash_${widget.albumHash}',
       artists: [ArtistModel(name: 'Artist Name', artisthash: 'artist_hash')],
-      albumartists: [ArtistModel(name: 'Artist Name', artisthash: 'artist_hash')],
+      albumartists: [
+        ArtistModel(name: 'Artist Name', artisthash: 'artist_hash')
+      ],
       artisthashes: ['artist_hash'],
       track: trackNumber,
       disc: 1,
@@ -380,29 +398,30 @@ class _AlbumScreenState extends State<AlbumScreen> {
       trackhash: 'track_hash_$trackNumber',
       extra: {},
     );
-    
+
     final audioProvider = Provider.of<AudioProvider>(context, listen: false);
     audioProvider.setQueue([track]);
     audioProvider.loadTrack(track);
     audioProvider.play();
-    
+
     Navigator.pushNamed(context, '/player');
   }
-  
+
   void _toggleFavorite() {
     setState(() {
       _isFavorite = !_isFavorite;
     });
-    
+
     // Show snackbar feedback
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(_isFavorite ? 'Added to favorites' : 'Removed from favorites'),
+        content:
+            Text(_isFavorite ? 'Added to favorites' : 'Removed from favorites'),
         duration: const Duration(seconds: 2),
       ),
     );
   }
-  
+
   void _showTrackOptions() {
     showModalBottomSheet(
       context: context,

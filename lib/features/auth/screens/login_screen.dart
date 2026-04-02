@@ -29,18 +29,18 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _login() async {
     if (_formKey.currentState!.validate()) {
       final session = context.read<SessionController>();
-      
+
       // Set server URL if provided
       if (_baseUrlController.text.isNotEmpty) {
         await session.setServerUrl(_baseUrlController.text.trim());
       }
-      
+
       // Login with username and password
       await session.loginWithCredentials(
         username: _usernameController.text.trim(),
         password: _passwordController.text,
       );
-      
+
       if (session.isAuthenticated && mounted) {
         // Navigation will be handled by RootGateScreen
       }
@@ -60,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const Spacer(flex: 2),
-                
+
                 // Logo and title
                 Column(
                   children: [
@@ -80,23 +80,25 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 24),
                     Text(
                       AppConstants.appName,
-                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
+                      style:
+                          Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
                     ),
                     const SizedBox(height: 8),
                     Text(
                       'Sign in to your account',
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
                     ),
                   ],
                 ),
-                
+
                 const Spacer(flex: 3),
-                
+
                 // Username field
                 TextFormField(
                   controller: _usernameController,
@@ -105,7 +107,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     hintText: 'Enter your username',
                     prefixIcon: const Icon(Icons.person_outline),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(AppConstants.borderRadius),
+                      borderRadius:
+                          BorderRadius.circular(AppConstants.borderRadius),
                     ),
                   ),
                   validator: (value) {
@@ -115,9 +118,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     return null;
                   },
                 ),
-                
+
                 const SizedBox(height: 16),
-                
+
                 // Password field
                 TextFormField(
                   controller: _passwordController,
@@ -128,7 +131,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     prefixIcon: const Icon(Icons.lock_outline),
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                        _obscurePassword
+                            ? Icons.visibility_off
+                            : Icons.visibility,
                       ),
                       onPressed: () {
                         setState(() {
@@ -137,7 +142,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                     ),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(AppConstants.borderRadius),
+                      borderRadius:
+                          BorderRadius.circular(AppConstants.borderRadius),
                     ),
                   ),
                   validator: (value) {
@@ -147,9 +153,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     return null;
                   },
                 ),
-                
+
                 const SizedBox(height: 24),
-                
+
                 // Login button
                 Consumer<SessionController>(
                   builder: (context, session, child) {
@@ -158,7 +164,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(AppConstants.borderRadius),
+                          borderRadius:
+                              BorderRadius.circular(AppConstants.borderRadius),
                         ),
                       ),
                       child: session.initializing
@@ -171,9 +178,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     );
                   },
                 ),
-                
+
                 const SizedBox(height: 16),
-                
+
                 // Error message
                 Consumer<SessionController>(
                   builder: (context, session, child) {
@@ -182,7 +189,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
                           color: Theme.of(context).colorScheme.errorContainer,
-                          borderRadius: BorderRadius.circular(AppConstants.borderRadius),
+                          borderRadius:
+                              BorderRadius.circular(AppConstants.borderRadius),
                         ),
                         child: Row(
                           children: [
@@ -195,9 +203,13 @@ class _LoginScreenState extends State<LoginScreen> {
                             Expanded(
                               child: Text(
                                 session.error!,
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  color: Theme.of(context).colorScheme.error,
-                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(
+                                      color:
+                                          Theme.of(context).colorScheme.error,
+                                    ),
                               ),
                             ),
                           ],
@@ -207,9 +219,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     return const SizedBox.shrink();
                   },
                 ),
-                
+
                 const Spacer(flex: 2),
-                
+
                 // QR Code login option
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -217,8 +229,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     Text(
                       'Or sign in with',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
                     ),
                     TextButton(
                       onPressed: () {
@@ -232,7 +245,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ],
                 ),
-                
+
                 const Spacer(),
               ],
             ),

@@ -12,35 +12,35 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   bool _isLoading = false;
-  
+
   // Connection settings
   String _serverUrl = '';
   String _username = '';
   bool _isConnected = false;
-  
+
   // Audio settings
   double _volume = 1.0;
   double _audioQuality = 1.0; // 0.5 = Low, 1.0 = High
   bool _gaplessPlayback = false;
   bool _crossfade = true;
   double _crossfadeDuration = 5.0;
-  
+
   // Theme settings
   ThemeMode _themeMode = ThemeMode.system;
-  
+
   // Download settings
   String _downloadQuality = 'high'; // 'low', 'medium', 'high'
   bool _wifiOnlyDownloads = true;
   int _maxDownloadSize = 1000; // MB
-  
+
   // Cache settings
   int _cacheSize = 500; // MB
   bool _clearCacheOnStart = false;
-  
+
   // Analytics settings
   bool _enableAnalytics = true;
   bool _shareListeningData = false;
-  
+
   // DragonflyDB cache status
   DragonflyStats? _dragonflyStats;
   bool _isLoadingDragonfly = false;
@@ -58,7 +58,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     });
 
     final prefs = await SharedPreferences.getInstance();
-    
+
     setState(() {
       _serverUrl = prefs.getString('server_url') ?? AppConstants.defaultApiUrl;
       _username = prefs.getString('username') ?? '';
@@ -68,10 +68,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
       _gaplessPlayback = prefs.getBool('gapless_playback') ?? false;
       _crossfade = prefs.getBool('crossfade') ?? true;
       _crossfadeDuration = prefs.getDouble('crossfade_duration') ?? 5.0;
-      
+
       final themeIndex = prefs.getInt('theme_mode') ?? 2;
       _themeMode = ThemeMode.values[themeIndex];
-      
+
       _downloadQuality = prefs.getString('download_quality') ?? 'high';
       _wifiOnlyDownloads = prefs.getBool('wifi_only_downloads') ?? true;
       _maxDownloadSize = prefs.getInt('max_download_size') ?? 1000;
@@ -85,7 +85,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Future<void> _saveSettings() async {
     final prefs = await SharedPreferences.getInstance();
-    
+
     await prefs.setString('server_url', _serverUrl);
     await prefs.setString('username', _username);
     await prefs.setBool('is_connected', _isConnected);
@@ -129,7 +129,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 _buildUsernameField(),
                 _buildConnectionStatus(),
                 const SizedBox(height: 24),
-                
+
                 // Audio Section
                 _buildSectionHeader('Audio'),
                 _buildVolumeSlider(),
@@ -138,37 +138,37 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 _buildCrossfadeSwitch(),
                 _buildCrossfadeDurationSlider(),
                 const SizedBox(height: 24),
-                
+
                 // Theme Section
                 _buildSectionHeader('Appearance'),
                 _buildThemeSelector(),
                 const SizedBox(height: 24),
-                
+
                 // Download Section
                 _buildSectionHeader('Downloads'),
                 _buildDownloadQualityDropdown(),
                 _buildWifiOnlySwitch(),
                 _buildMaxDownloadSizeField(),
                 const SizedBox(height: 24),
-                
+
                 // Cache Section
                 _buildSectionHeader('Storage'),
                 _buildCacheSizeField(),
                 _buildClearCacheSwitch(),
                 _buildClearCacheButton(),
                 const SizedBox(height: 24),
-                
+
                 // DragonflyDB Cache Status
                 _buildSectionHeader('Cache Server'),
                 _buildDragonflyStatus(),
                 const SizedBox(height: 24),
-                
+
                 // Analytics Section
                 _buildSectionHeader('Analytics'),
                 _buildAnalyticsSwitch(),
                 _buildShareDataSwitch(),
                 const SizedBox(height: 24),
-                
+
                 // About Section
                 _buildSectionHeader('About'),
                 _buildAppInfo(),
@@ -184,8 +184,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       child: Text(
         title,
         style: Theme.of(context).textTheme.titleLarge?.copyWith(
-          fontWeight: FontWeight.bold,
-        ),
+              fontWeight: FontWeight.bold,
+            ),
       ),
     );
   }
@@ -278,7 +278,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
       onChanged: (value) {
         if (value != null) {
           setState(() {
-            _audioQuality = value == 'Low' ? 0.5 : value == 'High' ? 1.0 : 0.75;
+            _audioQuality = value == 'Low'
+                ? 0.5
+                : value == 'High'
+                    ? 1.0
+                    : 0.75;
           });
         }
       },
@@ -313,7 +317,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Widget _buildCrossfadeDurationSlider() {
     if (!_crossfade) return const SizedBox.shrink();
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -502,20 +506,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Future<void> _loadDragonflyStats() async {
     if (!_isConnected || _serverUrl.isEmpty) return;
-    
+
     setState(() {
       _isLoadingDragonfly = true;
     });
-    
+
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('auth_token') ?? '';
-      
+
       final service = DragonflyService(
         baseUrl: _serverUrl,
         authToken: token,
       );
-      
+
       final stats = await service.getStats();
       setState(() {
         _dragonflyStats = stats;
@@ -545,7 +549,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
       );
     }
-    
+
     if (_isLoadingDragonfly) {
       return const Center(
         child: Padding(
@@ -554,7 +558,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
       );
     }
-    
+
     if (_dragonflyStats == null) {
       return Container(
         padding: const EdgeInsets.all(16),
@@ -571,12 +575,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
       );
     }
-    
+
     final stats = _dragonflyStats!;
-    final statusColor = stats.connected 
+    final statusColor = stats.connected
         ? (stats.latencyMs > 100 ? Colors.orange : Colors.green)
         : Colors.red;
-    
+
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
@@ -619,7 +623,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ],
             ),
             const SizedBox(height: 16),
-            _buildStatRow('Latency', '${stats.latencyMs.toStringAsFixed(1)} ms'),
+            _buildStatRow(
+                'Latency', '${stats.latencyMs.toStringAsFixed(1)} ms'),
             _buildStatRow('Memory Used', stats.memoryUsed),
             _buildStatRow('Memory Peak', stats.memoryPeak),
             _buildStatRow('Cached Keys', stats.totalKeys.toString()),

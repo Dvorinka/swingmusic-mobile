@@ -6,9 +6,10 @@ class DownloadService {
   final String baseUrl;
   final String _downloadPath;
 
-  DownloadService({String? baseUrl, String? downloadPath}) 
+  DownloadService({String? baseUrl, String? downloadPath})
       : baseUrl = baseUrl ?? 'https://your-server.com',
-        _downloadPath = downloadPath ?? '/storage/emulated/0/Android/data/com.example.swingmusic/files/Downloads' {
+        _downloadPath = downloadPath ??
+            '/storage/emulated/0/Android/data/com.example.swingmusic/files/Downloads' {
     _dio = Dio(BaseOptions(
       baseUrl: this.baseUrl,
       connectTimeout: const Duration(seconds: 30),
@@ -18,15 +19,17 @@ class DownloadService {
         'Accept': 'application/json',
       },
     ));
-    
+
     _dio.interceptors.add(LogInterceptor(
       requestBody: true,
       responseBody: true,
       logPrint: (obj) {
-      if (kDebugMode) debugPrint('Download API: Download service initialized');
+        if (kDebugMode) {
+          debugPrint('Download API: Download service initialized');
+        }
       },
     ));
-    
+
     _dio.interceptors.add(InterceptorsWrapper(
       onError: (error, handler) {
         if (error.type == DioExceptionType.connectionTimeout ||
@@ -39,7 +42,7 @@ class DownloadService {
         } else if (error.response?.statusCode == 503) {
           // Service unavailable - downloads are disabled
         }
-        
+
         handler.next(error);
       },
     ));
@@ -52,7 +55,7 @@ class DownloadService {
   Future<Map<String, dynamic>> getDownloads() async {
     try {
       final response = await _dio.get('/downloads');
-      
+
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>? ?? {};
       } else {
@@ -66,7 +69,7 @@ class DownloadService {
   Future<Map<String, dynamic>?> getDownload(String downloadId) async {
     try {
       final response = await _dio.get('/download/$downloadId');
-      
+
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>?;
       } else {
@@ -77,7 +80,8 @@ class DownloadService {
     }
   }
 
-  Future<String> downloadTrack(String trackHash, {
+  Future<String> downloadTrack(
+    String trackHash, {
     String quality = '320kbps',
     bool wifiOnly = false,
   }) async {
@@ -87,7 +91,7 @@ class DownloadService {
         'quality': quality,
         'wifiOnly': wifiOnly,
       });
-      
+
       if (response.statusCode == 200) {
         final data = response.data;
         return data['downloadId'] as String? ?? '';
@@ -99,7 +103,8 @@ class DownloadService {
     }
   }
 
-  Future<String> downloadAlbum(String albumHash, {
+  Future<String> downloadAlbum(
+    String albumHash, {
     String quality = '320kbps',
     bool wifiOnly = false,
   }) async {
@@ -109,7 +114,7 @@ class DownloadService {
         'quality': quality,
         'wifiOnly': wifiOnly,
       });
-      
+
       if (response.statusCode == 200) {
         final data = response.data;
         return data['downloadId'] as String? ?? '';
@@ -121,7 +126,8 @@ class DownloadService {
     }
   }
 
-  Future<String> downloadArtist(String artistHash, {
+  Future<String> downloadArtist(
+    String artistHash, {
     String quality = '320kbps',
     bool wifiOnly = false,
   }) async {
@@ -131,7 +137,7 @@ class DownloadService {
         'quality': quality,
         'wifiOnly': wifiOnly,
       });
-      
+
       if (response.statusCode == 200) {
         final data = response.data;
         return data['downloadId'] as String? ?? '';
@@ -143,7 +149,8 @@ class DownloadService {
     }
   }
 
-  Future<String> downloadPlaylist(String playlistId, {
+  Future<String> downloadPlaylist(
+    String playlistId, {
     String quality = '320kbps',
     bool wifiOnly = false,
   }) async {
@@ -153,7 +160,7 @@ class DownloadService {
         'quality': quality,
         'wifiOnly': wifiOnly,
       });
-      
+
       if (response.statusCode == 200) {
         final data = response.data;
         return data['downloadId'] as String? ?? '';
@@ -168,7 +175,7 @@ class DownloadService {
   Future<bool> pauseDownload(String downloadId) async {
     try {
       final response = await _dio.post('/download/$downloadId/pause');
-      
+
       return response.statusCode == 200;
     } catch (e) {
       return false;
@@ -178,7 +185,7 @@ class DownloadService {
   Future<bool> resumeDownload(String downloadId) async {
     try {
       final response = await _dio.post('/download/$downloadId/resume');
-      
+
       return response.statusCode == 200;
     } catch (e) {
       return false;
@@ -188,7 +195,7 @@ class DownloadService {
   Future<bool> cancelDownload(String downloadId) async {
     try {
       final response = await _dio.post('/download/$downloadId/cancel');
-      
+
       return response.statusCode == 200;
     } catch (e) {
       return false;
@@ -198,7 +205,7 @@ class DownloadService {
   Future<bool> deleteDownload(String downloadId) async {
     try {
       final response = await _dio.delete('/download/$downloadId');
-      
+
       return response.statusCode == 200;
     } catch (e) {
       return false;
@@ -208,7 +215,7 @@ class DownloadService {
   Future<Map<String, dynamic>> getDownloadStats() async {
     try {
       final response = await _dio.get('/download/stats');
-      
+
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>? ?? {};
       } else {
@@ -238,13 +245,14 @@ class DownloadService {
     int? maxConcurrentDownloads,
   }) async {
     try {
-      final response = await _dio.post('/download/settings', data: {
-        'downloadPath': downloadPath,
-        'defaultQuality': defaultQuality,
-        'wifiOnly': wifiOnly,
-        'maxConcurrentDownloads': maxConcurrentDownloads,
-      }..removeWhere((key, value) => value == null));
-      
+      final response = await _dio.post('/download/settings',
+          data: {
+            'downloadPath': downloadPath,
+            'defaultQuality': defaultQuality,
+            'wifiOnly': wifiOnly,
+            'maxConcurrentDownloads': maxConcurrentDownloads,
+          }..removeWhere((key, value) => value == null));
+
       return response.statusCode == 200;
     } catch (e) {
       return false;
@@ -254,7 +262,7 @@ class DownloadService {
   Future<Map<String, dynamic>> getDownloadSettings() async {
     try {
       final response = await _dio.get('/download/settings');
-      
+
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>? ?? {};
       } else {
@@ -270,7 +278,7 @@ class DownloadService {
     // For now, implementing periodic polling as a fallback
     return Stream.periodic(const Duration(seconds: 2), (count) async {
       final download = await getDownload(downloadId);
-      
+
       if (download != null) {
         return {
           'downloadId': downloadId,
@@ -280,7 +288,7 @@ class DownloadService {
           'eta': download['eta'] ?? 0,
         };
       }
-      
+
       return <String, dynamic>{};
     }).asyncMap((future) => future);
   }

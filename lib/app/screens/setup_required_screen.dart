@@ -38,8 +38,8 @@ class SetupRequiredScreen extends StatelessWidget {
                       session.setupMessage ??
                           'Complete owner account and music directory setup in web UI.',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: scheme.onSurfaceVariant,
-                      ),
+                            color: scheme.onSurfaceVariant,
+                          ),
                     ),
                     const SizedBox(height: 20),
                     FilledButton.tonal(

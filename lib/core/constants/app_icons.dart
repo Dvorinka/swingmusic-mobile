@@ -9,7 +9,7 @@ class AppIcons {
   static const IconData searchFilled = Icons.search;
   static const IconData library = Icons.library_music_outlined;
   static const IconData libraryFilled = Icons.library_music;
-  
+
   // Media control icons
   static const IconData play = Icons.play_arrow;
   static const IconData pause = Icons.pause;
@@ -17,7 +17,7 @@ class AppIcons {
   static const IconData skipForward = Icons.skip_next;
   static const IconData volume = Icons.volume_up_outlined;
   static const IconData volumeMuted = Icons.volume_off_outlined;
-  
+
   // Content icons
   static const IconData album = Icons.album;
   static const IconData artist = Icons.person;
@@ -26,7 +26,7 @@ class AppIcons {
   static const IconData playlist = Icons.playlist_play;
   static const IconData favorite = Icons.favorite_border;
   static const IconData favoriteFilled = Icons.favorite;
-  
+
   // Action icons
   static const IconData more = Icons.more_vert;
   static const IconData add = Icons.add;
@@ -35,7 +35,7 @@ class AppIcons {
   static const IconData settings = Icons.settings;
   static const IconData notifications = Icons.notifications_outlined;
   static const IconData user = Icons.person;
-  
+
   // Status icons
   static const IconData playing = Icons.equalizer;
   static const IconData success = Icons.check_circle;
@@ -52,22 +52,22 @@ class AppIconSizes {
   static const double lg = 32.0;
   static const double xl = 48.0;
   static const double xxl = 64.0;
-  
+
   // Navigation icons
   static const double navigationSize = sm;
-  
+
   // Media control icons
   static const double mediaControlSize = lg;
   static const double mediaControlSmallSize = md;
-  
+
   // Content icons
   static const double contentIconSize = md;
   static const double contentIconLargeSize = lg;
-  
+
   // Action icons
   static const double actionIconSize = sm;
   static const double actionIconLargeSize = md;
-  
+
   // Status icons
   static const double statusIconSize = sm;
   static const double statusIconLargeSize = md;
@@ -78,14 +78,14 @@ class AppIcon extends StatelessWidget {
   final IconData icon;
   final double? size;
   final Color? color;
-  
+
   const AppIcon({
     super.key,
     required this.icon,
     this.size,
     this.color,
   });
-  
+
   @override
   Widget build(BuildContext context) {
     return Icon(

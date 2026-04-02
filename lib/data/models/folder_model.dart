@@ -51,11 +51,13 @@ class FolderModel extends Equatable {
       parent: json['parent'],
       trackcount: json['trackcount'] ?? 0,
       subfolders: (json['subfolders'] as List<dynamic>?)
-          ?.map((folder) => FolderModel.fromJson(folder))
-          .toList() ?? [],
+              ?.map((folder) => FolderModel.fromJson(folder))
+              .toList() ??
+          [],
       tracks: (json['tracks'] as List<dynamic>?)
-          ?.map((track) => TrackModel.fromJson(track))
-          .toList() ?? [],
+              ?.map((track) => TrackModel.fromJson(track))
+              .toList() ??
+          [],
       image: json['image'],
       isFavorite: json['is_favorite'] ?? false,
     );
@@ -101,11 +103,13 @@ class FoldersAndTracksModel extends Equatable {
   factory FoldersAndTracksModel.fromJson(Map<String, dynamic> json) {
     return FoldersAndTracksModel(
       folders: (json['folders'] as List<dynamic>?)
-          ?.map((folder) => FolderModel.fromJson(folder))
-          .toList() ?? [],
+              ?.map((folder) => FolderModel.fromJson(folder))
+              .toList() ??
+          [],
       tracks: (json['tracks'] as List<dynamic>?)
-          ?.map((track) => TrackModel.fromJson(track))
-          .toList() ?? [],
+              ?.map((track) => TrackModel.fromJson(track))
+              .toList() ??
+          [],
       currentPath: json['current_path'] ?? '',
     );
   }

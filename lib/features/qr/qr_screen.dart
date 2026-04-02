@@ -56,19 +56,19 @@ class _QRScreenState extends State<QRScreen> {
                   Text(
                     'QR Code Pairing',
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                          fontWeight: FontWeight.bold,
+                        ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     'Scan or generate a QR code to connect',
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 24),
-                  
+
                   // QR Code Visual
                   Container(
                     width: 200,
@@ -117,7 +117,7 @@ class _QRScreenState extends State<QRScreen> {
                               ),
                   ),
                   const SizedBox(height: 24),
-                  
+
                   // Action Buttons
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -126,8 +126,10 @@ class _QRScreenState extends State<QRScreen> {
                         child: ElevatedButton(
                           onPressed: _isScanning ? null : _toggleScanning,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Theme.of(context).colorScheme.primary,
-                            foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primary,
+                            foregroundColor:
+                                Theme.of(context).colorScheme.onPrimary,
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
@@ -144,8 +146,10 @@ class _QRScreenState extends State<QRScreen> {
                         child: ElevatedButton(
                           onPressed: _isScanning ? null : _generateQRCode,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Theme.of(context).colorScheme.secondary,
-                            foregroundColor: Theme.of(context).colorScheme.onSecondary,
+                            backgroundColor:
+                                Theme.of(context).colorScheme.secondary,
+                            foregroundColor:
+                                Theme.of(context).colorScheme.onSecondary,
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
@@ -160,7 +164,7 @@ class _QRScreenState extends State<QRScreen> {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  
+
                   // Manual Entry
                   TextField(
                     controller: _qrController,
@@ -173,7 +177,8 @@ class _QRScreenState extends State<QRScreen> {
                         borderSide: BorderSide.none,
                       ),
                       filled: true,
-                      fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                      fillColor:
+                          Theme.of(context).colorScheme.surfaceContainerHighest,
                     ),
                     onChanged: (value) {
                       setState(() {
@@ -182,7 +187,7 @@ class _QRScreenState extends State<QRScreen> {
                     },
                   ),
                   const SizedBox(height: 24),
-                  
+
                   // Connect Button
                   SizedBox(
                     width: double.infinity,
@@ -209,7 +214,7 @@ class _QRScreenState extends State<QRScreen> {
     setState(() {
       _isScanning = !_isScanning;
     });
-    
+
     if (_isScanning) {
       _scanQRCode();
     }
@@ -223,21 +228,22 @@ class _QRScreenState extends State<QRScreen> {
     try {
       // Get current auth token and server info
       final session = Provider.of<SessionController>(context, listen: false);
-      
+
       if (session.isAuthenticated) {
         // Generate QR code with auth token and server URL
         final qrData = {
-          'token': 'current_user_token', // In real implementation, get from secure storage
+          'token':
+              'current_user_token', // In real implementation, get from secure storage
           'serverUrl': session.baseUrl,
           'timestamp': DateTime.now().millisecondsSinceEpoch,
           'app': 'swingmusic_mobile',
         };
-        
+
         setState(() {
           _qrCode = Uri.encodeComponent(qrData.toString());
           _isGenerating = false;
         });
-        
+
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('QR Code generated!')),
@@ -250,10 +256,11 @@ class _QRScreenState extends State<QRScreen> {
       setState(() {
         _isGenerating = false;
       });
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to generate QR code: ${e.toString()}')),
+          SnackBar(
+              content: Text('Failed to generate QR code: ${e.toString()}')),
         );
       }
     }
@@ -267,13 +274,13 @@ class _QRScreenState extends State<QRScreen> {
           builder: (context) => const MobileScannerScreen(),
         ),
       );
-      
+
       if (result != null && result is String) {
         setState(() {
           _isScanning = false;
           _qrCode = result;
         });
-        
+
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('QR Code scanned!')),
@@ -288,7 +295,7 @@ class _QRScreenState extends State<QRScreen> {
       setState(() {
         _isScanning = false;
       });
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Scan failed: ${e.toString()}')),
@@ -313,21 +320,21 @@ class _QRScreenState extends State<QRScreen> {
 
     try {
       final session = Provider.of<SessionController>(context, listen: false);
-      
+
       // Parse QR code data
       String qrData = _qrCode;
       if (_qrCode.startsWith('SWING-') || _qrCode.startsWith('DEMO-')) {
         // Handle legacy/demo codes
         qrData = _qrCode.replaceFirst(RegExp(r'^(SWING-|DEMO-SCANNED-)'), '');
       }
-      
+
       // Try to decode if it's URI encoded
       try {
         qrData = Uri.decodeComponent(qrData);
       } catch (e) {
         // Not URI encoded, use as is
       }
-      
+
       // Connect using QR data
       if (qrData.isNotEmpty) {
         // Parse QR data format: "server_url|pair_code"
@@ -335,7 +342,7 @@ class _QRScreenState extends State<QRScreen> {
         if (parts.length == 2) {
           await session.loginWithPairCode(serverUrl: parts[0], code: parts[1]);
         }
-        
+
         setState(() {
           _isGenerating = false;
         });
@@ -355,7 +362,7 @@ class _QRScreenState extends State<QRScreen> {
       setState(() {
         _isGenerating = false;
       });
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Connection failed: ${e.toString()}')),

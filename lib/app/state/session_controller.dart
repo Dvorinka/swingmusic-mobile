@@ -66,9 +66,8 @@ class SessionController extends ChangeNotifier {
     _refreshToken = prefs.getString(_kRefreshToken);
 
     final expiryRaw = prefs.getString(_kAccessTokenExpiry);
-    _accessTokenExpiry = expiryRaw == null
-        ? null
-        : DateTime.tryParse(expiryRaw);
+    _accessTokenExpiry =
+        expiryRaw == null ? null : DateTime.tryParse(expiryRaw);
 
     _streamingQuality = prefs.getString(_kStreamingQuality) ?? '320';
     _downloadQuality = prefs.getString(_kDownloadQuality) ?? '320';
@@ -208,8 +207,7 @@ class SessionController extends ChangeNotifier {
     }
 
     final expiresAt = _accessTokenExpiry;
-    final needsRefresh =
-        expiresAt == null ||
+    final needsRefresh = expiresAt == null ||
         DateTime.now().isAfter(expiresAt.subtract(const Duration(minutes: 2)));
     if (!needsRefresh) {
       return _accessToken;
@@ -285,8 +283,7 @@ class SessionController extends ChangeNotifier {
 
     try {
       final values = await _connectivityValues();
-      final hasWifiLikeNetwork =
-          values.contains(ConnectivityResult.wifi) ||
+      final hasWifiLikeNetwork = values.contains(ConnectivityResult.wifi) ||
           values.contains(ConnectivityResult.ethernet) ||
           values.contains(ConnectivityResult.vpn);
 
@@ -315,13 +312,11 @@ class SessionController extends ChangeNotifier {
       try {
         final parsed = jsonDecode(value);
         if (parsed is Map) {
-          final server =
-              parsed['server_url']?.toString() ??
+          final server = parsed['server_url']?.toString() ??
               parsed['server']?.toString() ??
               parsed['url']?.toString() ??
               '';
-          final code =
-              parsed['code']?.toString() ??
+          final code = parsed['code']?.toString() ??
               parsed['pair_code']?.toString() ??
               '';
 
@@ -341,8 +336,7 @@ class SessionController extends ChangeNotifier {
       final uri = Uri.parse(value);
       final uriCode =
           uri.queryParameters['code'] ?? uri.queryParameters['pair_code'] ?? '';
-      final uriServer =
-          uri.queryParameters['server'] ??
+      final uriServer = uri.queryParameters['server'] ??
           uri.queryParameters['server_url'] ??
           uri.queryParameters['url'] ??
           '';
@@ -426,14 +420,11 @@ class SessionController extends ChangeNotifier {
     bool keepExistingRefresh = false,
     bool notify = true,
   }) async {
-    final access =
-        payload['accesstoken']?.toString() ??
+    final access = payload['accesstoken']?.toString() ??
         payload['access_token']?.toString();
-    final refresh =
-        payload['refreshtoken']?.toString() ??
+    final refresh = payload['refreshtoken']?.toString() ??
         payload['refresh_token']?.toString();
-    final maxAge =
-        (payload['maxage'] as num?)?.toInt() ??
+    final maxAge = (payload['maxage'] as num?)?.toInt() ??
         (payload['expires_in'] as num?)?.toInt() ??
         3600;
 

@@ -18,7 +18,7 @@ class WaveformService {
     try {
       // Get waveform data from API
       final response = await _dio.get('/waveform/$trackHash');
-      
+
       if (response.statusCode == 200 && response.data['waveform'] != null) {
         final List<dynamic> waveformList = response.data['waveform'];
         return waveformList.map((value) => (value as num).toDouble()).toList();
@@ -40,7 +40,7 @@ class WaveformService {
       final noise = (index % 7) / 20.0;
       return base + variation + noise;
     });
-    
+
     // Normalize to 0-1 range
     final max = random.reduce((a, b) => a > b ? a : b);
     return random.map((value) => value / max).toList();
@@ -49,7 +49,7 @@ class WaveformService {
   Future<Map<String, dynamic>> getAudioAnalysis(String trackHash) async {
     try {
       final response = await _dio.get('/analysis/$trackHash');
-      
+
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>? ?? {};
       } else {
@@ -107,7 +107,8 @@ class WaveformVisualizer extends StatefulWidget {
 }
 
 class _WaveformVisualizerState extends State<WaveformVisualizer> {
-  final WaveformService _waveformService = WaveformService(EnhancedApiService());
+  final WaveformService _waveformService =
+      WaveformService(EnhancedApiService());
   List<double> _waveformData = [];
   bool _isLoading = true;
   String? _error;
@@ -120,7 +121,8 @@ class _WaveformVisualizerState extends State<WaveformVisualizer> {
 
   Future<void> _loadWaveform() async {
     try {
-      final data = await _waveformService.generateWaveformData(widget.trackHash);
+      final data =
+          await _waveformService.generateWaveformData(widget.trackHash);
       if (mounted) {
         setState(() {
           _waveformData = data;
@@ -178,11 +180,13 @@ class _WaveformVisualizerState extends State<WaveformVisualizer> {
         child: CustomPaint(
           painter: WaveformPainter(
             data: _waveformData,
-            progress: widget.duration.inMilliseconds > 0 
-                ? widget.currentPosition.inMilliseconds / widget.duration.inMilliseconds 
+            progress: widget.duration.inMilliseconds > 0
+                ? widget.currentPosition.inMilliseconds /
+                    widget.duration.inMilliseconds
                 : 0.0,
             color: widget.color ?? Theme.of(context).colorScheme.primary,
-            backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+            backgroundColor:
+                Theme.of(context).colorScheme.surfaceContainerHighest,
           ),
         ),
       ),
@@ -211,11 +215,14 @@ class AdvancedWaveformVisualizer extends StatefulWidget {
   });
 
   @override
-  State<AdvancedWaveformVisualizer> createState() => _AdvancedWaveformVisualizerState();
+  State<AdvancedWaveformVisualizer> createState() =>
+      _AdvancedWaveformVisualizerState();
 }
 
-class _AdvancedWaveformVisualizerState extends State<AdvancedWaveformVisualizer> {
-  final WaveformService _waveformService = WaveformService(EnhancedApiService());
+class _AdvancedWaveformVisualizerState
+    extends State<AdvancedWaveformVisualizer> {
+  final WaveformService _waveformService =
+      WaveformService(EnhancedApiService());
   List<double> _waveformData = [];
   Map<String, dynamic> _analysisData = {};
   bool _isLoading = true;
@@ -229,11 +236,13 @@ class _AdvancedWaveformVisualizerState extends State<AdvancedWaveformVisualizer>
 
   Future<void> _loadData() async {
     try {
-      final waveformFuture = _waveformService.generateWaveformData(widget.trackHash);
-      final analysisFuture = _waveformService.getAudioAnalysis(widget.trackHash);
-      
+      final waveformFuture =
+          _waveformService.generateWaveformData(widget.trackHash);
+      final analysisFuture =
+          _waveformService.getAudioAnalysis(widget.trackHash);
+
       final results = await Future.wait([waveformFuture, analysisFuture]);
-      
+
       if (mounted) {
         setState(() {
           _waveformData = results[0] as List<double>;
@@ -288,7 +297,8 @@ class _AdvancedWaveformVisualizerState extends State<AdvancedWaveformVisualizer>
                 final containerWidth = MediaQuery.of(context).size.width;
                 final progress = tapPosition / containerWidth;
                 final seekPosition = Duration(
-                  milliseconds: (widget.duration.inMilliseconds * progress).round(),
+                  milliseconds:
+                      (widget.duration.inMilliseconds * progress).round(),
                 );
                 widget.onSeek!(seekPosition);
               }
@@ -296,26 +306,31 @@ class _AdvancedWaveformVisualizerState extends State<AdvancedWaveformVisualizer>
             child: CustomPaint(
               painter: WaveformPainter(
                 data: _waveformData,
-                progress: widget.duration.inMilliseconds > 0 
-                    ? widget.currentPosition.inMilliseconds / widget.duration.inMilliseconds 
+                progress: widget.duration.inMilliseconds > 0
+                    ? widget.currentPosition.inMilliseconds /
+                        widget.duration.inMilliseconds
                     : 0.0,
                 color: widget.color ?? Theme.of(context).colorScheme.primary,
-                backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                backgroundColor:
+                    Theme.of(context).colorScheme.surfaceContainerHighest,
               ),
             ),
           ),
         ),
-        
+
         // Analysis info
         SizedBox(
           height: widget.height * 0.3,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildAnalysisItem('BPM', '${_analysisData['tempo']?.toInt() ?? 0}'),
+              _buildAnalysisItem(
+                  'BPM', '${_analysisData['tempo']?.toInt() ?? 0}'),
               _buildAnalysisItem('Key', _analysisData['key'] ?? 'Unknown'),
-              _buildAnalysisItem('Energy', '${((_analysisData['energy'] ?? 0.0) * 100).toInt()}%'),
-              _buildAnalysisItem('Dance', '${((_analysisData['danceability'] ?? 0.0) * 100).toInt()}%'),
+              _buildAnalysisItem('Energy',
+                  '${((_analysisData['energy'] ?? 0.0) * 100).toInt()}%'),
+              _buildAnalysisItem('Dance',
+                  '${((_analysisData['danceability'] ?? 0.0) * 100).toInt()}%'),
             ],
           ),
         ),
@@ -330,14 +345,18 @@ class _AdvancedWaveformVisualizerState extends State<AdvancedWaveformVisualizer>
         Text(
           value,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+                fontWeight: FontWeight.bold,
+              ),
         ),
         Text(
           label,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
-          ),
+                color: Theme.of(context)
+                    .textTheme
+                    .bodySmall
+                    ?.color
+                    ?.withValues(alpha: 0.7),
+              ),
         ),
       ],
     );
@@ -375,10 +394,10 @@ class WaveformPainter extends CustomPainter {
     for (int i = 0; i < data.length; i++) {
       final barHeight = data[i] * centerY * 0.8;
       final x = i * barWidth + barWidth / 2;
-      
+
       // Determine if this bar should be highlighted
       final isPlayed = i / data.length <= progress;
-      
+
       canvas.drawLine(
         Offset(x, centerY - barHeight),
         Offset(x, centerY + barHeight),

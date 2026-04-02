@@ -28,7 +28,7 @@ class ViewAllSearchScreen extends StatefulWidget {
 
 class _ViewAllSearchScreenState extends State<ViewAllSearchScreen> {
   final ScrollController _scrollController = ScrollController();
-  
+
   List<dynamic> _results = [];
   bool _isLoading = false;
   bool _isLoadingMore = false;
@@ -36,7 +36,7 @@ class _ViewAllSearchScreenState extends State<ViewAllSearchScreen> {
   int _offset = 0;
   final int _limit = 20;
   bool _hasMore = true;
-  
+
   late EnhancedApiService _apiService;
 
   @override
@@ -56,7 +56,7 @@ class _ViewAllSearchScreenState extends State<ViewAllSearchScreen> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels >= 
+    if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 200) {
       if (!_isLoadingMore && _hasMore) {
         _loadMoreResults();
@@ -98,7 +98,7 @@ class _ViewAllSearchScreenState extends State<ViewAllSearchScreen> {
     try {
       final newOffset = _offset + _limit;
       final results = await _fetchResults(newOffset);
-      
+
       setState(() {
         _offset = newOffset;
         _results.addAll(results);
@@ -276,7 +276,8 @@ class _ViewAllSearchScreenState extends State<ViewAllSearchScreen> {
                         width: 48,
                         height: 48,
                         fit: BoxFit.cover,
-                        errorBuilder: (context, error, stack) => _buildDefaultArtistIcon(),
+                        errorBuilder: (context, error, stack) =>
+                            _buildDefaultArtistIcon(),
                       )
                     : _buildDefaultArtistIcon(),
               ),
@@ -288,8 +289,8 @@ class _ViewAllSearchScreenState extends State<ViewAllSearchScreen> {
                     Text(
                       artist.name,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                            fontWeight: FontWeight.bold,
+                          ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -297,8 +298,9 @@ class _ViewAllSearchScreenState extends State<ViewAllSearchScreen> {
                     Text(
                       '${artist.trackcount} tracks • ${artist.albumcount} albums',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
                     ),
                   ],
                 ),
@@ -319,7 +321,7 @@ class _ViewAllSearchScreenState extends State<ViewAllSearchScreen> {
       width: 48,
       height: 48,
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
         shape: BoxShape.circle,
       ),
       child: Icon(
@@ -345,15 +347,15 @@ class _ViewAllSearchScreenState extends State<ViewAllSearchScreen> {
             Text(
               'No ${_getTypeName().toLowerCase()} found',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
             ),
             const SizedBox(height: 8),
             Text(
               'Try a different search term',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
               textAlign: TextAlign.center,
             ),
           ],
@@ -378,15 +380,15 @@ class _ViewAllSearchScreenState extends State<ViewAllSearchScreen> {
             Text(
               'Failed to load results',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                color: Theme.of(context).colorScheme.error,
-              ),
+                    color: Theme.of(context).colorScheme.error,
+                  ),
             ),
             const SizedBox(height: 8),
             Text(
               _error!,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
@@ -431,7 +433,7 @@ class _ViewAllSearchScreenState extends State<ViewAllSearchScreen> {
     // Set queue source for playback logging
     final mediaController = context.read<MediaControllerProvider>();
     mediaController.setQueueSource(QueueSource.search);
-    
+
     audioProvider.setQueue([track]);
     audioProvider.loadTrack(track);
     audioProvider.play();

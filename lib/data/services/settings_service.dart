@@ -26,7 +26,8 @@ class SettingsService {
         _currentSettings = UserSettings(
           theme: _prefs.getString('theme') ?? 'dark',
           accentColor: _prefs.getString('accentColor') ?? 'blue',
-          useCircularArtistImages: _prefs.getBool('useCircularArtistImages') ?? true,
+          useCircularArtistImages:
+              _prefs.getBool('useCircularArtistImages') ?? true,
           showTrackNumbers: _prefs.getBool('showTrackNumbers') ?? true,
           compactLayout: _prefs.getBool('compactLayout') ?? false,
           volume: _prefs.getDouble('volume') ?? 1.0,
@@ -39,18 +40,22 @@ class SettingsService {
           showAlbumsAsSingles: _prefs.getBool('showAlbumsAsSingles') ?? false,
           mergeAlbums: _prefs.getBool('mergeAlbums') ?? false,
           cleanTrackTitles: _prefs.getBool('cleanTrackTitles') ?? true,
-          hideRemasteredVersions: _prefs.getBool('hideRemasteredVersions') ?? true,
+          hideRemasteredVersions:
+              _prefs.getBool('hideRemasteredVersions') ?? true,
           repeatMode: _prefs.getString('repeatMode') ?? 'none',
           autoPlay: _prefs.getBool('autoPlay') ?? true,
           showNowPlayingInTab: _prefs.getBool('showNowPlayingInTab') ?? true,
           showLyricsByDefault: _prefs.getBool('showLyricsByDefault') ?? true,
           extendWidth: _prefs.getBool('extendWidth') ?? false,
           useSidebar: _prefs.getBool('useSidebar') ?? false,
-          showInlineFavoriteIcon: _prefs.getBool('showInlineFavoriteIcon') ?? false,
-          highlightFavoriteTracks: _prefs.getBool('highlightFavoriteTracks') ?? false,
+          showInlineFavoriteIcon:
+              _prefs.getBool('showInlineFavoriteIcon') ?? false,
+          highlightFavoriteTracks:
+              _prefs.getBool('highlightFavoriteTracks') ?? false,
           useLyricsPlugin: _prefs.getBool('useLyricsPlugin') ?? false,
           autoDownloadLyrics: _prefs.getBool('autoDownloadLyrics') ?? false,
-          overrideUnsyncedLyrics: _prefs.getBool('overrideUnsyncedLyrics') ?? false,
+          overrideUnsyncedLyrics:
+              _prefs.getBool('overrideUnsyncedLyrics') ?? false,
           enableTracking: _prefs.getBool('enableTracking') ?? true,
           statsPeriod: _prefs.getString('statsPeriod') ?? 'week',
           statsGroup: _prefs.getString('statsGroup') ?? 'artists',
@@ -61,8 +66,10 @@ class SettingsService {
           periodicScanInterval: _prefs.getInt('periodicScanInterval') ?? 3600,
           enableWatchdog: _prefs.getBool('enableWatchdog') ?? false,
           enableNotifications: _prefs.getBool('enableNotifications') ?? true,
-          showPlayingNotification: _prefs.getBool('showPlayingNotification') ?? true,
-          showControlsInNotification: _prefs.getBool('showControlsInNotification') ?? true,
+          showPlayingNotification:
+              _prefs.getBool('showPlayingNotification') ?? true,
+          showControlsInNotification:
+              _prefs.getBool('showControlsInNotification') ?? true,
         );
       }
     } catch (e) {
@@ -74,43 +81,63 @@ class SettingsService {
     try {
       await _prefs.setString('theme', _currentSettings.theme);
       await _prefs.setString('accentColor', _currentSettings.accentColor);
-      await _prefs.setBool('useCircularArtistImages', _currentSettings.useCircularArtistImages);
-      await _prefs.setBool('showTrackNumbers', _currentSettings.showTrackNumbers);
+      await _prefs.setBool(
+          'useCircularArtistImages', _currentSettings.useCircularArtistImages);
+      await _prefs.setBool(
+          'showTrackNumbers', _currentSettings.showTrackNumbers);
       await _prefs.setBool('compactLayout', _currentSettings.compactLayout);
       await _prefs.setDouble('volume', _currentSettings.volume);
       await _prefs.setBool('isMuted', _currentSettings.isMuted);
-      await _prefs.setInt('crossfadeDuration', _currentSettings.crossfadeDuration);
+      await _prefs.setInt(
+          'crossfadeDuration', _currentSettings.crossfadeDuration);
       await _prefs.setBool('useCrossfade', _currentSettings.useCrossfade);
       await _prefs.setBool('useSilenceSkip', _currentSettings.useSilenceSkip);
-      await _prefs.setString('streamingQuality', _currentSettings.streamingQuality);
+      await _prefs.setString(
+          'streamingQuality', _currentSettings.streamingQuality);
       await _prefs.setString('defaultView', _currentSettings.defaultView);
-      await _prefs.setBool('showAlbumsAsSingles', _currentSettings.showAlbumsAsSingles);
+      await _prefs.setBool(
+          'showAlbumsAsSingles', _currentSettings.showAlbumsAsSingles);
       await _prefs.setBool('mergeAlbums', _currentSettings.mergeAlbums);
-      await _prefs.setBool('cleanTrackTitles', _currentSettings.cleanTrackTitles);
-      await _prefs.setBool('hideRemasteredVersions', _currentSettings.hideRemasteredVersions);
+      await _prefs.setBool(
+          'cleanTrackTitles', _currentSettings.cleanTrackTitles);
+      await _prefs.setBool(
+          'hideRemasteredVersions', _currentSettings.hideRemasteredVersions);
       await _prefs.setString('repeatMode', _currentSettings.repeatMode);
       await _prefs.setBool('autoPlay', _currentSettings.autoPlay);
-      await _prefs.setBool('showNowPlayingInTab', _currentSettings.showNowPlayingInTab);
-      await _prefs.setBool('showLyricsByDefault', _currentSettings.showLyricsByDefault);
+      await _prefs.setBool(
+          'showNowPlayingInTab', _currentSettings.showNowPlayingInTab);
+      await _prefs.setBool(
+          'showLyricsByDefault', _currentSettings.showLyricsByDefault);
       await _prefs.setBool('extendWidth', _currentSettings.extendWidth);
       await _prefs.setBool('useSidebar', _currentSettings.useSidebar);
-      await _prefs.setBool('showInlineFavoriteIcon', _currentSettings.showInlineFavoriteIcon);
-      await _prefs.setBool('highlightFavoriteTracks', _currentSettings.highlightFavoriteTracks);
+      await _prefs.setBool(
+          'showInlineFavoriteIcon', _currentSettings.showInlineFavoriteIcon);
+      await _prefs.setBool(
+          'highlightFavoriteTracks', _currentSettings.highlightFavoriteTracks);
       await _prefs.setBool('useLyricsPlugin', _currentSettings.useLyricsPlugin);
-      await _prefs.setBool('autoDownloadLyrics', _currentSettings.autoDownloadLyrics);
-      await _prefs.setBool('overrideUnsyncedLyrics', _currentSettings.overrideUnsyncedLyrics);
+      await _prefs.setBool(
+          'autoDownloadLyrics', _currentSettings.autoDownloadLyrics);
+      await _prefs.setBool(
+          'overrideUnsyncedLyrics', _currentSettings.overrideUnsyncedLyrics);
       await _prefs.setBool('enableTracking', _currentSettings.enableTracking);
       await _prefs.setString('statsPeriod', _currentSettings.statsPeriod);
       await _prefs.setString('statsGroup', _currentSettings.statsGroup);
       await _prefs.setString('lastfmApiKey', _currentSettings.lastfmApiKey);
-      await _prefs.setString('lastfmApiSecret', _currentSettings.lastfmApiSecret);
-      await _prefs.setString('lastfmSessionKey', _currentSettings.lastfmSessionKey);
-      await _prefs.setBool('enablePeriodicScans', _currentSettings.enablePeriodicScans);
-      await _prefs.setInt('periodicScanInterval', _currentSettings.periodicScanInterval);
+      await _prefs.setString(
+          'lastfmApiSecret', _currentSettings.lastfmApiSecret);
+      await _prefs.setString(
+          'lastfmSessionKey', _currentSettings.lastfmSessionKey);
+      await _prefs.setBool(
+          'enablePeriodicScans', _currentSettings.enablePeriodicScans);
+      await _prefs.setInt(
+          'periodicScanInterval', _currentSettings.periodicScanInterval);
       await _prefs.setBool('enableWatchdog', _currentSettings.enableWatchdog);
-      await _prefs.setBool('enableNotifications', _currentSettings.enableNotifications);
-      await _prefs.setBool('showPlayingNotification', _currentSettings.showPlayingNotification);
-      await _prefs.setBool('showControlsInNotification', _currentSettings.showControlsInNotification);
+      await _prefs.setBool(
+          'enableNotifications', _currentSettings.enableNotifications);
+      await _prefs.setBool(
+          'showPlayingNotification', _currentSettings.showPlayingNotification);
+      await _prefs.setBool('showControlsInNotification',
+          _currentSettings.showControlsInNotification);
 
       // Also sync with server if available
       try {
@@ -241,7 +268,8 @@ class SettingsService {
   }
 
   Future<void> setOverrideUnsyncedLyrics(bool override) async {
-    _currentSettings = _currentSettings.copyWith(overrideUnsyncedLyrics: override);
+    _currentSettings =
+        _currentSettings.copyWith(overrideUnsyncedLyrics: override);
     await _saveSettings();
   }
 
@@ -262,7 +290,8 @@ class SettingsService {
   }
 
   // Last.fm settings
-  Future<void> setLastFmCredentials(String apiKey, String apiSecret, String sessionKey) async {
+  Future<void> setLastFmCredentials(
+      String apiKey, String apiSecret, String sessionKey) async {
     _currentSettings = _currentSettings.copyWith(
       lastfmApiKey: apiKey,
       lastfmApiSecret: apiSecret,
@@ -278,7 +307,8 @@ class SettingsService {
   }
 
   Future<void> setPeriodicScanInterval(int interval) async {
-    _currentSettings = _currentSettings.copyWith(periodicScanInterval: interval);
+    _currentSettings =
+        _currentSettings.copyWith(periodicScanInterval: interval);
     await _saveSettings();
   }
 
@@ -299,7 +329,8 @@ class SettingsService {
   }
 
   Future<void> setShowControlsInNotification(bool show) async {
-    _currentSettings = _currentSettings.copyWith(showControlsInNotification: show);
+    _currentSettings =
+        _currentSettings.copyWith(showControlsInNotification: show);
     await _saveSettings();
   }
 

@@ -40,8 +40,7 @@ class OfflineTrack {
       album: map['album']?.toString() ?? '',
       remoteFilepath: map['remoteFilepath']?.toString() ?? '',
       localPath: map['localPath']?.toString() ?? '',
-      downloadedAt:
-          DateTime.tryParse(map['downloadedAt']?.toString() ?? '') ??
+      downloadedAt: DateTime.tryParse(map['downloadedAt']?.toString() ?? '') ??
           DateTime.now(),
       quality: map['quality']?.toString() ?? '320',
     );

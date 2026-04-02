@@ -105,9 +105,9 @@ class _ArtistDetailScreenState extends State<ArtistDetailScreen> {
                   onDownload: track.filepath.isEmpty
                       ? () => library.queueServerDownloadForTrack(track)
                       : () => offline.downloadTrack(
-                          track,
-                          collectionLabel: 'artist ${widget.artistName}',
-                        ),
+                            track,
+                            collectionLabel: 'artist ${widget.artistName}',
+                          ),
                 ),
               ),
               if (albums.isNotEmpty) ...[
@@ -121,8 +121,8 @@ class _ArtistDetailScreenState extends State<ArtistDetailScreen> {
                     leading: CircleAvatar(
                       backgroundImage:
                           album.imageUrl == null || album.imageUrl!.isEmpty
-                          ? null
-                          : NetworkImage(album.imageUrl!),
+                              ? null
+                              : NetworkImage(album.imageUrl!),
                       child: album.imageUrl == null || album.imageUrl!.isEmpty
                           ? const Icon(Icons.album)
                           : null,
@@ -132,22 +132,20 @@ class _ArtistDetailScreenState extends State<ArtistDetailScreen> {
                     onTap: album.spotifyId == null
                         ? null
                         : () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => AlbumDetailScreen(
-                                albumId: album.spotifyId!,
-                                albumName: album.title,
+                              MaterialPageRoute(
+                                builder: (_) => AlbumDetailScreen(
+                                  albumId: album.spotifyId!,
+                                  albumName: album.title,
+                                ),
                               ),
                             ),
-                          ),
                   ),
                 ),
               ],
               if (thisIs.isNotEmpty) ...[
                 const SizedBox(height: 14),
                 Text('This Is', style: Theme.of(context).textTheme.titleMedium),
-                ...thisIs
-                    .take(20)
-                    .map(
+                ...thisIs.take(20).map(
                       (track) => TrackTile(
                         track: track,
                         onPlay: () => player.playTrack(
@@ -159,9 +157,10 @@ class _ArtistDetailScreenState extends State<ArtistDetailScreen> {
                         onDownload: track.filepath.isEmpty
                             ? () => library.queueServerDownloadForTrack(track)
                             : () => offline.downloadTrack(
-                                track,
-                                collectionLabel: 'artist ${widget.artistName}',
-                              ),
+                                  track,
+                                  collectionLabel:
+                                      'artist ${widget.artistName}',
+                                ),
                       ),
                     ),
               ],
@@ -171,9 +170,7 @@ class _ArtistDetailScreenState extends State<ArtistDetailScreen> {
                   'Artist Radio',
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-                ...radio
-                    .take(20)
-                    .map(
+                ...radio.take(20).map(
                       (track) => TrackTile(
                         track: track,
                         onPlay: () => player.playTrack(
@@ -185,9 +182,10 @@ class _ArtistDetailScreenState extends State<ArtistDetailScreen> {
                         onDownload: track.filepath.isEmpty
                             ? () => library.queueServerDownloadForTrack(track)
                             : () => offline.downloadTrack(
-                                track,
-                                collectionLabel: 'artist ${widget.artistName}',
-                              ),
+                                  track,
+                                  collectionLabel:
+                                      'artist ${widget.artistName}',
+                                ),
                       ),
                     ),
               ],

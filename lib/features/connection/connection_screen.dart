@@ -8,10 +8,11 @@ class ConnectionScreen extends StatefulWidget {
   State<ConnectionScreen> createState() => _ConnectionScreenState();
 }
 
-class _ConnectionScreenState extends State<ConnectionScreen> with TickerProviderStateMixin {
+class _ConnectionScreenState extends State<ConnectionScreen>
+    with TickerProviderStateMixin {
   late AnimationController _pulseController;
   late Animation<double> _pulseAnimation;
-  
+
   bool _isConnecting = false;
   bool _isConnected = false;
   String _serverUrl = '';
@@ -26,11 +27,11 @@ class _ConnectionScreenState extends State<ConnectionScreen> with TickerProvider
       duration: const Duration(seconds: 2),
       vsync: this,
     );
-    
+
     _pulseAnimation = Tween<double>(begin: 0.8, end: 1.2).animate(
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
-    
+
     _loadSavedConnection();
     _startServerDiscovery();
   }
@@ -53,10 +54,10 @@ class _ConnectionScreenState extends State<ConnectionScreen> with TickerProvider
     setState(() {
       _isScanning = true;
     });
-    
+
     // Simulate server discovery
     await Future.delayed(const Duration(seconds: 2));
-    
+
     setState(() {
       _discoveredServers = [
         DiscoveredServer(
@@ -80,7 +81,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> with TickerProvider
       ];
       _isScanning = false;
     });
-    
+
     _pulseController.repeat(reverse: true);
   }
 
@@ -103,7 +104,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> with TickerProvider
         actions: [
           IconButton(
             onPressed: _refreshServers,
-            icon: _isScanning 
+            icon: _isScanning
                 ? SizedBox(
                     width: 20,
                     height: 20,
@@ -123,12 +124,12 @@ class _ConnectionScreenState extends State<ConnectionScreen> with TickerProvider
         children: [
           // Connection Status Card
           _buildConnectionStatusCard(),
-          
+
           // Server Discovery
           Expanded(
             child: _buildServerDiscovery(),
           ),
-          
+
           // Manual Connection
           _buildManualConnection(),
         ],
@@ -142,14 +143,17 @@ class _ConnectionScreenState extends State<ConnectionScreen> with TickerProvider
       padding: AppSpacing.paddingLG,
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: _isConnected 
+          colors: _isConnected
               ? [Colors.green, Colors.lightGreen]
-              : [Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.primaryContainer],
+              : [
+                  Theme.of(context).colorScheme.primary,
+                  Theme.of(context).colorScheme.primaryContainer
+                ],
         ),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -172,7 +176,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> with TickerProvider
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
+                            color: Colors.black.withValues(alpha: 0.2),
                             blurRadius: 8,
                             spreadRadius: 2,
                           ),
@@ -180,7 +184,9 @@ class _ConnectionScreenState extends State<ConnectionScreen> with TickerProvider
                       ),
                       child: Icon(
                         _isConnected ? Icons.cloud_done : Icons.cloud_queue,
-                        color: _isConnected ? Colors.green : Theme.of(context).colorScheme.primary,
+                        color: _isConnected
+                            ? Colors.green
+                            : Theme.of(context).colorScheme.primary,
                         size: 24,
                       ),
                     ),
@@ -195,16 +201,18 @@ class _ConnectionScreenState extends State<ConnectionScreen> with TickerProvider
                     Text(
                       _connectionStatus,
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      _isConnected ? 'Connected to SwingMusic server' : 'Not connected to any server',
+                      _isConnected
+                          ? 'Connected to SwingMusic server'
+                          : 'Not connected to any server',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.white.withOpacity(0.9),
-                      ),
+                            color: Colors.white.withValues(alpha: 0.9),
+                          ),
                     ),
                   ],
                 ),
@@ -235,11 +243,10 @@ class _ConnectionScreenState extends State<ConnectionScreen> with TickerProvider
           Text(
             'Discovered Servers',
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+                  fontWeight: FontWeight.bold,
+                ),
           ),
           const SizedBox(height: 16),
-          
           if (_isScanning)
             Expanded(
               child: Center(
@@ -251,8 +258,11 @@ class _ConnectionScreenState extends State<ConnectionScreen> with TickerProvider
                     Text(
                       'Scanning for servers...',
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-                      ),
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurface
+                                .withValues(alpha: 0.7),
+                          ),
                     ),
                   ],
                 ),
@@ -267,21 +277,30 @@ class _ConnectionScreenState extends State<ConnectionScreen> with TickerProvider
                     Icon(
                       Icons.wifi_off,
                       size: 64,
-                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.3),
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withValues(alpha: 0.3),
                     ),
                     const SizedBox(height: 16),
                     Text(
                       'No servers found',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
-                      ),
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurface
+                                .withValues(alpha: 0.5),
+                          ),
                     ),
                     const SizedBox(height: 8),
                     Text(
                       'Make sure SwingMusic is running on your network',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
-                      ),
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurface
+                                .withValues(alpha: 0.5),
+                          ),
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -321,11 +340,10 @@ class _ConnectionScreenState extends State<ConnectionScreen> with TickerProvider
           Text(
             'Manual Connection',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+                  fontWeight: FontWeight.bold,
+                ),
           ),
           const SizedBox(height: 16),
-          
           TextField(
             decoration: InputDecoration(
               labelText: 'Server URL',
@@ -340,9 +358,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> with TickerProvider
               _serverUrl = value;
             },
           ),
-          
           const SizedBox(height: 16),
-          
           Row(
             children: [
               Expanded(
@@ -354,7 +370,8 @@ class _ConnectionScreenState extends State<ConnectionScreen> with TickerProvider
                           height: 16,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white),
                           ),
                         )
                       : const Icon(Icons.link),
@@ -389,19 +406,19 @@ class _ConnectionScreenState extends State<ConnectionScreen> with TickerProvider
       _isConnecting = true;
       _connectionStatus = 'Connecting...';
     });
-    
+
     // Simulate connection
     await Future.delayed(const Duration(seconds: 2));
-    
+
     setState(() {
       _isConnecting = false;
       _isConnected = true;
       _connectionStatus = 'Connected to ${server.name}';
       _serverUrl = server.url;
     });
-    
+
     _pulseController.forward();
-    
+
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -419,23 +436,23 @@ class _ConnectionScreenState extends State<ConnectionScreen> with TickerProvider
       );
       return;
     }
-    
+
     setState(() {
       _isConnecting = true;
       _connectionStatus = 'Connecting...';
     });
-    
+
     // Simulate connection
     await Future.delayed(const Duration(seconds: 2));
-    
+
     setState(() {
       _isConnecting = false;
       _isConnected = true;
       _connectionStatus = 'Connected manually';
     });
-    
+
     _pulseController.forward();
-    
+
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -451,7 +468,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> with TickerProvider
       _isConnected = false;
       _connectionStatus = 'Disconnected';
     });
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Disconnected from server')),
     );
@@ -461,7 +478,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> with TickerProvider
     setState(() {
       _discoveredServers.remove(server);
     });
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Forgot ${server.name}')),
     );
@@ -522,9 +539,9 @@ class ServerTile extends StatelessWidget {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: server.isActive 
-                    ? Colors.green.withOpacity(0.1)
-                    : Colors.grey.withOpacity(0.1),
+                color: server.isActive
+                    ? Colors.green.withValues(alpha: 0.1)
+                    : Colors.grey.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
@@ -533,9 +550,9 @@ class ServerTile extends StatelessWidget {
                 size: 24,
               ),
             ),
-            
+
             const SizedBox(width: 16),
-            
+
             // Server Info
             Expanded(
               child: Column(
@@ -544,15 +561,18 @@ class ServerTile extends StatelessWidget {
                   Text(
                     server.name,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                          fontWeight: FontWeight.bold,
+                        ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     server.url,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-                    ),
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withValues(alpha: 0.7),
+                        ),
                   ),
                   const SizedBox(height: 2),
                   Row(
@@ -560,9 +580,9 @@ class ServerTile extends StatelessWidget {
                       Text(
                         'v${server.version}',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context).colorScheme.primary,
-                          fontWeight: FontWeight.w500,
-                        ),
+                              color: Theme.of(context).colorScheme.primary,
+                              fontWeight: FontWeight.w500,
+                            ),
                       ),
                       const SizedBox(width: 8),
                       Container(
@@ -577,16 +597,17 @@ class ServerTile extends StatelessWidget {
                       Text(
                         server.isActive ? 'Active' : 'Inactive',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: server.isActive ? Colors.green : Colors.grey,
-                          fontWeight: FontWeight.w500,
-                        ),
+                              color:
+                                  server.isActive ? Colors.green : Colors.grey,
+                              fontWeight: FontWeight.w500,
+                            ),
                       ),
                     ],
                   ),
                 ],
               ),
             ),
-            
+
             // Actions
             Row(
               mainAxisSize: MainAxisSize.min,

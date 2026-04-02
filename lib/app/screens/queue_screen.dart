@@ -21,12 +21,12 @@ class QueueScreen extends StatelessWidget {
                 tooltip: 'Clear upcoming',
                 onPressed: queue.length > 1
                     ? () => _confirmAndRun(
-                        context,
-                        title: 'Clear upcoming tracks?',
-                        message:
-                            'This keeps the currently playing track and removes the rest.',
-                        onConfirm: player.clearUpcomingQueue,
-                      )
+                          context,
+                          title: 'Clear upcoming tracks?',
+                          message:
+                              'This keeps the currently playing track and removes the rest.',
+                          onConfirm: player.clearUpcomingQueue,
+                        )
                     : null,
                 icon: const Icon(Icons.queue_music),
               ),
@@ -34,12 +34,12 @@ class QueueScreen extends StatelessWidget {
                 tooltip: 'Clear all',
                 onPressed: queue.isNotEmpty
                     ? () => _confirmAndRun(
-                        context,
-                        title: 'Clear full queue?',
-                        message:
-                            'Playback will stop and the queue will be emptied.',
-                        onConfirm: player.clearQueue,
-                      )
+                          context,
+                          title: 'Clear full queue?',
+                          message:
+                              'Playback will stop and the queue will be emptied.',
+                          onConfirm: player.clearQueue,
+                        )
                     : null,
                 icon: const Icon(Icons.delete_sweep_outlined),
               ),

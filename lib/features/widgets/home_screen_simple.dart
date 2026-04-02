@@ -21,16 +21,16 @@ class HomeScreenSimple extends StatelessWidget {
             Text(
               'Welcome Home',
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
             ),
             const SizedBox(height: 8),
             Text(
               'SwingMusic Mobile',
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
             ),
             const SizedBox(height: 32),
             Padding(
@@ -41,30 +41,34 @@ class HomeScreenSimple extends StatelessWidget {
                   Text(
                     'Quick Access',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                          fontWeight: FontWeight.bold,
+                        ),
                   ),
                   const SizedBox(height: AppSpacing.md),
                   Wrap(
                     spacing: AppSpacing.md,
                     runSpacing: AppSpacing.md,
                     children: [
-                      _buildQuickAccessWidget(context,
+                      _buildQuickAccessWidget(
+                        context,
                         Icons.library_music,
                         'Library',
                         'Browse your music collection',
                       ),
-                      _buildQuickAccessWidget(context,
+                      _buildQuickAccessWidget(
+                        context,
                         Icons.favorite,
                         'Favorites',
                         'View your favorite tracks',
                       ),
-                      _buildQuickAccessWidget(context,
+                      _buildQuickAccessWidget(
+                        context,
                         Icons.search,
                         'Search',
                         'Find music and artists',
                       ),
-                      _buildQuickAccessWidget(context,
+                      _buildQuickAccessWidget(
+                        context,
                         Icons.download,
                         'Downloads',
                         'Manage offline downloads',
@@ -80,7 +84,8 @@ class HomeScreenSimple extends StatelessWidget {
     );
   }
 
-  Widget _buildQuickAccessWidget(BuildContext context, IconData icon, String title, String subtitle) {
+  Widget _buildQuickAccessWidget(
+      BuildContext context, IconData icon, String title, String subtitle) {
     return Container(
       width: 140,
       height: 100,
@@ -89,7 +94,7 @@ class HomeScreenSimple extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
+            color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.1),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -117,17 +122,20 @@ class HomeScreenSimple extends StatelessWidget {
                 Text(
                   title,
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.onPrimaryContainer,
-                  ),
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.onPrimaryContainer,
+                      ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 4),
                 Text(
                   subtitle,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.8),
-                  ),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onPrimaryContainer
+                            .withValues(alpha: 0.8),
+                      ),
                   textAlign: TextAlign.center,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,

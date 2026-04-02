@@ -55,7 +55,7 @@ class _OfflineScreenState extends State<OfflineScreen> {
                   children: [
                     Icon(
                       Icons.cloud_off,
-                      color: _isOfflineMode 
+                      color: _isOfflineMode
                           ? Theme.of(context).colorScheme.primary
                           : Theme.of(context).colorScheme.onSurfaceVariant,
                       size: 24,
@@ -64,26 +64,26 @@ class _OfflineScreenState extends State<OfflineScreen> {
                     Text(
                       'Offline Mode',
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                            fontWeight: FontWeight.bold,
+                          ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  _isOfflineMode 
+                  _isOfflineMode
                       ? 'Download music for offline listening'
                       : 'Connect to server for online mode',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
                 ),
               ],
             ),
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // Downloads Section
           Expanded(
             child: Container(
@@ -106,8 +106,8 @@ class _OfflineScreenState extends State<OfflineScreen> {
                       Text(
                         'Downloads',
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                              fontWeight: FontWeight.bold,
+                            ),
                       ),
                       IconButton(
                         onPressed: _clearDownloads,
@@ -117,7 +117,7 @@ class _OfflineScreenState extends State<OfflineScreen> {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  
+
                   // Download Stats
                   Container(
                     padding: const EdgeInsets.all(16.0),
@@ -128,14 +128,17 @@ class _OfflineScreenState extends State<OfflineScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        _buildStatCard('Total', _totalDownloads.toString(), Icons.download),
-                        _buildStatCard('Completed', _completedDownloads.toString(), Icons.check_circle),
-                        _buildStatCard('Size', _formatFileSize(_totalDownloadSize), Icons.storage),
+                        _buildStatCard('Total', _totalDownloads.toString(),
+                            Icons.download),
+                        _buildStatCard('Completed',
+                            _completedDownloads.toString(), Icons.check_circle),
+                        _buildStatCard('Size',
+                            _formatFileSize(_totalDownloadSize), Icons.storage),
                       ],
                     ),
                   ),
                   const SizedBox(height: 16),
-                  
+
                   // Downloaded Tracks List
                   Expanded(
                     child: _downloadedTracks.isEmpty
@@ -169,16 +172,16 @@ class _OfflineScreenState extends State<OfflineScreen> {
           Text(
             title,
             style: Theme.of(context).textTheme.labelMedium?.copyWith(
-              color: Theme.of(context).colorScheme.onPrimaryContainer,
-              fontWeight: FontWeight.bold,
-            ),
+                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                  fontWeight: FontWeight.bold,
+                ),
           ),
           const SizedBox(height: 4),
           Text(
             value,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              color: Theme.of(context).colorScheme.onPrimaryContainer,
-            ),
+                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                ),
           ),
         ],
       ),
@@ -199,8 +202,8 @@ class _OfflineScreenState extends State<OfflineScreen> {
           Text(
             'No downloads yet',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
           ),
           const SizedBox(height: 8),
           ElevatedButton(
@@ -252,8 +255,8 @@ class _OfflineScreenState extends State<OfflineScreen> {
             subtitle: Text(
               track['artist']?.toString() ?? 'Unknown Artist',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
             ),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
@@ -261,8 +264,8 @@ class _OfflineScreenState extends State<OfflineScreen> {
                 Text(
                   _formatFileSize(track['size']?.toDouble() ?? 0.0),
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
                 ),
                 const SizedBox(width: 8),
                 PopupMenuButton<String>(
@@ -319,7 +322,7 @@ class _OfflineScreenState extends State<OfflineScreen> {
       _completedDownloads = 0;
       _totalDownloadSize = 0.0;
     });
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('All downloads cleared')),
     );
@@ -331,7 +334,7 @@ class _OfflineScreenState extends State<OfflineScreen> {
       _completedDownloads++;
       final trackSize = 5.2 * 1024 * 1024; // 5.2 MB
       _totalDownloadSize += trackSize;
-      
+
       _downloadedTracks.add({
         'id': 'track$_totalDownloads',
         'title': 'Sample Track $_totalDownloads',
@@ -343,7 +346,7 @@ class _OfflineScreenState extends State<OfflineScreen> {
         'downloadDate': DateTime.now().toIso8601String(),
       });
     });
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Sample track downloaded')),
     );

@@ -12,7 +12,7 @@ class AudioService {
 
   late AudioPlayer _audioPlayer;
   late AudioSession _audioSession;
-  
+
   // Playback state
   TrackModel? _currentTrack;
   bool _isPlaying = false;
@@ -21,27 +21,27 @@ class AudioService {
   Duration _position = Duration.zero;
   Duration _duration = Duration.zero;
   final double _volume = 1.0;
-  
+
   // Playback modes
   RepeatMode _repeatMode = RepeatMode.off;
   ShuffleMode _shuffleMode = ShuffleMode.off;
   final double _playbackSpeed = 1.0;
-  
+
   // Playlist
   List<TrackModel> _queue = [];
   int _currentIndex = 0;
   final bool _isShuffleMode = false;
   final bool _isRepeatMode = false;
-  
+
   // Error handling
   String? _errorMessage;
-  
+
   void _setError(String error) {
     _errorMessage = error;
     _errorController.add(_errorMessage);
     debugPrint('Audio Error: $error');
   }
-  
+
   void _clearError() {
     if (_errorMessage != null) {
       _errorMessage = null;
@@ -77,7 +77,7 @@ class AudioService {
   ShuffleMode get shuffleMode => _shuffleMode;
   double get playbackSpeed => _playbackSpeed;
   String? get errorMessage => _errorMessage;
-  
+
   // Playback state helpers
   bool get hasError => _errorMessage != null;
   bool get canPlay => _currentTrack != null && !hasError;
@@ -100,45 +100,45 @@ class AudioService {
     try {
       _audioPlayer = AudioPlayer();
       _audioSession = await AudioSession.instance;
-      
+
       // Configure audio session
       await _audioSession.configure(const AudioSessionConfiguration.music());
-      
+
       // Set up listeners
       _audioPlayer.positionStream.listen((position) {
         _position = position;
         _positionController.add(position);
       });
-      
+
       _audioPlayer.durationStream.listen((duration) {
         _duration = duration ?? Duration.zero;
         _durationController.add(_duration);
       });
-      
+
       _audioPlayer.playerStateStream.listen((state) {
         _isPlaying = state.playing;
         _playingStateController.add(_isPlaying);
       });
-      
+
       // Handle player completion
       _audioPlayer.playerStateStream.listen((state) {
         if (state.processingState == ProcessingState.completed) {
           _playNext();
         }
-        
+
         // Handle buffering state
-        _isBuffering = state.processingState == ProcessingState.buffering || 
-                     state.processingState == ProcessingState.loading;
+        _isBuffering = state.processingState == ProcessingState.buffering ||
+            state.processingState == ProcessingState.loading;
         _bufferingController.add(_isBuffering);
       });
-      
+
       // Handle player errors
       _audioPlayer.playerStateStream.listen((state) {
         if (state.playing && _errorMessage != null) {
           _clearError();
         }
       });
-      
+
       debugPrint('Audio service initialized successfully');
     } catch (e) {
       throw Exception('Failed to initialize audio service: $e');
@@ -153,11 +153,11 @@ class AudioService {
       _currentTrack = track;
       _currentTrackController.add(_currentTrack);
       _bufferingController.add(_isBuffering);
-      
+
       // Create audio source from track filepath
       final uri = Uri.parse(track.filepath);
       await _audioPlayer.setAudioSource(AudioSource.uri(uri));
-      
+
       _isLoading = false;
       _isBuffering = false;
       _bufferingController.add(_isBuffering);
@@ -244,7 +244,7 @@ class AudioService {
     _queue = List.from(tracks);
     _currentIndex = 0;
     _queueController.add(_queue);
-    
+
     if (_queue.isNotEmpty && _currentTrack == null) {
       loadTrack(_queue[_currentIndex]);
     }
@@ -275,12 +275,12 @@ class AudioService {
     _currentIndex = 0;
     _queueController.add(_queue);
   }
-  
+
   void reorderQueue(int oldIndex, int newIndex) {
     if (oldIndex < _queue.length && newIndex < _queue.length) {
       final track = _queue.removeAt(oldIndex);
       _queue.insert(newIndex, track);
-      
+
       // Update current index if needed
       if (_currentIndex == oldIndex) {
         _currentIndex = newIndex;
@@ -289,7 +289,7 @@ class AudioService {
       } else if (_currentIndex < oldIndex && _currentIndex >= newIndex) {
         _currentIndex++;
       }
-      
+
       _queueController.add(_queue);
     }
   }
@@ -360,7 +360,7 @@ class AudioService {
   void toggleShuffle() {
     _shuffleMode = _shuffleMode.toggle();
     _shuffleModeController.add(_shuffleMode);
-    
+
     if (_shuffleMode == ShuffleMode.on && _queue.isNotEmpty) {
       // Shuffle the queue while maintaining current track
       final currentTrack = _queue[_currentIndex];
@@ -378,7 +378,7 @@ class AudioService {
   void setShuffleMode(bool enabled) {
     _shuffleMode = enabled ? ShuffleMode.on : ShuffleMode.off;
     _shuffleModeController.add(_shuffleMode);
-    
+
     if (_shuffleMode == ShuffleMode.on && _queue.isNotEmpty) {
       // Shuffle the queue while maintaining current track
       final currentTrack = _queue[_currentIndex];

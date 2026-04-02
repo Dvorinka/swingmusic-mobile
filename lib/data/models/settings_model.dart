@@ -47,7 +47,8 @@ class DownloadModel {
       progress: (json['progress'] as num?)?.toDouble() ?? 0.0,
       size: json['size'] as String? ?? "0 MB",
       status: _parseStatus(json['status'] as String?),
-      createdAt: json['createdAt'] as int? ?? DateTime.now().millisecondsSinceEpoch,
+      createdAt:
+          json['createdAt'] as int? ?? DateTime.now().millisecondsSinceEpoch,
       completedAt: json['completedAt'] as int?,
     );
   }
@@ -229,8 +230,9 @@ class UserSettings {
       showAlbumsAsSingles: json['showAlbumsAsSingles'] as bool? ?? false,
       mergeAlbums: json['mergeAlbums'] as bool? ?? false,
       artistSeparators: (json['artistSeparators'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList() ?? [],
+              ?.map((e) => e as String)
+              .toList() ??
+          [],
       cleanTrackTitles: json['cleanTrackTitles'] as bool? ?? true,
       hideRemasteredVersions: json['hideRemasteredVersions'] as bool? ?? true,
       repeatMode: json['repeatMode'] as String? ?? 'none',
@@ -240,7 +242,8 @@ class UserSettings {
       extendWidth: json['extendWidth'] as bool? ?? false,
       useSidebar: json['useSidebar'] as bool? ?? false,
       showInlineFavoriteIcon: json['showInlineFavoriteIcon'] as bool? ?? false,
-      highlightFavoriteTracks: json['highlightFavoriteTracks'] as bool? ?? false,
+      highlightFavoriteTracks:
+          json['highlightFavoriteTracks'] as bool? ?? false,
       useLyricsPlugin: json['useLyricsPlugin'] as bool? ?? false,
       autoDownloadLyrics: json['autoDownloadLyrics'] as bool? ?? false,
       overrideUnsyncedLyrics: json['overrideUnsyncedLyrics'] as bool? ?? false,
@@ -254,11 +257,13 @@ class UserSettings {
       periodicScanInterval: json['periodicScanInterval'] as int? ?? 3600,
       enableWatchdog: json['enableWatchdog'] as bool? ?? false,
       rootDirectories: (json['rootDirectories'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList() ?? [],
+              ?.map((e) => e as String)
+              .toList() ??
+          [],
       enableNotifications: json['enableNotifications'] as bool? ?? true,
       showPlayingNotification: json['showPlayingNotification'] as bool? ?? true,
-      showControlsInNotification: json['showControlsInNotification'] as bool? ?? true,
+      showControlsInNotification:
+          json['showControlsInNotification'] as bool? ?? true,
     );
   }
 
@@ -354,7 +359,8 @@ class UserSettings {
     return UserSettings(
       theme: theme ?? this.theme,
       accentColor: accentColor ?? this.accentColor,
-      useCircularArtistImages: useCircularArtistImages ?? this.useCircularArtistImages,
+      useCircularArtistImages:
+          useCircularArtistImages ?? this.useCircularArtistImages,
       showTrackNumbers: showTrackNumbers ?? this.showTrackNumbers,
       compactLayout: compactLayout ?? this.compactLayout,
       volume: volume ?? this.volume,
@@ -368,18 +374,22 @@ class UserSettings {
       mergeAlbums: mergeAlbums ?? this.mergeAlbums,
       artistSeparators: artistSeparators ?? this.artistSeparators,
       cleanTrackTitles: cleanTrackTitles ?? this.cleanTrackTitles,
-      hideRemasteredVersions: hideRemasteredVersions ?? this.hideRemasteredVersions,
+      hideRemasteredVersions:
+          hideRemasteredVersions ?? this.hideRemasteredVersions,
       repeatMode: repeatMode ?? this.repeatMode,
       autoPlay: autoPlay ?? this.autoPlay,
       showNowPlayingInTab: showNowPlayingInTab ?? this.showNowPlayingInTab,
       showLyricsByDefault: showLyricsByDefault ?? this.showLyricsByDefault,
       extendWidth: extendWidth ?? this.extendWidth,
       useSidebar: useSidebar ?? this.useSidebar,
-      showInlineFavoriteIcon: showInlineFavoriteIcon ?? this.showInlineFavoriteIcon,
-      highlightFavoriteTracks: highlightFavoriteTracks ?? this.highlightFavoriteTracks,
+      showInlineFavoriteIcon:
+          showInlineFavoriteIcon ?? this.showInlineFavoriteIcon,
+      highlightFavoriteTracks:
+          highlightFavoriteTracks ?? this.highlightFavoriteTracks,
       useLyricsPlugin: useLyricsPlugin ?? this.useLyricsPlugin,
       autoDownloadLyrics: autoDownloadLyrics ?? this.autoDownloadLyrics,
-      overrideUnsyncedLyrics: overrideUnsyncedLyrics ?? this.overrideUnsyncedLyrics,
+      overrideUnsyncedLyrics:
+          overrideUnsyncedLyrics ?? this.overrideUnsyncedLyrics,
       enableTracking: enableTracking ?? this.enableTracking,
       statsPeriod: statsPeriod ?? this.statsPeriod,
       statsGroup: statsGroup ?? this.statsGroup,
@@ -391,8 +401,10 @@ class UserSettings {
       enableWatchdog: enableWatchdog ?? this.enableWatchdog,
       rootDirectories: rootDirectories ?? this.rootDirectories,
       enableNotifications: enableNotifications ?? this.enableNotifications,
-      showPlayingNotification: showPlayingNotification ?? this.showPlayingNotification,
-      showControlsInNotification: showControlsInNotification ?? this.showControlsInNotification,
+      showPlayingNotification:
+          showPlayingNotification ?? this.showPlayingNotification,
+      showControlsInNotification:
+          showControlsInNotification ?? this.showControlsInNotification,
     );
   }
 }

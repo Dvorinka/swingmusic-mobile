@@ -26,7 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final mediaControllerProvider = context.watch<MediaControllerProvider>();
     final homeProvider = context.watch<HomeProvider>();
-    
+
     return Scaffold(
       body: SafeArea(
         child: RefreshIndicator(
@@ -46,16 +46,24 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                           Text(
                             'Good ${_getGreeting()}',
-                            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineSmall
+                                ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
                           ),
                           const SizedBox(height: 4),
                           Text(
                             'Welcome back to ${AppConstants.appName}',
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
-                            ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurfaceVariant,
+                                ),
                           ),
                         ],
                       ),
@@ -71,46 +79,50 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ],
                 ),
-                
+
                 const SizedBox(height: 32),
-                
+
                 // Currently playing card
                 if (mediaControllerProvider.currentTrack != null)
                   _buildCurrentlyPlayingCard(context, mediaControllerProvider),
-                
+
                 const SizedBox(height: 24),
-                
+
                 // Quick actions
                 _buildQuickActions(context),
-                
+
                 const SizedBox(height: 32),
-                
+
                 // Stats card (matching Android HomeStatsCard)
-                if (!homeProvider.isLoading || homeProvider.stats.totalTracks > 0)
+                if (!homeProvider.isLoading ||
+                    homeProvider.stats.totalTracks > 0)
                   _buildStatsCard(context, homeProvider),
-                
+
                 const SizedBox(height: 32),
-                
+
                 // Recently added albums (matching Android RecentlyAddedSection)
-                _buildSectionHeader(context, 'Recently Added', Icons.album, onSeeAll: () {
+                _buildSectionHeader(context, 'Recently Added', Icons.album,
+                    onSeeAll: () {
                   Navigator.of(context).pushNamed('/albums');
                 }),
                 const SizedBox(height: 16),
                 _buildRecentlyAddedAlbums(context, homeProvider),
-                
+
                 const SizedBox(height: 32),
-                
+
                 // Favorite albums
-                _buildSectionHeader(context, 'Favorite Albums', Icons.favorite, onSeeAll: () {
+                _buildSectionHeader(context, 'Favorite Albums', Icons.favorite,
+                    onSeeAll: () {
                   Navigator.of(context).pushNamed('/favorites');
                 }),
                 const SizedBox(height: 16),
                 _buildFavoriteAlbums(context),
-                
+
                 const SizedBox(height: 32),
-                
+
                 // Recommended artists
-                _buildSectionHeader(context, 'Recommended Artists', Icons.person, onSeeAll: () {
+                _buildSectionHeader(
+                    context, 'Recommended Artists', Icons.person, onSeeAll: () {
                   Navigator.of(context).pushNamed('/artists');
                 }),
                 const SizedBox(height: 16),
@@ -122,30 +134,31 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-  
+
   String _getGreeting() {
     final hour = DateTime.now().hour;
     if (hour < 12) return 'Morning';
     if (hour < 17) return 'Afternoon';
     return 'Evening';
   }
-  
-  Widget _buildCurrentlyPlayingCard(BuildContext context, MediaControllerProvider provider) {
+
+  Widget _buildCurrentlyPlayingCard(
+      BuildContext context, MediaControllerProvider provider) {
     final currentTrack = provider.currentTrack!;
-    
+
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Theme.of(context).colorScheme.primary.withOpacity(0.1),
-            Theme.of(context).colorScheme.secondary.withOpacity(0.1),
+            Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+            Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(AppConstants.cardBorderRadius),
         border: Border.all(
-          color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+          color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
         ),
       ),
       child: InkWell(
@@ -170,7 +183,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       width: 60,
                       height: 60,
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                        color: Theme.of(context)
+                            .colorScheme
+                            .surfaceContainerHighest,
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Icon(
@@ -181,9 +196,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                 ),
               ),
-              
+
               const SizedBox(width: 16),
-              
+
               // Track info
               Expanded(
                 child: Column(
@@ -192,16 +207,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     Text(
                       'Now Playing',
                       style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                        color: Theme.of(context).colorScheme.primary,
-                        fontWeight: FontWeight.w600,
-                      ),
+                            color: Theme.of(context).colorScheme.primary,
+                            fontWeight: FontWeight.w600,
+                          ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       currentTrack.title,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                            fontWeight: FontWeight.w600,
+                          ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -209,20 +224,23 @@ class _HomeScreenState extends State<HomeScreen> {
                     Text(
                       currentTrack.artistNames,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
               ),
-              
+
               // Play/pause button
               IconButton(
                 onPressed: provider.isPlaying ? provider.pause : provider.play,
                 icon: Icon(
-                  provider.isPlaying ? Icons.pause_circle_filled : Icons.play_circle_filled,
+                  provider.isPlaying
+                      ? Icons.pause_circle_filled
+                      : Icons.play_circle_filled,
                   size: 40,
                   color: Theme.of(context).colorScheme.primary,
                 ),
@@ -233,7 +251,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-  
+
   Widget _buildQuickActions(BuildContext context) {
     return Row(
       children: [
@@ -266,18 +284,22 @@ class _HomeScreenState extends State<HomeScreen> {
       ],
     );
   }
-  
-  Widget _buildQuickActionCard(BuildContext context, String title, IconData icon, VoidCallback onTap) {
+
+  Widget _buildQuickActionCard(
+      BuildContext context, String title, IconData icon, VoidCallback onTap) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppConstants.cardBorderRadius),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.5),
+          color: Theme.of(context)
+              .colorScheme
+              .surfaceContainerHighest
+              .withValues(alpha: 0.5),
           borderRadius: BorderRadius.circular(AppConstants.cardBorderRadius),
           border: Border.all(
-            color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+            color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
           ),
         ),
         child: Column(
@@ -291,16 +313,17 @@ class _HomeScreenState extends State<HomeScreen> {
             Text(
               title,
               style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                fontWeight: FontWeight.w500,
-              ),
+                    fontWeight: FontWeight.w500,
+                  ),
             ),
           ],
         ),
       ),
     );
   }
-  
-  Widget _buildSectionHeader(BuildContext context, String title, IconData icon, {VoidCallback? onSeeAll}) {
+
+  Widget _buildSectionHeader(BuildContext context, String title, IconData icon,
+      {VoidCallback? onSeeAll}) {
     return Row(
       children: [
         Icon(
@@ -312,8 +335,8 @@ class _HomeScreenState extends State<HomeScreen> {
         Text(
           title,
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+                fontWeight: FontWeight.bold,
+              ),
         ),
         const Spacer(),
         if (onSeeAll != null)
@@ -324,25 +347,25 @@ class _HomeScreenState extends State<HomeScreen> {
       ],
     );
   }
-  
+
   /// Stats card matching Android HomeStatsCard
   Widget _buildStatsCard(BuildContext context, HomeProvider homeProvider) {
     final stats = homeProvider.stats;
-    
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Theme.of(context).colorScheme.primary.withOpacity(0.1),
-            Theme.of(context).colorScheme.secondary.withOpacity(0.05),
+            Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+            Theme.of(context).colorScheme.secondary.withValues(alpha: 0.05),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(AppConstants.cardBorderRadius),
         border: Border.all(
-          color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+          color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
         ),
       ),
       child: Column(
@@ -351,17 +374,20 @@ class _HomeScreenState extends State<HomeScreen> {
           Text(
             'Your Library',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+                  fontWeight: FontWeight.bold,
+                ),
           ),
           const SizedBox(height: 16),
           Row(
             children: [
-              _buildStatItem(context, stats.totalTracks.toString(), 'Tracks', Icons.music_note),
+              _buildStatItem(context, stats.totalTracks.toString(), 'Tracks',
+                  Icons.music_note),
               const SizedBox(width: 24),
-              _buildStatItem(context, stats.totalAlbums.toString(), 'Albums', Icons.album),
+              _buildStatItem(
+                  context, stats.totalAlbums.toString(), 'Albums', Icons.album),
               const SizedBox(width: 24),
-              _buildStatItem(context, stats.totalArtists.toString(), 'Artists', Icons.person),
+              _buildStatItem(context, stats.totalArtists.toString(), 'Artists',
+                  Icons.person),
             ],
           ),
           if (stats.totalPlaytime > 0) ...[
@@ -377,8 +403,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 Text(
                   'Total playtime: ${stats.formattedPlaytime}',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
                 ),
               ],
             ),
@@ -387,8 +413,9 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-  
-  Widget _buildStatItem(BuildContext context, String value, String label, IconData icon) {
+
+  Widget _buildStatItem(
+      BuildContext context, String value, String label, IconData icon) {
     return Expanded(
       child: Column(
         children: [
@@ -401,31 +428,32 @@ class _HomeScreenState extends State<HomeScreen> {
           Text(
             value,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+                  fontWeight: FontWeight.bold,
+                ),
           ),
           Text(
             label,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
           ),
         ],
       ),
     );
   }
-  
+
   /// Recently added albums matching Android RecentlyAddedSection
-  Widget _buildRecentlyAddedAlbums(BuildContext context, HomeProvider homeProvider) {
+  Widget _buildRecentlyAddedAlbums(
+      BuildContext context, HomeProvider homeProvider) {
     if (homeProvider.isLoading) {
       return const SizedBox(
         height: 150,
         child: Center(child: CircularProgressIndicator()),
       );
     }
-    
+
     final albums = homeProvider.recentlyAdded;
-    
+
     if (albums.isEmpty) {
       return SizedBox(
         height: 150,
@@ -433,13 +461,13 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Text(
             'No recently added albums',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
           ),
         ),
       );
     }
-    
+
     return SizedBox(
       height: 180,
       child: ListView.builder(
@@ -452,7 +480,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-  
+
   Widget _buildAlbumCard(BuildContext context, AlbumModel album) {
     return Container(
       width: 140,
@@ -474,7 +502,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         album.image,
                         width: 140,
                         fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) => _buildAlbumPlaceholder(context),
+                        errorBuilder: (context, error, stackTrace) =>
+                            _buildAlbumPlaceholder(context),
                       )
                     : _buildAlbumPlaceholder(context),
               ),
@@ -483,8 +512,8 @@ class _HomeScreenState extends State<HomeScreen> {
             Text(
               album.title,
               style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                fontWeight: FontWeight.w500,
-              ),
+                    fontWeight: FontWeight.w500,
+                  ),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
@@ -493,7 +522,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-  
+
   Widget _buildAlbumPlaceholder(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
@@ -509,8 +538,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-  
-  
+
   Widget _buildFavoriteAlbums(BuildContext context) {
     // Sample data for favorite albums - replace with actual data from provider
     final favoriteAlbums = [
@@ -534,7 +562,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   flex: 3,
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                      color:
+                          Theme.of(context).colorScheme.surfaceContainerHighest,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(
@@ -559,10 +588,15 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-  
+
   Widget _buildRecommendedArtists(BuildContext context) {
     // Sample data for recommended artists - replace with actual data from provider
-    final recommendedArtists = ['The Beatles', 'Rolling Stones', 'Pink Floyd', 'Led Zeppelin'];
+    final recommendedArtists = [
+      'The Beatles',
+      'Rolling Stones',
+      'Pink Floyd',
+      'Led Zeppelin'
+    ];
     return Wrap(
       spacing: 8,
       runSpacing: 8,
@@ -578,7 +612,8 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           label: Text(recommendedArtists[index]),
           onPressed: () {
-            Navigator.of(context).pushNamed('/artist', arguments: recommendedArtists[index]);
+            Navigator.of(context)
+                .pushNamed('/artist', arguments: recommendedArtists[index]);
           },
         );
       }),

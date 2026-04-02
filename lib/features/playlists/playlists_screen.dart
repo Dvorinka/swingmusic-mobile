@@ -34,7 +34,7 @@ class _PlaylistsScreenState extends State<PlaylistsScreen> {
 
     // Simulate API call
     await Future.delayed(const Duration(seconds: 1));
-    
+
     setState(() {
       _isLoading = false;
       // Sample playlists for demo
@@ -117,7 +117,8 @@ class _PlaylistsScreenState extends State<PlaylistsScreen> {
                   borderSide: BorderSide.none,
                 ),
                 filled: true,
-                fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                fillColor:
+                    Theme.of(context).colorScheme.surfaceContainerHighest,
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 12,
@@ -128,7 +129,7 @@ class _PlaylistsScreenState extends State<PlaylistsScreen> {
               },
             ),
           ),
-          
+
           // Playlists Grid
           Expanded(
             child: _isLoading
@@ -176,8 +177,14 @@ class _PlaylistsScreenState extends State<PlaylistsScreen> {
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          Theme.of(context).colorScheme.primary.withOpacity(0.8),
-                          Theme.of(context).colorScheme.secondary.withOpacity(0.8),
+                          Theme.of(context)
+                              .colorScheme
+                              .primary
+                              .withValues(alpha: 0.8),
+                          Theme.of(context)
+                              .colorScheme
+                              .secondary
+                              .withValues(alpha: 0.8),
                         ],
                       ),
                       borderRadius: BorderRadius.circular(8),
@@ -191,7 +198,7 @@ class _PlaylistsScreenState extends State<PlaylistsScreen> {
                           child: Container(
                             padding: const EdgeInsets.all(4),
                             decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.7),
+                              color: Colors.black.withValues(alpha: 0.7),
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: Icon(
@@ -207,7 +214,8 @@ class _PlaylistsScreenState extends State<PlaylistsScreen> {
                             bottom: 8,
                             left: 8,
                             child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 6, vertical: 2),
                               decoration: BoxDecoration(
                                 color: Colors.green,
                                 borderRadius: BorderRadius.circular(8),
@@ -225,9 +233,9 @@ class _PlaylistsScreenState extends State<PlaylistsScreen> {
                       ],
                     ),
                   ),
-                  
+
                   const SizedBox(height: 12),
-                  
+
                   // Playlist Info
                   Expanded(
                     child: Column(
@@ -235,18 +243,22 @@ class _PlaylistsScreenState extends State<PlaylistsScreen> {
                       children: [
                         Text(
                           playlist.name,
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: 4),
                         Text(
                           playlist.description,
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
+                                  ),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -256,23 +268,33 @@ class _PlaylistsScreenState extends State<PlaylistsScreen> {
                             Icon(
                               Icons.music_note,
                               size: 16,
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
                             ),
                             const SizedBox(width: 4),
                             Text(
                               '${playlist.trackcount} tracks',
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: Theme.of(context).colorScheme.onSurfaceVariant,
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
+                                  ),
                             ),
                           ],
                         ),
                         const SizedBox(height: 4),
                         Text(
                           _formatDate(playlist.lastModified),
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: Theme.of(context).colorScheme.onSurfaceVariant,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
+                                  ),
                         ),
                       ],
                     ),
@@ -302,15 +324,15 @@ class _PlaylistsScreenState extends State<PlaylistsScreen> {
             Text(
               'No playlists yet',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
             ),
             const SizedBox(height: 8),
             Text(
               'Create your first playlist to get started',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
@@ -319,7 +341,8 @@ class _PlaylistsScreenState extends State<PlaylistsScreen> {
               icon: const Icon(Icons.add),
               label: const Text('Create Playlist'),
               style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               ),
             ),
           ],
@@ -335,9 +358,10 @@ class _PlaylistsScreenState extends State<PlaylistsScreen> {
         _loadPlaylists();
       } else {
         // Filter playlists (in real app, this would call API)
-        _playlists = _playlists.where((playlist) =>
-          playlist.name.toLowerCase().contains(query.toLowerCase())
-        ).toList();
+        _playlists = _playlists
+            .where((playlist) =>
+                playlist.name.toLowerCase().contains(query.toLowerCase()))
+            .toList();
       }
     });
   }
@@ -412,7 +436,7 @@ class _PlaylistsScreenState extends State<PlaylistsScreen> {
 
     _playlistNameController.clear();
     Navigator.pop(context);
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Playlist "$name" created successfully')),
     );
@@ -421,7 +445,7 @@ class _PlaylistsScreenState extends State<PlaylistsScreen> {
   String _formatDate(DateTime date) {
     final now = DateTime.now();
     final difference = now.difference(date);
-    
+
     if (difference.inDays == 0) {
       return 'Today';
     } else if (difference.inDays == 1) {

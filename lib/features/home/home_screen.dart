@@ -59,8 +59,8 @@ class _HomeScreenState extends State<HomeScreen> {
             title: Text(
               'SwingMusic',
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             actions: [
               IconButton(
@@ -71,7 +71,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               PopupMenuButton<String>(
                 icon: CircleAvatar(
-                  backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                  backgroundColor:
+                      Theme.of(context).colorScheme.primaryContainer,
                   child: Icon(
                     Icons.person,
                     color: Theme.of(context).colorScheme.onPrimaryContainer,
@@ -198,9 +199,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: 200,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
-                        itemCount: _libraryController.recentlyPlayed.length.clamp(0, 10),
+                        itemCount: _libraryController.recentlyPlayed.length
+                            .clamp(0, 10),
                         itemBuilder: (context, index) {
-                          final trackData = _libraryController.recentlyPlayed[index];
+                          final trackData =
+                              _libraryController.recentlyPlayed[index];
                           final track = TrackModel.fromJson(trackData);
                           return Container(
                             width: 160,
@@ -251,15 +254,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     GridView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         childAspectRatio: 0.8,
                         crossAxisSpacing: 16,
                         mainAxisSpacing: 16,
                       ),
-                      itemCount: _libraryController.recentlyAdded.length.clamp(0, 4),
+                      itemCount:
+                          _libraryController.recentlyAdded.length.clamp(0, 4),
                       itemBuilder: (context, index) {
-                        final albumData = _libraryController.recentlyAdded[index];
+                        final albumData =
+                            _libraryController.recentlyAdded[index];
                         final album = AlbumModel.fromJson(albumData);
                         return AlbumCard(
                           album: album,
@@ -294,16 +300,23 @@ class _HomeScreenState extends State<HomeScreen> {
                     ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: _libraryController.recommendedArtists.length.clamp(0, 5),
+                      itemCount: _libraryController.recommendedArtists.length
+                          .clamp(0, 5),
                       itemBuilder: (context, index) {
-                        final artist = _libraryController.recommendedArtists[index];
+                        final artist =
+                            _libraryController.recommendedArtists[index];
                         return ListTile(
                           leading: CircleAvatar(
-                            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primaryContainer,
                             child: Text(
-                              artist.name.isNotEmpty ? artist.name[0].toUpperCase() : '?',
+                              artist.name.isNotEmpty
+                                  ? artist.name[0].toUpperCase()
+                                  : '?',
                               style: TextStyle(
-                                color: Theme.of(context).colorScheme.onPrimaryContainer,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onPrimaryContainer,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -347,7 +360,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
+                  color: color.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
@@ -360,8 +373,8 @@ class _HomeScreenState extends State<HomeScreen> {
               Text(
                 label,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w500,
-                ),
+                      fontWeight: FontWeight.w500,
+                    ),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -389,8 +402,8 @@ class _HomeScreenState extends State<HomeScreen> {
           Text(
             message,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
           ),
         ],
       ),
@@ -399,13 +412,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _playTrack(TrackModel track) {
     // Set queue source for playback logging
-    final mediaController = Provider.of<MediaControllerProvider>(context, listen: false);
+    final mediaController =
+        Provider.of<MediaControllerProvider>(context, listen: false);
     mediaController.setQueueSource(QueueSource.unknown);
-    
+
     _audioProvider.setQueue([track]);
     _audioProvider.loadTrack(track);
     _audioProvider.play();
-    
+
     Navigator.pushNamed(context, '/player');
   }
 }

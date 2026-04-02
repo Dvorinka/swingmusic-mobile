@@ -45,8 +45,8 @@ class AppTheme {
     colorScheme: _darkScheme,
     scaffoldBackgroundColor: body,
     canvasColor: body,
-    splashColor: darkestBlue.withOpacity(0.15),
-    highlightColor: darkestBlue.withOpacity(0.12),
+    splashColor: darkestBlue.withValues(alpha: 0.15),
+    highlightColor: darkestBlue.withValues(alpha: 0.12),
     appBarTheme: const AppBarTheme(
       centerTitle: false,
       elevation: 0,
@@ -64,7 +64,7 @@ class AppTheme {
       thickness: 1,
       space: 24,
     ),
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       elevation: 0,
       color: gray5,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -111,7 +111,7 @@ class AppTheme {
         );
       }),
     ),
-    tabBarTheme: TabBarTheme(
+    tabBarTheme: TabBarThemeData(
       indicatorColor: highlightBlue,
       dividerColor: _divider,
       labelColor: white,

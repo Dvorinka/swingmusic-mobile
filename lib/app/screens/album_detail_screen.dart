@@ -86,9 +86,9 @@ class _AlbumDetailScreenState extends State<AlbumDetailScreen> {
                   onDownload: track.filepath.isEmpty
                       ? () => library.queueServerDownloadForTrack(track)
                       : () => offline.downloadTrack(
-                          track,
-                          collectionLabel: 'album $title',
-                        ),
+                            track,
+                            collectionLabel: 'album $title',
+                          ),
                 ),
               ),
               const SizedBox(height: 24),

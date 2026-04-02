@@ -24,10 +24,10 @@ class PlayerController extends ChangeNotifier {
     required SessionController session,
     required OfflineManager offline,
     required LocalCacheService cache,
-  }) : _api = api,
-       _session = session,
-       _offline = offline,
-       _cache = cache {
+  })  : _api = api,
+        _session = session,
+        _offline = offline,
+        _cache = cache {
     _player = AudioPlayer();
     _bindPlayerStreams();
   }
@@ -103,8 +103,7 @@ class PlayerController extends ChangeNotifier {
 
     _player.playerStateStream.listen((state) async {
       _isPlaying = state.playing;
-      _buffering =
-          state.processingState == ProcessingState.buffering ||
+      _buffering = state.processingState == ProcessingState.buffering ||
           state.processingState == ProcessingState.loading;
       _safeNotify();
 
@@ -344,9 +343,8 @@ class PlayerController extends ChangeNotifier {
             .where((line) => line.isNotEmpty)
             .toList(growable: false);
         _lyricsLines = lines;
-        _lyricsCues = lines
-            .map((line) => LyricsCue(text: line))
-            .toList(growable: false);
+        _lyricsCues =
+            lines.map((line) => LyricsCue(text: line)).toList(growable: false);
         _lyricsSynced = false;
       } else {
         _lyricsLines = const [];

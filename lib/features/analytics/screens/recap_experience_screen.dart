@@ -13,7 +13,7 @@ class RecapExperienceScreen extends StatefulWidget {
 class _RecapExperienceScreenState extends State<RecapExperienceScreen> {
   late final EnhancedApiService _apiService;
   late final AnalyticsService _analyticsService;
-  
+
   Map<String, dynamic> _yearlyStats = {};
   List<Map<String, dynamic>> _topTracks = [];
   List<Map<String, dynamic>> _topArtists = [];
@@ -35,7 +35,8 @@ class _RecapExperienceScreenState extends State<RecapExperienceScreen> {
       final tracksFuture = _analyticsService.getTopTracks(limit: 10);
       final artistsFuture = _analyticsService.getTopArtists(limit: 10);
 
-      final results = await Future.wait([statsFuture, tracksFuture, artistsFuture]);
+      final results =
+          await Future.wait([statsFuture, tracksFuture, artistsFuture]);
 
       if (mounted) {
         setState(() {
@@ -81,8 +82,8 @@ class _RecapExperienceScreenState extends State<RecapExperienceScreen> {
               Text(
                 'Preparing your 2024 Recap...',
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Colors.white,
-                ),
+                      color: Colors.white,
+                    ),
               ),
             ],
           ),
@@ -128,15 +129,15 @@ class _RecapExperienceScreenState extends State<RecapExperienceScreen> {
           Text(
             '2024',
             style: Theme.of(context).textTheme.displayLarge?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
           ),
           Text(
             'Your Year in Music',
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-              color: Colors.white70,
-            ),
+                  color: Colors.white70,
+                ),
           ),
           const SizedBox(height: AppSpacing.xl),
           Icon(
@@ -148,8 +149,8 @@ class _RecapExperienceScreenState extends State<RecapExperienceScreen> {
           Text(
             'Let\'s dive into your musical journey',
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: Colors.white70,
-            ),
+                  color: Colors.white70,
+                ),
             textAlign: TextAlign.center,
           ),
         ],
@@ -175,23 +176,23 @@ class _RecapExperienceScreenState extends State<RecapExperienceScreen> {
           Text(
             '$totalHours',
             style: Theme.of(context).textTheme.displayLarge?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
           ),
           Text(
             'hours of music',
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-              color: Colors.white70,
-            ),
+                  color: Colors.white70,
+                ),
           ),
           if (totalDays > 0) ...[
             const SizedBox(height: AppSpacing.md),
             Text(
               'That\'s $totalDays full days!',
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: Colors.white70,
-              ),
+                    color: Colors.white70,
+                  ),
             ),
           ],
         ],
@@ -207,9 +208,9 @@ class _RecapExperienceScreenState extends State<RecapExperienceScreen> {
           Text(
             'Your Top Tracks',
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
           ),
           const SizedBox(height: AppSpacing.lg),
           Expanded(
@@ -237,9 +238,9 @@ class _RecapExperienceScreenState extends State<RecapExperienceScreen> {
           Text(
             'Your Top Artists',
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
           ),
           const SizedBox(height: AppSpacing.lg),
           Expanded(
@@ -266,9 +267,9 @@ class _RecapExperienceScreenState extends State<RecapExperienceScreen> {
           Text(
             'Your Listening Patterns',
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
           ),
           const SizedBox(height: AppSpacing.xl),
           _PatternItem(
@@ -306,22 +307,22 @@ class _RecapExperienceScreenState extends State<RecapExperienceScreen> {
           Text(
             '${_listeningPatterns['newDiscoveries'] ?? 0}',
             style: Theme.of(context).textTheme.displayLarge?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
           ),
           Text(
             'new discoveries',
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-              color: Colors.white70,
-            ),
+                  color: Colors.white70,
+                ),
           ),
           const SizedBox(height: AppSpacing.lg),
           Text(
             'You explored ${_listeningPatterns['totalGenres'] ?? 0} different genres',
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: Colors.white70,
-            ),
+                  color: Colors.white70,
+                ),
             textAlign: TextAlign.center,
           ),
         ],
@@ -343,15 +344,15 @@ class _RecapExperienceScreenState extends State<RecapExperienceScreen> {
           Text(
             'Thank You',
             style: Theme.of(context).textTheme.displayLarge?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
           ),
           Text(
             'for an amazing year of music',
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-              color: Colors.white70,
-            ),
+                  color: Colors.white70,
+                ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppSpacing.xl),
@@ -431,9 +432,9 @@ class _TopTrackItem extends StatelessWidget {
           Text(
             '$rank',
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              color: Theme.of(context).colorScheme.primary,
-              fontWeight: FontWeight.bold,
-            ),
+                  color: Theme.of(context).colorScheme.primary,
+                  fontWeight: FontWeight.bold,
+                ),
           ),
           const SizedBox(width: AppSpacing.md),
           Expanded(
@@ -443,15 +444,15 @@ class _TopTrackItem extends StatelessWidget {
                 Text(
                   track['title'] ?? 'Unknown Track',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w500,
-                  ),
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                      ),
                 ),
                 Text(
                   track['artist'] ?? 'Unknown Artist',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.white70,
-                  ),
+                        color: Colors.white70,
+                      ),
                 ),
               ],
             ),
@@ -460,8 +461,8 @@ class _TopTrackItem extends StatelessWidget {
             Text(
               '${track['playcount']} plays',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Colors.white54,
-              ),
+                    color: Colors.white54,
+                  ),
             ),
         ],
       ),
@@ -487,9 +488,9 @@ class _TopArtistItem extends StatelessWidget {
           Text(
             '$rank',
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              color: Theme.of(context).colorScheme.primary,
-              fontWeight: FontWeight.bold,
-            ),
+                  color: Theme.of(context).colorScheme.primary,
+                  fontWeight: FontWeight.bold,
+                ),
           ),
           const SizedBox(width: AppSpacing.md),
           ClipOval(
@@ -519,16 +520,16 @@ class _TopArtistItem extends StatelessWidget {
                 Text(
                   artist['name'] ?? 'Unknown Artist',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w500,
-                  ),
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                      ),
                 ),
                 if (artist['playcount'] != null)
                   Text(
                     '${artist['playcount']} plays',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Colors.white70,
-                    ),
+                          color: Colors.white70,
+                        ),
                   ),
               ],
             ),
@@ -567,15 +568,15 @@ class _PatternItem extends StatelessWidget {
               Text(
                 label,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.white70,
-                ),
+                      color: Colors.white70,
+                    ),
               ),
               Text(
                 value,
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
               ),
             ],
           ),

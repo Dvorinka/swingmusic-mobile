@@ -12,15 +12,17 @@ class DownloadScreen extends StatefulWidget {
   State<DownloadScreen> createState() => _DownloadScreenState();
 }
 
-class _DownloadScreenState extends State<DownloadScreen> with TickerProviderStateMixin {
+class _DownloadScreenState extends State<DownloadScreen>
+    with TickerProviderStateMixin {
   late TabController _tabController;
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
-  
+
   // Settings
   bool _wifiOnly = true;
   bool _highQuality = false;
-  String _downloadPath = '/storage/emulated/0/Android/data/com.swingmusic/files/Music';
+  String _downloadPath =
+      '/storage/emulated/0/Android/data/com.swingmusic/files/Music';
 
   @override
   void initState() {
@@ -35,7 +37,7 @@ class _DownloadScreenState extends State<DownloadScreen> with TickerProviderStat
     );
     _fadeController.forward();
     _loadSettings();
-    
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<DownloadProvider>().loadDownloads();
     });
@@ -54,7 +56,8 @@ class _DownloadScreenState extends State<DownloadScreen> with TickerProviderStat
       setState(() {
         _wifiOnly = prefs.getBool('wifi_only') ?? true;
         _highQuality = prefs.getBool('high_quality') ?? false;
-        _downloadPath = prefs.getString('download_path') ?? '/storage/emulated/0/Android/data/com.swingmusic/files/Music';
+        _downloadPath = prefs.getString('download_path') ??
+            '/storage/emulated/0/Android/data/com.swingmusic/files/Music';
       });
     } catch (e) {
       // Handle error silently
@@ -110,17 +113,19 @@ class _DownloadScreenState extends State<DownloadScreen> with TickerProviderStat
             if (provider.isLoading && !provider.hasDownloads) {
               return const Center(child: CircularProgressIndicator());
             }
-            
+
             if (provider.errorMessage != null && !provider.hasDownloads) {
               return _buildErrorState(provider.errorMessage!, provider);
             }
-            
+
             return TabBarView(
               controller: _tabController,
               children: [
                 _buildDownloadsList(provider.allDownloads, provider, 'all'),
-                _buildDownloadsList(provider.downloads, provider, 'downloading'),
-                _buildDownloadsList(provider.completedDownloads, provider, 'completed'),
+                _buildDownloadsList(
+                    provider.downloads, provider, 'downloading'),
+                _buildDownloadsList(
+                    provider.completedDownloads, provider, 'completed'),
               ],
             );
           },
@@ -134,7 +139,8 @@ class _DownloadScreenState extends State<DownloadScreen> with TickerProviderStat
     );
   }
 
-  Widget _buildDownloadsList(List<DownloadItem> downloads, DownloadProvider provider, String type) {
+  Widget _buildDownloadsList(
+      List<DownloadItem> downloads, DownloadProvider provider, String type) {
     if (downloads.isEmpty) {
       return _buildEmptyState(type);
     }
@@ -149,11 +155,11 @@ class _DownloadScreenState extends State<DownloadScreen> with TickerProviderStat
           return DownloadTile(
             download: download,
             onTap: () => _handleDownloadTap(download, provider),
-            onPlay: download.status == DownloadStatus.completed 
-                ? () => _playDownload(download) 
+            onPlay: download.status == DownloadStatus.completed
+                ? () => _playDownload(download)
                 : null,
             onDelete: () => _deleteDownload(download, provider),
-            onPause: download.status == DownloadStatus.downloading 
+            onPause: download.status == DownloadStatus.downloading
                 ? () => _pauseDownload(download, provider)
                 : null,
             onResume: download.status == DownloadStatus.paused
@@ -206,15 +212,15 @@ class _DownloadScreenState extends State<DownloadScreen> with TickerProviderStat
             Text(
               title,
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
             ),
             const SizedBox(height: 8),
             Text(
               subtitle,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
               textAlign: TextAlign.center,
             ),
           ],
@@ -239,15 +245,15 @@ class _DownloadScreenState extends State<DownloadScreen> with TickerProviderStat
             Text(
               'Failed to load downloads',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                color: Theme.of(context).colorScheme.error,
-              ),
+                    color: Theme.of(context).colorScheme.error,
+                  ),
             ),
             const SizedBox(height: 8),
             Text(
               error,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
@@ -274,7 +280,7 @@ class _DownloadScreenState extends State<DownloadScreen> with TickerProviderStat
     audioProvider.setQueue([download.track]);
     audioProvider.loadTrack(download.track);
     audioProvider.play();
-    
+
     Navigator.pushNamed(context, '/player');
   }
 
@@ -283,7 +289,8 @@ class _DownloadScreenState extends State<DownloadScreen> with TickerProviderStat
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Delete Download'),
-        content: Text('Are you sure you want to delete "${download.track.title}"?'),
+        content:
+            Text('Are you sure you want to delete "${download.track.title}"?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -332,22 +339,26 @@ class _DownloadScreenState extends State<DownloadScreen> with TickerProviderStat
             Text(
               download.track.title,
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             const SizedBox(height: 8),
             Text(
               download.track.artistNames,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
-              ),
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withValues(alpha: 0.8),
+                  ),
             ),
             const SizedBox(height: 16),
-            if (download.status == DownloadStatus.downloading || 
+            if (download.status == DownloadStatus.downloading ||
                 download.status == DownloadStatus.paused) ...[
               LinearProgressIndicator(
                 value: download.progress,
-                backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                backgroundColor:
+                    Theme.of(context).colorScheme.surfaceContainerHighest,
                 valueColor: AlwaysStoppedAnimation<Color>(
                   Theme.of(context).colorScheme.primary,
                 ),
@@ -410,7 +421,8 @@ class _DownloadScreenState extends State<DownloadScreen> with TickerProviderStat
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Add Download'),
-        content: const Text('Search for tracks and tap the download button to add them to your downloads.'),
+        content: const Text(
+            'Search for tracks and tap the download button to add them to your downloads.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -436,13 +448,14 @@ class _DownloadScreenState extends State<DownloadScreen> with TickerProviderStat
             Text(
               'Download Settings',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             const SizedBox(height: 16),
             SwitchListTile(
               title: const Text('Download only on Wi-Fi'),
-              subtitle: const Text('Save mobile data by downloading only on Wi-Fi'),
+              subtitle:
+                  const Text('Save mobile data by downloading only on Wi-Fi'),
               value: _wifiOnly,
               onChanged: (value) {
                 setState(() {
@@ -478,7 +491,8 @@ class _DownloadScreenState extends State<DownloadScreen> with TickerProviderStat
                       color: Theme.of(context).colorScheme.error,
                     ),
                     title: const Text('Clear completed downloads'),
-                    subtitle: Text('${provider.completedDownloads.length} completed'),
+                    subtitle:
+                        Text('${provider.completedDownloads.length} completed'),
                     onTap: () {
                       Navigator.pop(context);
                       provider.clearCompletedDownloads();
@@ -506,11 +520,13 @@ class _DownloadScreenState extends State<DownloadScreen> with TickerProviderStat
             const SizedBox(height: 16),
             ListTile(
               title: const Text('Default Music Folder'),
-              subtitle: const Text('/storage/emulated/0/Android/data/com.swingmusic/files/Music'),
+              subtitle: const Text(
+                  '/storage/emulated/0/Android/data/com.swingmusic/files/Music'),
               onTap: () {
                 Navigator.pop(context);
                 setState(() {
-                  _downloadPath = '/storage/emulated/0/Android/data/com.swingmusic/files/Music';
+                  _downloadPath =
+                      '/storage/emulated/0/Android/data/com.swingmusic/files/Music';
                 });
                 _saveSettings();
               },
@@ -577,7 +593,7 @@ class DownloadTile extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
+                      color: Colors.black.withValues(alpha: 0.2),
                       blurRadius: 6,
                       offset: const Offset(0, 2),
                     ),
@@ -607,8 +623,8 @@ class DownloadTile extends StatelessWidget {
                     Text(
                       download.track.title,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                            fontWeight: FontWeight.bold,
+                          ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -616,19 +632,23 @@ class DownloadTile extends StatelessWidget {
                     Text(
                       download.track.artistNames,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
-                      ),
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurface
+                                .withValues(alpha: 0.8),
+                          ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 8),
-                    
+
                     // Status and Progress
                     Row(
                       children: [
                         // Status Badge
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
                             color: _getStatusColor(context),
                             borderRadius: BorderRadius.circular(12),
@@ -657,7 +677,7 @@ class DownloadTile extends StatelessWidget {
                         const Spacer(),
 
                         // Progress or Size
-                        if (download.status == DownloadStatus.downloading || 
+                        if (download.status == DownloadStatus.downloading ||
                             download.status == DownloadStatus.paused) ...[
                           Expanded(
                             child: Column(
@@ -665,7 +685,9 @@ class DownloadTile extends StatelessWidget {
                               children: [
                                 LinearProgressIndicator(
                                   value: download.progress,
-                                  backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                                  backgroundColor: Theme.of(context)
+                                      .colorScheme
+                                      .surfaceContainerHighest,
                                   valueColor: AlwaysStoppedAnimation<Color>(
                                     Theme.of(context).colorScheme.primary,
                                   ),
@@ -673,9 +695,14 @@ class DownloadTile extends StatelessWidget {
                                 const SizedBox(height: 4),
                                 Text(
                                   download.progressPercentage,
-                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                                  ),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall
+                                      ?.copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurfaceVariant,
+                                      ),
                                 ),
                               ],
                             ),
@@ -683,9 +710,12 @@ class DownloadTile extends StatelessWidget {
                         ] else ...[
                           Text(
                             '${download.totalSize.toStringAsFixed(1)} MB',
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
-                            ),
+                            style:
+                                Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurfaceVariant,
+                                    ),
                           ),
                         ],
 
@@ -693,28 +723,33 @@ class DownloadTile extends StatelessWidget {
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            if (download.status == DownloadStatus.completed && onPlay != null)
+                            if (download.status == DownloadStatus.completed &&
+                                onPlay != null)
                               IconButton(
                                 onPressed: onPlay,
                                 icon: const Icon(Icons.play_arrow),
                                 color: Theme.of(context).colorScheme.primary,
                                 iconSize: 20,
                               )
-                            else if (download.status == DownloadStatus.downloading && onPause != null)
+                            else if (download.status ==
+                                    DownloadStatus.downloading &&
+                                onPause != null)
                               IconButton(
                                 onPressed: onPause,
                                 icon: const Icon(Icons.pause),
                                 color: Theme.of(context).colorScheme.primary,
                                 iconSize: 20,
                               )
-                            else if (download.status == DownloadStatus.paused && onResume != null)
+                            else if (download.status == DownloadStatus.paused &&
+                                onResume != null)
                               IconButton(
                                 onPressed: onResume,
                                 icon: const Icon(Icons.play_arrow),
                                 color: Theme.of(context).colorScheme.primary,
                                 iconSize: 20,
                               )
-                            else if (download.status == DownloadStatus.failed && onRetry != null)
+                            else if (download.status == DownloadStatus.failed &&
+                                onRetry != null)
                               IconButton(
                                 onPressed: onRetry,
                                 icon: const Icon(Icons.refresh),
@@ -745,7 +780,7 @@ class DownloadTile extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Theme.of(context).colorScheme.primary.withOpacity(0.8),
+            Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
             Theme.of(context).colorScheme.primary,
           ],
         ),

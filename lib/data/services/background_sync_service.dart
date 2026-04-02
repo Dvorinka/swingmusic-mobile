@@ -7,12 +7,12 @@ import '../services/enhanced_api_service.dart';
 import '../models/sync_model.dart';
 
 class BackgroundSyncService {
-  static const String _syncTaskName = 'backgroundSync';
   late final EnhancedApiService _apiService;
   late final SharedPreferences _prefs;
   Timer? _syncTimer;
   bool _isSyncing = false;
-  final StreamController<SyncStatus> _statusController = StreamController<SyncStatus>.broadcast();
+  final StreamController<SyncStatus> _statusController =
+      StreamController<SyncStatus>.broadcast();
 
   Stream<SyncStatus> get syncStatus => _statusController.stream;
 
@@ -35,43 +35,26 @@ class BackgroundSyncService {
   Future<void> initialize() async {
     try {
       _prefs = await SharedPreferences.getInstance();
-      
+
       // Initialize WorkManager
       // await Workmanager().initialize(
       //   callbackDispatcher,
       // );
-      
-      // Schedule periodic sync task
-      // await _schedulePeriodicSync();
-      
+
       // Start immediate sync if needed
       await _checkAndStartSync();
-      
+
       debugPrint('Background sync service initialized');
     } catch (e) {
       debugPrint('Error initializing background sync: $e');
     }
   }
 
-  Future<void> _schedulePeriodicSync() async {
-    // await Workmanager().registerPeriodicTask(
-    //   _syncTaskName,
-    //   'backgroundSync',
-    //   frequency: const Duration(hours: 6),
-    //   constraints: Constraints(
-    //     networkType: NetworkType.connected,
-    //     requiresCharging: false,
-    //     requiresDeviceIdle: false,
-    //   ),
-    // );
-    debugPrint('Periodic sync scheduling disabled (workmanager unavailable)');
-  }
-
   Future<void> _checkAndStartSync() async {
     final lastSyncTime = _prefs.getInt('last_sync_time') ?? 0;
     final now = DateTime.now().millisecondsSinceEpoch;
     final syncInterval = _prefs.getInt('sync_interval_hours') ?? 6;
-    
+
     if (now - lastSyncTime > syncInterval * 60 * 60 * 1000) {
       await startSync();
     }
@@ -86,32 +69,33 @@ class BackgroundSyncService {
     try {
       _isSyncing = true;
       _statusController.add(SyncStatus(status: SyncStatusType.syncing));
-      
+
       debugPrint('Starting background sync...');
-      
+
       // Sync user settings
       await _syncUserSettings();
-      
+
       // Sync library data
       await _syncLibraryData();
-      
+
       // Sync playlists
       await _syncPlaylists();
-      
+
       // Sync listening history
       await _syncListeningHistory();
-      
+
       // Sync downloads
       await _syncDownloads();
-      
+
       // Update last sync time
-      await _prefs.setInt('last_sync_time', DateTime.now().millisecondsSinceEpoch);
-      
+      await _prefs.setInt(
+          'last_sync_time', DateTime.now().millisecondsSinceEpoch);
+
       _statusController.add(SyncStatus(
         status: SyncStatusType.completed,
         message: 'Sync completed successfully',
       ));
-      
+
       debugPrint('Background sync completed');
     } catch (e) {
       debugPrint('Error during sync: $e');
@@ -119,7 +103,7 @@ class BackgroundSyncService {
         status: SyncStatusType.error,
         message: 'Sync failed: $e',
       ));
-      
+
       // Add to retry queue
       await _addToRetryQueue();
     } finally {
@@ -131,18 +115,18 @@ class BackgroundSyncService {
     try {
       // Get local settings
       final localSettings = await _getLocalSettings();
-      
+
       // Get server settings
       final serverSettings = await _apiService.getUserSettings();
-      
+
       // Merge settings (server takes precedence)
       final mergedSettings = _mergeSettings(localSettings, serverSettings);
-      
+
       // Update local settings if needed
       if (_shouldUpdateSettings(localSettings, serverSettings)) {
         await _updateLocalSettings(mergedSettings);
       }
-      
+
       // Push local changes to server if needed
       if (_hasLocalChanges(localSettings, serverSettings)) {
         await _apiService.updateUserSettings(localSettings);
@@ -157,15 +141,17 @@ class BackgroundSyncService {
     try {
       // Get last library sync timestamp
       final lastLibrarySync = _prefs.getInt('last_library_sync') ?? 0;
-      
+
       // Get changes since last sync
-      final libraryChanges = await _apiService.getLibraryChanges(lastLibrarySync);
-      
+      final libraryChanges =
+          await _apiService.getLibraryChanges(lastLibrarySync);
+
       // Process library changes
       await _processLibraryChanges(libraryChanges);
-      
+
       // Update last library sync timestamp
-      await _prefs.setInt('last_library_sync', DateTime.now().millisecondsSinceEpoch);
+      await _prefs.setInt(
+          'last_library_sync', DateTime.now().millisecondsSinceEpoch);
     } catch (e) {
       debugPrint('Error syncing library data: $e');
       rethrow;
@@ -176,11 +162,12 @@ class BackgroundSyncService {
     try {
       // Get local playlists
       final localPlaylists = await _getLocalPlaylists();
-      
+
       // Get server playlists
       final serverPlaylists = await _apiService.getPlaylists();
-      final serverPlaylistsMap = serverPlaylists.map((playlist) => playlist.toJson()).toList();
-      
+      final serverPlaylistsMap =
+          serverPlaylists.map((playlist) => playlist.toJson()).toList();
+
       // Sync playlists
       await _syncPlaylistData(localPlaylists, serverPlaylistsMap);
     } catch (e) {
@@ -193,14 +180,14 @@ class BackgroundSyncService {
     try {
       // Get unsynced listening history
       final unsyncedHistory = await _getUnsyncedHistory();
-      
+
       if (unsyncedHistory.isNotEmpty) {
         // Convert to List<Map<String, dynamic>> if needed
         final historyMap = unsyncedHistory.cast<Map<String, dynamic>>();
-        
+
         // Send to server
         await _apiService.syncListeningHistory(historyMap);
-        
+
         // Mark as synced
         await _markHistoryAsSynced(historyMap);
       }
@@ -225,7 +212,7 @@ class BackgroundSyncService {
   Future<void> _addToRetryQueue() async {
     try {
       final syncQueue = Hive.box<SyncModel>('sync_queue');
-      
+
       final syncItem = SyncModel(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         type: SyncType.full,
@@ -235,7 +222,7 @@ class BackgroundSyncService {
         maxRetries: 3,
         nextRetryTime: DateTime.now().add(const Duration(hours: 1)),
       );
-      
+
       await syncQueue.add(syncItem);
       debugPrint('Added sync item to retry queue');
     } catch (e) {
@@ -246,11 +233,12 @@ class BackgroundSyncService {
   Future<void> processRetryQueue() async {
     try {
       final syncQueue = Hive.box<SyncModel>('sync_queue');
-      final items = syncQueue.values.where((item) => 
-        item.nextRetryTime.isBefore(DateTime.now()) && 
-        item.retryCount < item.maxRetries
-      ).toList();
-      
+      final items = syncQueue.values
+          .where((item) =>
+              item.nextRetryTime.isBefore(DateTime.now()) &&
+              item.retryCount < item.maxRetries)
+          .toList();
+
       for (final item in items) {
         try {
           await _processSyncItem(item);
@@ -291,7 +279,7 @@ class BackgroundSyncService {
 
   Future<void> setSyncInterval(int hours) async {
     await _prefs.setInt('sync_interval_hours', hours);
-    
+
     // Reschedule periodic task with new interval
     // await Workmanager().cancelAll();
     // await _schedulePeriodicSync();
@@ -300,7 +288,7 @@ class BackgroundSyncService {
 
   Future<void> enableAutoSync(bool enabled) async {
     await _prefs.setBool('auto_sync_enabled', enabled);
-    
+
     if (enabled) {
       await _checkAndStartSync();
     } else {
@@ -314,7 +302,7 @@ class BackgroundSyncService {
     final lastSync = DateTime.fromMillisecondsSinceEpoch(lastSyncTime);
     final autoSyncEnabled = _prefs.getBool('auto_sync_enabled') ?? true;
     final syncInterval = _prefs.getInt('sync_interval_hours') ?? 6;
-    
+
     return SyncInfo(
       lastSyncTime: lastSync,
       autoSyncEnabled: autoSyncEnabled,
@@ -382,22 +370,22 @@ enum SyncType { full, settings, library, playlists, history }
 class SyncModel extends HiveObject {
   @HiveField(0)
   String id;
-  
+
   @HiveField(1)
   SyncType type;
-  
+
   @HiveField(2)
   Map<String, dynamic> data;
-  
+
   @HiveField(3)
   DateTime timestamp;
-  
+
   @HiveField(4)
   int retryCount;
-  
+
   @HiveField(5)
   int maxRetries;
-  
+
   @HiveField(6)
   DateTime nextRetryTime;
 
@@ -422,12 +410,14 @@ Future<void> _updateLocalSettings(Map<String, dynamic> settings) async {
   // Implementation for updating local settings
 }
 
-Map<String, dynamic> _mergeSettings(Map<String, dynamic> local, Map<String, dynamic> server) {
+Map<String, dynamic> _mergeSettings(
+    Map<String, dynamic> local, Map<String, dynamic> server) {
   // Implementation for merging settings
   return server;
 }
 
-bool _shouldUpdateSettings(Map<String, dynamic> local, Map<String, dynamic> server) {
+bool _shouldUpdateSettings(
+    Map<String, dynamic> local, Map<String, dynamic> server) {
   // Implementation for checking if settings should be updated
   return true;
 }
@@ -442,7 +432,8 @@ Future<List<Map<String, dynamic>>> _getLocalPlaylists() async {
   return [];
 }
 
-Future<void> _syncPlaylistData(List<Map<String, dynamic>> local, List<Map<String, dynamic>> server) async {
+Future<void> _syncPlaylistData(
+    List<Map<String, dynamic>> local, List<Map<String, dynamic>> server) async {
   // Implementation for syncing playlist data
 }
 

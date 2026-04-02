@@ -9,7 +9,7 @@ import '../../../data/models/artist_model.dart';
 
 class ArtistScreen extends StatefulWidget {
   final String artistHash;
-  
+
   const ArtistScreen({super.key, required this.artistHash});
 
   @override
@@ -35,7 +35,7 @@ class _ArtistScreenState extends State<ArtistScreen> {
               child: CircularProgressIndicator(),
             );
           }
-          
+
           if (provider.errorMessage != null) {
             return Center(
               child: Column(
@@ -55,8 +55,8 @@ class _ArtistScreenState extends State<ArtistScreen> {
                   Text(
                     provider.errorMessage!,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 16),
@@ -68,13 +68,13 @@ class _ArtistScreenState extends State<ArtistScreen> {
               ),
             );
           }
-          
+
           if (!provider.hasArtist) {
             return const Center(
               child: Text('Artist not found'),
             );
           }
-          
+
           return CustomScrollView(
             slivers: [
               // Header with artist info
@@ -98,7 +98,7 @@ class _ArtistScreenState extends State<ArtistScreen> {
                   ),
                 ],
               ),
-              
+
               // Content
               SliverToBoxAdapter(
                 child: Padding(
@@ -108,18 +108,20 @@ class _ArtistScreenState extends State<ArtistScreen> {
                     children: [
                       // Artist stats
                       _buildArtistStats(context, provider),
-                      
+
                       const SizedBox(height: 32),
-                      
+
                       // Albums section
-                      _buildSectionHeader(context, 'Albums', provider.artistAlbums.length),
+                      _buildSectionHeader(
+                          context, 'Albums', provider.artistAlbums.length),
                       const SizedBox(height: 16),
                       _buildAlbumsGrid(context, provider),
-                      
+
                       const SizedBox(height: 32),
-                      
+
                       // Popular tracks
-                      _buildSectionHeader(context, 'Popular Tracks', provider.artistTracks.length),
+                      _buildSectionHeader(context, 'Popular Tracks',
+                          provider.artistTracks.length),
                       const SizedBox(height: 16),
                       _buildTracksList(context, provider),
                     ],
@@ -132,10 +134,10 @@ class _ArtistScreenState extends State<ArtistScreen> {
       ),
     );
   }
-  
+
   Widget _buildArtistHeader(BuildContext context, ArtistInfoProvider provider) {
     final artist = provider.currentArtist!;
-    
+
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -162,7 +164,7 @@ class _ArtistScreenState extends State<ArtistScreen> {
                 },
               ),
             ),
-          
+
           // Gradient overlay
           Positioned.fill(
             child: Container(
@@ -178,7 +180,7 @@ class _ArtistScreenState extends State<ArtistScreen> {
               ),
             ),
           ),
-          
+
           // Artist info
           Positioned(
             bottom: 20,
@@ -190,16 +192,16 @@ class _ArtistScreenState extends State<ArtistScreen> {
                 Text(
                   artist.name,
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   '${provider.artistAlbums.length} albums • ${provider.artistTracks.length} tracks',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Colors.white.withAlpha(230),
-                  ),
+                        color: Colors.white.withAlpha(230),
+                      ),
                 ),
               ],
             ),
@@ -208,7 +210,7 @@ class _ArtistScreenState extends State<ArtistScreen> {
       ),
     );
   }
-  
+
   Widget _buildArtistStats(BuildContext context, ArtistInfoProvider provider) {
     return Row(
       children: [
@@ -241,12 +243,16 @@ class _ArtistScreenState extends State<ArtistScreen> {
       ],
     );
   }
-  
-  Widget _buildStatCard(BuildContext context, String label, String value, IconData icon) {
+
+  Widget _buildStatCard(
+      BuildContext context, String label, String value, IconData icon) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest.withAlpha(128),
+        color: Theme.of(context)
+            .colorScheme
+            .surfaceContainerHighest
+            .withAlpha(128),
         borderRadius: BorderRadius.circular(AppConstants.borderRadius),
       ),
       child: Column(
@@ -260,29 +266,29 @@ class _ArtistScreenState extends State<ArtistScreen> {
           Text(
             value,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+                  fontWeight: FontWeight.bold,
+                ),
           ),
           const SizedBox(height: 4),
           Text(
             label,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
           ),
         ],
       ),
     );
   }
-  
+
   Widget _buildSectionHeader(BuildContext context, String title, int count) {
     return Row(
       children: [
         Text(
           title,
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+                fontWeight: FontWeight.bold,
+              ),
         ),
         const SizedBox(width: 8),
         Container(
@@ -294,15 +300,15 @@ class _ArtistScreenState extends State<ArtistScreen> {
           child: Text(
             '$count',
             style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.w600,
-            ),
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
           ),
         ),
       ],
     );
   }
-  
+
   Widget _buildAlbumsGrid(BuildContext context, ArtistInfoProvider provider) {
     return SizedBox(
       height: 180,
@@ -321,7 +327,8 @@ class _ArtistScreenState extends State<ArtistScreen> {
                   flex: 3,
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                      color:
+                          Theme.of(context).colorScheme.surfaceContainerHighest,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: ClipRRect(
@@ -332,7 +339,8 @@ class _ArtistScreenState extends State<ArtistScreen> {
                         errorBuilder: (context, error, stackTrace) {
                           return Icon(
                             Icons.album,
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
                           );
                         },
                       ),
@@ -346,9 +354,10 @@ class _ArtistScreenState extends State<ArtistScreen> {
                     children: [
                       Text(
                         album.title,
-                        style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                          fontWeight: FontWeight.w500,
-                        ),
+                        style:
+                            Theme.of(context).textTheme.labelMedium?.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -356,8 +365,10 @@ class _ArtistScreenState extends State<ArtistScreen> {
                       Text(
                         album.artistNames,
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
+                            ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -371,7 +382,7 @@ class _ArtistScreenState extends State<ArtistScreen> {
       ),
     );
   }
-  
+
   Widget _buildTracksList(BuildContext context, ArtistInfoProvider provider) {
     return ListView.builder(
       shrinkWrap: true,
@@ -383,8 +394,8 @@ class _ArtistScreenState extends State<ArtistScreen> {
           leading: Text(
             '${index + 1}',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
           ),
           title: Text(track.title),
           subtitle: Text(track.album),
@@ -396,10 +407,10 @@ class _ArtistScreenState extends State<ArtistScreen> {
       },
     );
   }
-  
+
   String _formatDuration(List tracks) {
     if (tracks.isEmpty) return '0m';
-    
+
     int totalSeconds = 0;
     for (var track in tracks) {
       if (track.duration != null) {
@@ -409,49 +420,63 @@ class _ArtistScreenState extends State<ArtistScreen> {
         totalSeconds += 180;
       }
     }
-    
+
     final hours = totalSeconds ~/ 3600;
     final minutes = (totalSeconds % 3600) ~/ 60;
-    
+
     if (hours > 0) {
       return '${hours}h ${minutes}m';
     } else {
       return '${minutes}m';
     }
   }
-  
+
   void _playTrack(dynamic track) {
     final trackModel = TrackModel(
       id: track.id ?? 1,
       title: track.title ?? 'Unknown Track',
       album: track.album ?? 'Unknown Album',
       albumhash: track.albumhash ?? 'unknown_album',
-      artists: track.artists ?? [ArtistModel(name: track.artist ?? 'Unknown Artist', artisthash: 'unknown_artist')],
-      albumartists: track.albumartists ?? [ArtistModel(name: track.artist ?? 'Unknown Artist', artisthash: 'unknown_artist')],
+      artists: track.artists ??
+          [
+            ArtistModel(
+                name: track.artist ?? 'Unknown Artist',
+                artisthash: 'unknown_artist')
+          ],
+      albumartists: track.albumartists ??
+          [
+            ArtistModel(
+                name: track.artist ?? 'Unknown Artist',
+                artisthash: 'unknown_artist')
+          ],
       artisthashes: track.artisthashes ?? ['unknown_artist'],
       track: track.track ?? 1,
       disc: track.disc ?? 1,
-      duration: track.duration?.inSeconds ?? 180, // Convert Duration to seconds or default to 3 minutes
+      duration: track.duration?.inSeconds ??
+          180, // Convert Duration to seconds or default to 3 minutes
       bitrate: track.bitrate ?? 320,
       filepath: track.filepath ?? '/unknown/path',
       folder: track.folder ?? '/unknown/folder',
-      genres: track.genres ?? [GenreModel(name: 'Unknown', genrehash: 'unknown_genre')],
+      genres: track.genres ??
+          [GenreModel(name: 'Unknown', genrehash: 'unknown_genre')],
       genrehashes: track.genrehashes ?? ['unknown_genre'],
       date: track.date ?? 2024,
       lastModified: track.lastModified ?? 1640995200,
       trackhash: track.hash ?? 'unknown_hash',
       extra: track.extra ?? {},
     );
-    
+
     final audioProvider = Provider.of<AudioProvider>(context, listen: false);
     // Set queue source for playback logging
-    final mediaController = Provider.of<MediaControllerProvider>(context, listen: false);
-    mediaController.setQueueSource(QueueSource.artist, identifier: widget.artistHash);
-    
+    final mediaController =
+        Provider.of<MediaControllerProvider>(context, listen: false);
+    mediaController.setQueueSource(QueueSource.artist,
+        identifier: widget.artistHash);
+
     audioProvider.setQueue([trackModel]);
     audioProvider.loadTrack(trackModel);
     audioProvider.play();
-    
+
     Navigator.pushNamed(context, '/player');
   }
 }

@@ -8,12 +8,13 @@ class RecapScreen extends StatefulWidget {
   State<RecapScreen> createState() => _RecapScreenState();
 }
 
-class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin {
+class _RecapScreenState extends State<RecapScreen>
+    with TickerProviderStateMixin {
   late AnimationController _fadeController;
   late AnimationController _slideController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
-  
+
   bool _isLoading = true;
   Map<String, dynamic> _recapData = {};
 
@@ -28,7 +29,7 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
       duration: const Duration(milliseconds: 600),
       vsync: this,
     );
-    
+
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _fadeController, curve: Curves.easeIn),
     );
@@ -36,7 +37,7 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
       begin: const Offset(0, 0.3),
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _slideController, curve: Curves.easeOut));
-    
+
     _loadRecapData();
   }
 
@@ -50,7 +51,7 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
   Future<void> _loadRecapData() async {
     // Simulate loading recap data
     await Future.delayed(const Duration(seconds: 2));
-    
+
     setState(() {
       _recapData = {
         'totalMinutes': 1847, // 30+ hours
@@ -100,7 +101,7 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
       };
       _isLoading = false;
     });
-    
+
     _fadeController.forward();
     _slideController.forward();
   }
@@ -137,7 +138,7 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
+                    color: Colors.black.withValues(alpha: 0.2),
                     blurRadius: 20,
                     spreadRadius: 5,
                   ),
@@ -153,16 +154,16 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
             Text(
               'Creating Your 2024 Recap',
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             const SizedBox(height: 8),
             Text(
               'Analyzing your listening habits...',
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: Colors.white.withOpacity(0.8),
-              ),
+                    color: Colors.white.withValues(alpha: 0.8),
+                  ),
             ),
             const SizedBox(height: 32),
             const CircularProgressIndicator(
@@ -180,25 +181,25 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
         children: [
           // Header
           _buildHeader(),
-          
+
           // Main Stats
           _buildMainStats(),
-          
+
           // Top Artist/Album/Track
           _buildTopContent(),
-          
+
           // Genre Distribution
           _buildGenreDistribution(),
-          
+
           // Listening Patterns
           _buildListeningPatterns(),
-          
+
           // Monthly Chart
           _buildMonthlyChart(),
-          
+
           // Share Section
           _buildShareSection(),
-          
+
           // Bottom padding
           const SizedBox(height: 100),
         ],
@@ -233,9 +234,9 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
                   Text(
                     '2024 Recap',
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                   ),
                   IconButton(
                     onPressed: _shareRecap,
@@ -249,9 +250,9 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
                 child: Text(
                   'Your Year in Music',
                   style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
               ),
               const SizedBox(height: 8),
@@ -260,8 +261,8 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
                 child: Text(
                   'Discover your listening journey',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Colors.white.withOpacity(0.8),
-                  ),
+                        color: Colors.white.withValues(alpha: 0.8),
+                      ),
                 ),
               ),
               const SizedBox(height: 32),
@@ -283,7 +284,7 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -340,11 +341,12 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
     );
   }
 
-  Widget _buildStatCard(String title, String value, IconData icon, Color color) {
+  Widget _buildStatCard(
+      String title, String value, IconData icon, Color color) {
     return Container(
       padding: AppSpacing.paddingMD,
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -354,16 +356,19 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
           Text(
             value,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              color: color,
-              fontWeight: FontWeight.bold,
-            ),
+                  color: color,
+                  fontWeight: FontWeight.bold,
+                ),
           ),
           const SizedBox(height: 4),
           Text(
             title,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-            ),
+                  color: Theme.of(context)
+                      .colorScheme
+                      .onSurface
+                      .withValues(alpha: 0.7),
+                ),
             textAlign: TextAlign.center,
           ),
         ],
@@ -380,7 +385,7 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -392,18 +397,21 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
           Text(
             'Your Favorites',
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+                  fontWeight: FontWeight.bold,
+                ),
           ),
           const SizedBox(height: 16),
-          
-          _buildTopItem('Top Artist', _recapData['topArtist'], Icons.person, Colors.purple),
+          _buildTopItem('Top Artist', _recapData['topArtist'], Icons.person,
+              Colors.purple),
           const SizedBox(height: 12),
-          _buildTopItem('Top Album', _recapData['topAlbum'], Icons.album, Colors.blue),
+          _buildTopItem(
+              'Top Album', _recapData['topAlbum'], Icons.album, Colors.blue),
           const SizedBox(height: 12),
-          _buildTopItem('Top Track', _recapData['topTrack'], Icons.music_note, Colors.red),
+          _buildTopItem('Top Track', _recapData['topTrack'], Icons.music_note,
+              Colors.red),
           const SizedBox(height: 12),
-          _buildTopItem('Favorite Genre', _recapData['favoriteGenre'], Icons.category, Colors.green),
+          _buildTopItem('Favorite Genre', _recapData['favoriteGenre'],
+              Icons.category, Colors.green),
         ],
       ),
     );
@@ -413,7 +421,7 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
     return Container(
       padding: AppSpacing.paddingMD,
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
@@ -434,14 +442,17 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
                 Text(
                   label,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-                  ),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withValues(alpha: 0.7),
+                      ),
                 ),
                 Text(
                   value,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
               ],
             ),
@@ -453,7 +464,7 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
 
   Widget _buildGenreDistribution() {
     final genres = List<Map<String, dynamic>>.from(_recapData['topGenres']);
-    
+
     return Container(
       margin: AppSpacing.marginLG,
       padding: AppSpacing.paddingLG,
@@ -462,7 +473,7 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -474,8 +485,8 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
           Text(
             'Genre Distribution',
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+                  fontWeight: FontWeight.bold,
+                ),
           ),
           const SizedBox(height: 16),
           SizedBox(
@@ -492,16 +503,22 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
                         children: [
                           Text(
                             genre['name'],
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              fontWeight: FontWeight.w500,
-                            ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                ),
                           ),
                           Text(
                             '${genre['percentage']}%',
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: genre['color'],
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                  color: genre['color'],
+                                  fontWeight: FontWeight.bold,
+                                ),
                           ),
                         ],
                       ),
@@ -509,7 +526,9 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
                       Container(
                         height: 8,
                         decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                          color: Theme.of(context)
+                              .colorScheme
+                              .surfaceContainerHighest,
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: FractionallySizedBox(
@@ -543,7 +562,7 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -555,54 +574,57 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
           Text(
             'Listening Patterns',
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+                  fontWeight: FontWeight.bold,
+                ),
           ),
           const SizedBox(height: 16),
-          
+
           // Day of Week
           Text(
             'Day of Week',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+                  fontWeight: FontWeight.w600,
+                ),
           ),
           const SizedBox(height: 12),
           SizedBox(
             height: 120,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: List<Map<String, dynamic>>.from(_recapData['dayOfWeekStats'])
-                  .map((day) => Column(
-                        children: [
-                          Container(
-                            width: 30,
-                            height: 60,
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.primary,
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            child: Align(
-                              alignment: Alignment.bottomCenter,
-                              child: FractionallySizedBox(
-                                heightFactor: day['hours'] / 7.0,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(context).colorScheme.primary,
-                                    borderRadius: BorderRadius.circular(4),
+              children:
+                  List<Map<String, dynamic>>.from(_recapData['dayOfWeekStats'])
+                      .map((day) => Column(
+                            children: [
+                              Container(
+                                width: 30,
+                                height: 60,
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                child: Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: FractionallySizedBox(
+                                    heightFactor: day['hours'] / 7.0,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            day['day'],
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                        ],
-                      ))
-                  .toList(),
+                              const SizedBox(height: 8),
+                              Text(
+                                day['day'],
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ],
+                          ))
+                      .toList(),
             ),
           ),
         ],
@@ -611,9 +633,11 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
   }
 
   Widget _buildMonthlyChart() {
-    final monthlyData = List<Map<String, dynamic>>.from(_recapData['monthlyListening']);
-    final maxHours = monthlyData.map((m) => m['hours']).reduce((a, b) => a > b ? a : b);
-    
+    final monthlyData =
+        List<Map<String, dynamic>>.from(_recapData['monthlyListening']);
+    final maxHours =
+        monthlyData.map((m) => m['hours']).reduce((a, b) => a > b ? a : b);
+
     return Container(
       margin: AppSpacing.marginLG,
       padding: AppSpacing.paddingLG,
@@ -622,7 +646,7 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -634,8 +658,8 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
           Text(
             'Monthly Listening',
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+                  fontWeight: FontWeight.bold,
+                ),
           ),
           const SizedBox(height: 16),
           SizedBox(
@@ -650,7 +674,9 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
                       width: 20,
                       height: 150,
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                        color: Theme.of(context)
+                            .colorScheme
+                            .surfaceContainerHighest,
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: Align(
@@ -681,8 +707,8 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
                     Text(
                       '${month['hours']}h',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                            fontWeight: FontWeight.w600,
+                          ),
                     ),
                   ],
                 );
@@ -718,16 +744,16 @@ class _RecapScreenState extends State<RecapScreen> with TickerProviderStateMixin
           Text(
             'Share Your Recap',
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
           ),
           const SizedBox(height: 8),
           Text(
             'Show your friends what you listened to this year',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.white.withOpacity(0.9),
-            ),
+                  color: Colors.white.withValues(alpha: 0.9),
+                ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),

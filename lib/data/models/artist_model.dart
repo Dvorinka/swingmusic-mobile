@@ -86,7 +86,7 @@ class ArtistModel extends Equatable {
     final hours = duration ~/ 3600;
     final minutes = (duration % 3600) ~/ 60;
     final seconds = duration % 60;
-    
+
     if (hours > 0) {
       return '$hours:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
     } else {
@@ -108,11 +108,13 @@ class ArtistModel extends Equatable {
       favUserids: List<int>.from(json['fav_userids'] ?? []),
       isFavorite: json['is_favorite'] ?? false,
       albums: (json['albums'] as List<dynamic>?)
-          ?.map((album) => AlbumModel.fromJson(album))
-          .toList() ?? [],
+              ?.map((album) => AlbumModel.fromJson(album))
+              .toList() ??
+          [],
       tracks: (json['tracks'] as List<dynamic>?)
-          ?.map((track) => TrackModel.fromJson(track))
-          .toList() ?? [],
+              ?.map((track) => TrackModel.fromJson(track))
+              .toList() ??
+          [],
     );
   }
 

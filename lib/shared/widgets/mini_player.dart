@@ -10,8 +10,7 @@ class MiniPlayer extends StatefulWidget {
   State<MiniPlayer> createState() => _MiniPlayerState();
 }
 
-class _MiniPlayerState extends State<MiniPlayer>
-    with TickerProviderStateMixin {
+class _MiniPlayerState extends State<MiniPlayer> with TickerProviderStateMixin {
   late AnimationController _slideController;
   late Animation<Offset> _slideAnimation;
   double _dragStartX = 0;
@@ -50,7 +49,7 @@ class _MiniPlayerState extends State<MiniPlayer>
 
     // Clamp the animation value between -0.3 and 0.3
     final clampedValue = normalizedDelta.clamp(-0.3, 0.3);
-    
+
     _slideAnimation = Tween<Offset>(
       begin: Offset(clampedValue, 0),
       end: Offset.zero,
@@ -58,17 +57,17 @@ class _MiniPlayerState extends State<MiniPlayer>
       parent: _slideController,
       curve: Curves.easeInOut,
     ));
-    
+
     setState(() {});
   }
 
   void _handleDragEnd(DragEndDetails details) {
     _isDragging = false;
     final velocity = details.velocity.pixelsPerSecond.dx;
-    
+
     // Swipe threshold
     const swipeThreshold = 100.0;
-    
+
     if (velocity > swipeThreshold) {
       // Swiped right - previous track
       _slideToPosition(-0.3, () {
@@ -116,7 +115,7 @@ class _MiniPlayerState extends State<MiniPlayer>
     return Consumer<AudioProvider>(
       builder: (context, audioProvider, child) {
         final currentTrack = audioProvider.currentTrack;
-        
+
         if (currentTrack == null) {
           return const SizedBox.shrink();
         }
@@ -130,7 +129,7 @@ class _MiniPlayerState extends State<MiniPlayer>
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: Colors.black.withValues(alpha: 0.1),
                 blurRadius: 8,
                 offset: const Offset(0, -2),
               ),
@@ -142,13 +141,14 @@ class _MiniPlayerState extends State<MiniPlayer>
               // Progress indicator
               LinearProgressIndicator(
                 value: audioProvider.progress,
-                backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                backgroundColor:
+                    Theme.of(context).colorScheme.surfaceContainerHighest,
                 valueColor: AlwaysStoppedAnimation<Color>(
                   Theme.of(context).colorScheme.primary,
                 ),
                 minHeight: 2,
               ),
-              
+
               // Mini player content
               GestureDetector(
                 onTap: () => _navigateToPlayer(context),
@@ -158,7 +158,8 @@ class _MiniPlayerState extends State<MiniPlayer>
                   animation: _slideAnimation,
                   builder: (context, child) {
                     return Transform.translate(
-                      offset: _slideAnimation.value * MediaQuery.of(context).size.width,
+                      offset: _slideAnimation.value *
+                          MediaQuery.of(context).size.width,
                       child: Container(
                         padding: AppSpacing.paddingSM,
                         child: Row(
@@ -169,7 +170,9 @@ class _MiniPlayerState extends State<MiniPlayer>
                               height: 48,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(8),
-                                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .surfaceContainerHighest,
                               ),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(8),
@@ -177,16 +180,17 @@ class _MiniPlayerState extends State<MiniPlayer>
                                     ? Image.network(
                                         currentTrack.image,
                                         fit: BoxFit.cover,
-                                        errorBuilder: (context, error, stackTrace) {
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
                                           return _buildDefaultAlbumArt(context);
                                         },
                                       )
                                     : _buildDefaultAlbumArt(context),
                               ),
                             ),
-                            
+
                             const SizedBox(width: 12),
-                            
+
                             // Track info
                             Expanded(
                               child: Column(
@@ -195,26 +199,37 @@ class _MiniPlayerState extends State<MiniPlayer>
                                 children: [
                                   Text(
                                     currentTrack.displayTitle,
-                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                      fontWeight: FontWeight.w600,
-                                      color: Theme.of(context).colorScheme.onSurface,
-                                    ),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.w600,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurface,
+                                        ),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                   const SizedBox(height: 2),
                                   Text(
                                     currentTrack.artistNames,
-                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-                                    ),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurface
+                                              .withValues(alpha: 0.6),
+                                        ),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ],
                               ),
                             ),
-                            
+
                             // Play/pause button
                             GestureDetector(
                               onTap: () {
@@ -237,16 +252,21 @@ class _MiniPlayerState extends State<MiniPlayer>
                                         height: 20,
                                         child: CircularProgressIndicator(
                                           strokeWidth: 2,
-                                          valueColor: AlwaysStoppedAnimation<Color>(
-                                            Theme.of(context).colorScheme.onPrimary,
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                            Theme.of(context)
+                                                .colorScheme
+                                                .onPrimary,
                                           ),
                                         ),
                                       )
                                     : Icon(
-                                        audioProvider.isPlaying 
-                                            ? Icons.pause 
+                                        audioProvider.isPlaying
+                                            ? Icons.pause
                                             : Icons.play_arrow,
-                                        color: Theme.of(context).colorScheme.onPrimary,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onPrimary,
                                         size: 20,
                                       ),
                               ),
@@ -272,8 +292,8 @@ class _MiniPlayerState extends State<MiniPlayer>
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Theme.of(context).colorScheme.primary.withOpacity(0.7),
-            Theme.of(context).colorScheme.secondary.withOpacity(0.7),
+            Theme.of(context).colorScheme.primary.withValues(alpha: 0.7),
+            Theme.of(context).colorScheme.secondary.withValues(alpha: 0.7),
           ],
         ),
       ),

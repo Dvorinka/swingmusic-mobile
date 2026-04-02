@@ -8,29 +8,33 @@ import '../../../data/models/artist_model.dart' as artist;
 class TopSearchResult {
   final dynamic item; // Can be TrackModel, AlbumModel, or ArtistModel
   final String type; // 'track', 'album', or 'artist'
-  
+
   TopSearchResult({
     required this.item,
     required this.type,
   });
-  
+
   String get title {
     if (item is TrackModel) return (item as TrackModel).title;
     if (item is AlbumModel) return (item as AlbumModel).title;
     if (item is artist.ArtistModel) return (item as artist.ArtistModel).name;
     return '';
   }
-  
+
   String get subtitle {
     if (item is TrackModel) return (item as TrackModel).artistNames;
     if (item is AlbumModel) {
       final album = item as AlbumModel;
-      return album.albumartists.isNotEmpty ? album.albumartists.map((a) => a.name).join(', ') : 'Unknown Artist';
+      return album.albumartists.isNotEmpty
+          ? album.albumartists.map((a) => a.name).join(', ')
+          : 'Unknown Artist';
     }
-    if (item is artist.ArtistModel) return '${(item as artist.ArtistModel).trackcount} tracks';
+    if (item is artist.ArtistModel) {
+      return '${(item as artist.ArtistModel).trackcount} tracks';
+    }
     return '';
   }
-  
+
   String get image {
     if (item is TrackModel) return (item as TrackModel).image;
     if (item is AlbumModel) return (item as AlbumModel).image;
@@ -41,28 +45,28 @@ class TopSearchResult {
 
 class SearchProvider extends ChangeNotifier {
   final EnhancedApiService _apiService;
-  
-  SearchProvider({required EnhancedApiService apiService}) 
+
+  SearchProvider({required EnhancedApiService apiService})
       : _apiService = apiService;
-  
+
   String _searchQuery = '';
   bool _isLoading = false;
   String? _errorMessage;
-  
+
   // Search results
   List<TrackModel> _trackResults = [];
   List<AlbumModel> _albumResults = [];
   List<artist.ArtistModel> _artistResults = [];
-  
+
   // Top result (matching Android Search.kt)
   TopSearchResult? _topResult;
-  
+
   // Search suggestions
   List<String> _suggestions = [];
-  
+
   // Search type filter
   SearchType _searchType = SearchType.all;
-  
+
   // Getters
   String get searchQuery => _searchQuery;
   bool get isLoading => _isLoading;
@@ -73,24 +77,27 @@ class SearchProvider extends ChangeNotifier {
   TopSearchResult? get topResult => _topResult;
   List<String> get suggestions => _suggestions;
   SearchType get searchType => _searchType;
-  
-  bool get hasResults => _trackResults.isNotEmpty || _albumResults.isNotEmpty || _artistResults.isNotEmpty;
+
+  bool get hasResults =>
+      _trackResults.isNotEmpty ||
+      _albumResults.isNotEmpty ||
+      _artistResults.isNotEmpty;
   bool get hasQuery => _searchQuery.isNotEmpty;
   bool get hasTopResult => _topResult != null;
-  
+
   Future<void> search(String query, {SearchType? type}) async {
     if (query.trim().isEmpty) {
       _clearResults();
       return;
     }
-    
+
     try {
       _isLoading = true;
       _errorMessage = null;
       _searchQuery = query;
       _searchType = type ?? SearchType.all;
       notifyListeners();
-      
+
       // Perform search based on type
       switch (_searchType) {
         case SearchType.tracks:
@@ -106,9 +113,10 @@ class SearchProvider extends ChangeNotifier {
           await _searchAll(query);
           break;
       }
-      
+
       if (kDebugMode) {
-        debugPrint('Search results: ${_trackResults.length} tracks, ${_albumResults.length} albums, ${_artistResults.length} artists');
+        debugPrint(
+            'Search results: ${_trackResults.length} tracks, ${_albumResults.length} albums, ${_artistResults.length} artists');
       }
     } catch (e) {
       _setError('Search failed: $e');
@@ -117,26 +125,26 @@ class SearchProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
-  
+
   Future<void> _searchAll(String query) async {
     await Future.wait([
       _searchTracks(query),
       _searchAlbums(query),
       _searchArtists(query),
     ]);
-    
+
     // Calculate top result after all searches complete
     _calculateTopResult(query);
   }
-  
+
   /// Calculate top result based on relevance
   /// Matches Android: TopResultItem in Search.kt
   void _calculateTopResult(String query) {
     final queryLower = query.toLowerCase();
-    
+
     // Priority: exact match > starts with > contains
     // Type priority: track > album > artist
-    
+
     // Check tracks first
     for (final track in _trackResults) {
       if (track.title.toLowerCase() == queryLower) {
@@ -144,7 +152,7 @@ class SearchProvider extends ChangeNotifier {
         return;
       }
     }
-    
+
     // Check albums
     for (final album in _albumResults) {
       if (album.title.toLowerCase() == queryLower) {
@@ -152,7 +160,7 @@ class SearchProvider extends ChangeNotifier {
         return;
       }
     }
-    
+
     // Check artists
     for (final artistItem in _artistResults) {
       if (artistItem.name.toLowerCase() == queryLower) {
@@ -160,7 +168,7 @@ class SearchProvider extends ChangeNotifier {
         return;
       }
     }
-    
+
     // No exact match, use first track if available
     if (_trackResults.isNotEmpty) {
       _topResult = TopSearchResult(item: _trackResults.first, type: 'track');
@@ -172,7 +180,7 @@ class SearchProvider extends ChangeNotifier {
       _topResult = null;
     }
   }
-  
+
   Future<void> _searchTracks(String query) async {
     try {
       _trackResults = await _apiService.getTracks(search: query);
@@ -181,7 +189,7 @@ class SearchProvider extends ChangeNotifier {
       if (kDebugMode) debugPrint('Track search error: $e');
     }
   }
-  
+
   Future<void> _searchAlbums(String query) async {
     try {
       _albumResults = await _apiService.getAlbums(search: query);
@@ -190,7 +198,7 @@ class SearchProvider extends ChangeNotifier {
       if (kDebugMode) debugPrint('Album search error: $e');
     }
   }
-  
+
   Future<void> _searchArtists(String query) async {
     try {
       _artistResults = await _apiService.getArtists(search: query);
@@ -199,28 +207,29 @@ class SearchProvider extends ChangeNotifier {
       if (kDebugMode) debugPrint('Artist search error: $e');
     }
   }
-  
+
   Future<void> getSuggestions(String query) async {
     if (query.trim().isEmpty) {
       _suggestions = [];
       notifyListeners();
       return;
     }
-    
+
     try {
       // Get real search suggestions from API
       final suggestionsData = await _apiService.getSearchSuggestions(query);
-      _suggestions = suggestionsData.map((suggestion) => suggestion.text).toList();
+      _suggestions =
+          suggestionsData.map((suggestion) => suggestion.text).toList();
       notifyListeners();
     } catch (e) {
       _suggestions = [];
       _setError('Failed to get suggestions: $e');
     }
   }
-  
+
   void setSearchType(SearchType type) {
     _searchType = type;
-    
+
     // Re-run search if we have a query
     if (_searchQuery.isNotEmpty) {
       search(_searchQuery, type: type);
@@ -228,11 +237,11 @@ class SearchProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
-  
+
   void clearSearch() {
     _clearResults();
   }
-  
+
   void _clearResults() {
     _searchQuery = '';
     _trackResults = [];
@@ -243,14 +252,14 @@ class SearchProvider extends ChangeNotifier {
     _errorMessage = null;
     notifyListeners();
   }
-  
+
   void _setError(String error) {
     _errorMessage = error;
     if (kDebugMode) {
       debugPrint('Search Error: $error');
     }
   }
-  
+
   void clearError() {
     _errorMessage = null;
     notifyListeners();

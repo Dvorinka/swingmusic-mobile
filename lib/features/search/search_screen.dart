@@ -15,21 +15,22 @@ class SearchScreen extends StatefulWidget {
   State<SearchScreen> createState() => _SearchScreenState();
 }
 
-class _SearchScreenState extends State<SearchScreen> with TickerProviderStateMixin {
+class _SearchScreenState extends State<SearchScreen>
+    with TickerProviderStateMixin {
   late TabController _tabController;
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
-  
+
   // Search results
   final List<TrackModel> _trackResults = [];
   final List<AlbumModel> _albumResults = [];
   final List<artist_model.ArtistModel> _artistResults = [];
   List<SearchSuggestion> _searchSuggestions = [];
-  
+
   bool _isSearching = false;
   String _currentQuery = '';
   bool _showSuggestions = false;
-  
+
   // Search filters
   String _selectedFilter = 'all'; // 'all', 'tracks', 'albums', 'artists'
   final List<String> _searchFilters = ['all', 'tracks', 'albums', 'artists'];
@@ -89,23 +90,25 @@ class _SearchScreenState extends State<SearchScreen> with TickerProviderStateMix
                       borderSide: BorderSide.none,
                     ),
                     filled: true,
-                    fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                    fillColor:
+                        Theme.of(context).colorScheme.surfaceContainerHighest,
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 16,
                       vertical: 12,
                     ),
                   ),
                 ),
-                
+
                 const SizedBox(height: 12),
-                
+
                 // Search Suggestions Dropdown
                 if (_searchSuggestions.isNotEmpty && _showSuggestions)
                   Container(
                     padding: const EdgeInsets.only(bottom: 8),
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.surface,
-                      borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                      borderRadius:
+                          const BorderRadius.vertical(top: Radius.circular(12)),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withAlpha(26),
@@ -130,21 +133,29 @@ class _SearchScreenState extends State<SearchScreen> with TickerProviderStateMix
                                       return Container(
                                         width: 40,
                                         height: 40,
-                                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .surfaceContainerHighest,
                                         child: Icon(
                                           Icons.music_note,
-                                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurfaceVariant,
                                         ),
                                       );
                                     },
                                   ),
                                 )
                               : CircleAvatar(
-                                  backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                                  backgroundColor: Theme.of(context)
+                                      .colorScheme
+                                      .primaryContainer,
                                   child: Text(
                                     suggestion.text[0].toUpperCase(),
                                     style: TextStyle(
-                                      color: Theme.of(context).colorScheme.onPrimaryContainer,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimaryContainer,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -161,9 +172,9 @@ class _SearchScreenState extends State<SearchScreen> with TickerProviderStateMix
                       }).toList(),
                     ),
                   ),
-                
+
                 const SizedBox(height: 12),
-                
+
                 // Filter Chips
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
@@ -183,11 +194,17 @@ class _SearchScreenState extends State<SearchScreen> with TickerProviderStateMix
                           },
                           backgroundColor: isSelected
                               ? Theme.of(context).colorScheme.primaryContainer
-                              : Theme.of(context).colorScheme.surfaceContainerHighest,
+                              : Theme.of(context)
+                                  .colorScheme
+                                  .surfaceContainerHighest,
                           labelStyle: TextStyle(
                             color: isSelected
-                                ? Theme.of(context).colorScheme.onPrimaryContainer
-                                : Theme.of(context).colorScheme.onSurfaceVariant,
+                                ? Theme.of(context)
+                                    .colorScheme
+                                    .onPrimaryContainer
+                                : Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant,
                           ),
                         ),
                       );
@@ -197,7 +214,7 @@ class _SearchScreenState extends State<SearchScreen> with TickerProviderStateMix
               ],
             ),
           ),
-          
+
           // Search Results
           Expanded(
             child: _isSearching
@@ -326,9 +343,27 @@ class _SearchScreenState extends State<SearchScreen> with TickerProviderStateMix
           crossAxisSpacing: 12,
           mainAxisSpacing: 12,
         ),
-        itemCount: ['Rock', 'Pop', 'Jazz', 'Electronic', 'Classical', 'Hip Hop', 'Country', 'R&B'].length,
+        itemCount: [
+          'Rock',
+          'Pop',
+          'Jazz',
+          'Electronic',
+          'Classical',
+          'Hip Hop',
+          'Country',
+          'R&B'
+        ].length,
         itemBuilder: (context, index) {
-          final genre = ['Rock', 'Pop', 'Jazz', 'Electronic', 'Classical', 'Hip Hop', 'Country', 'R&B'][index];
+          final genre = [
+            'Rock',
+            'Pop',
+            'Jazz',
+            'Electronic',
+            'Classical',
+            'Hip Hop',
+            'Country',
+            'R&B'
+          ][index];
           return Card(
             child: InkWell(
               onTap: () {
@@ -340,8 +375,8 @@ class _SearchScreenState extends State<SearchScreen> with TickerProviderStateMix
                 child: Text(
                   genre,
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.w500,
-                  ),
+                        fontWeight: FontWeight.w500,
+                      ),
                 ),
               ),
             ),
@@ -561,7 +596,7 @@ class _SearchScreenState extends State<SearchScreen> with TickerProviderStateMix
     try {
       // Simulate API call for search suggestions
       await Future.delayed(const Duration(milliseconds: 300));
-      
+
       final suggestions = <SearchSuggestion>[
         SearchSuggestion(
           id: '1',
@@ -570,7 +605,7 @@ class _SearchScreenState extends State<SearchScreen> with TickerProviderStateMix
           imageUrl: 'https://picsum.photos/seed/music1/200',
         ),
         SearchSuggestion(
-          id: '2', 
+          id: '2',
           title: '$query - Album 1',
           type: 'album',
           imageUrl: 'https://picsum.photos/seed/album1/200',
@@ -582,7 +617,7 @@ class _SearchScreenState extends State<SearchScreen> with TickerProviderStateMix
           imageUrl: 'https://picsum.photos/seed/artist1/200',
         ),
       ];
-      
+
       setState(() {
         _searchSuggestions = suggestions;
       });
@@ -607,7 +642,7 @@ class _SearchScreenState extends State<SearchScreen> with TickerProviderStateMix
     try {
       // Simulate API call
       await Future.delayed(const Duration(milliseconds: 800));
-      
+
       // This would be actual API calls
       setState(() {
         _isSearching = false;
@@ -629,7 +664,7 @@ class _SearchScreenState extends State<SearchScreen> with TickerProviderStateMix
     audioProvider.setQueue([track]);
     audioProvider.loadTrack(track);
     audioProvider.play();
-    
+
     Navigator.pushNamed(context, '/player');
   }
 }

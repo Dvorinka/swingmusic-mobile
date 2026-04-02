@@ -9,7 +9,8 @@ class QRScannerScreen extends StatefulWidget {
   State<QRScannerScreen> createState() => _QRScannerScreenState();
 }
 
-class _QRScannerScreenState extends State<QRScannerScreen> with TickerProviderStateMixin {
+class _QRScannerScreenState extends State<QRScannerScreen>
+    with TickerProviderStateMixin {
   final MobileScannerController _controller = MobileScannerController();
   String? _scannedCode;
   late AnimationController _pulseController;
@@ -76,7 +77,7 @@ class _QRScannerScreenState extends State<QRScannerScreen> with TickerProviderSt
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.3),
+                      color: Colors.black.withValues(alpha: 0.3),
                       blurRadius: 10,
                       offset: const Offset(0, 5),
                     ),
@@ -150,7 +151,7 @@ class _QRScannerScreenState extends State<QRScannerScreen> with TickerProviderSt
               child: Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.7),
+                  color: Colors.black.withValues(alpha: 0.7),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Text(
@@ -171,16 +172,16 @@ class _QRScannerScreenState extends State<QRScannerScreen> with TickerProviderSt
 
   void _onDetect(BarcodeCapture capture) {
     final List<Barcode> barcodes = capture.barcodes;
-    
+
     for (final barcode in barcodes) {
       if (barcode.rawValue != null && _scannedCode == null) {
         setState(() {
           _scannedCode = barcode.rawValue!;
         });
-        
+
         // Provide haptic feedback
         HapticFeedback.lightImpact();
-        
+
         break;
       }
     }

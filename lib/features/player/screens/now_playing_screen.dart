@@ -13,7 +13,7 @@ class NowPlayingScreen extends StatelessWidget {
     return Consumer<MediaControllerProvider>(
       builder: (context, provider, child) {
         final currentTrack = provider.currentTrack;
-        
+
         return Scaffold(
           backgroundColor: Theme.of(context).colorScheme.surface,
           appBar: AppBar(
@@ -29,8 +29,8 @@ class NowPlayingScreen extends StatelessWidget {
             title: Text(
               'Now Playing',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+                    fontWeight: FontWeight.w600,
+                  ),
             ),
             centerTitle: true,
             actions: [
@@ -53,14 +53,19 @@ class NowPlayingScreen extends StatelessWidget {
                       Icon(
                         Icons.music_note,
                         size: 64,
-                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                        color: Theme.of(context)
+                            .colorScheme
+                            .surfaceContainerHighest,
                       ),
                       const SizedBox(height: 16),
                       Text(
                         'No track playing',
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                        ),
+                        style:
+                            Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .surfaceContainerHighest,
+                                ),
                       ),
                     ],
                   ),
@@ -69,7 +74,7 @@ class NowPlayingScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       const SizedBox(height: 32),
-                      
+
                       // Album art
                       Center(
                         child: ClipRRect(
@@ -84,32 +89,40 @@ class NowPlayingScreen extends StatelessWidget {
                                 width: 320,
                                 height: 320,
                                 decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .surfaceContainerHighest,
                                   borderRadius: BorderRadius.circular(16),
                                 ),
                                 child: Icon(
                                   Icons.music_note,
                                   size: 64,
-                                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .surfaceContainerHighest,
                                 ),
                               );
                             },
                           ),
                         ),
                       ),
-                      
+
                       const SizedBox(height: 40),
-                      
+
                       // Track info
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: AppConstants.defaultPadding),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: AppConstants.defaultPadding),
                         child: Column(
                           children: [
                             Text(
                               currentTrack.title,
-                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                fontWeight: FontWeight.w600,
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineSmall
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                  ),
                               textAlign: TextAlign.center,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
@@ -117,9 +130,14 @@ class NowPlayingScreen extends StatelessWidget {
                             const SizedBox(height: 8),
                             Text(
                               currentTrack.artistNames,
-                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium
+                                  ?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .surfaceContainerHighest,
+                                  ),
                               textAlign: TextAlign.center,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -130,48 +148,68 @@ class NowPlayingScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-                      
+
                       const SizedBox(height: 40),
-                      
+
                       // Progress bar
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: AppConstants.defaultPadding),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: AppConstants.defaultPadding),
                         child: Column(
                           children: [
                             SliderTheme(
                               data: SliderTheme.of(context).copyWith(
-                                thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8),
+                                thumbShape: const RoundSliderThumbShape(
+                                    enabledThumbRadius: 8),
                                 trackHeight: 4,
-                                activeTrackColor: Theme.of(context).colorScheme.primary,
-                                inactiveTrackColor: Theme.of(context).colorScheme.surfaceContainerHighest,
-                                thumbColor: Theme.of(context).colorScheme.primary,
+                                activeTrackColor:
+                                    Theme.of(context).colorScheme.primary,
+                                inactiveTrackColor: Theme.of(context)
+                                    .colorScheme
+                                    .surfaceContainerHighest,
+                                thumbColor:
+                                    Theme.of(context).colorScheme.primary,
                               ),
                               child: Slider(
                                 value: provider.progress.clamp(0.0, 1.0),
                                 onChanged: (value) {
                                   final newPosition = Duration(
-                                    milliseconds: (value * provider.duration.inMilliseconds).round(),
+                                    milliseconds: (value *
+                                            provider.duration.inMilliseconds)
+                                        .round(),
                                   );
                                   provider.seekTo(newPosition);
                                 },
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     provider.positionFormatted,
-                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                                    ),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .surfaceContainerHighest,
+                                        ),
                                   ),
                                   Text(
                                     provider.durationFormatted,
-                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                                    ),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .surfaceContainerHighest,
+                                        ),
                                   ),
                                 ],
                               ),
@@ -179,12 +217,13 @@ class NowPlayingScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-                      
+
                       const SizedBox(height: 40),
-                      
+
                       // Playback controls
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: AppConstants.defaultPadding),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: AppConstants.defaultPadding),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
@@ -195,22 +234,28 @@ class NowPlayingScreen extends StatelessWidget {
                                 Icons.shuffle,
                                 color: provider.shuffleMode == ShuffleMode.on
                                     ? Theme.of(context).colorScheme.primary
-                                    : Theme.of(context).colorScheme.surfaceContainerHighest,
+                                    : Theme.of(context)
+                                        .colorScheme
+                                        .surfaceContainerHighest,
                               ),
                             ),
-                            
+
                             // Previous button
                             IconButton(
-                              onPressed: provider.canGoPrevious ? provider.playPrevious : null,
+                              onPressed: provider.canGoPrevious
+                                  ? provider.playPrevious
+                                  : null,
                               icon: Icon(
                                 Icons.skip_previous,
                                 size: 32,
                                 color: provider.canGoPrevious
                                     ? Theme.of(context).colorScheme.onSurface
-                                    : Theme.of(context).colorScheme.surfaceContainerHighest,
+                                    : Theme.of(context)
+                                        .colorScheme
+                                        .surfaceContainerHighest,
                               ),
                             ),
-                            
+
                             // Play/Pause button
                             Container(
                               decoration: BoxDecoration(
@@ -227,8 +272,11 @@ class NowPlayingScreen extends StatelessWidget {
                                         height: 24,
                                         child: CircularProgressIndicator(
                                           strokeWidth: 2,
-                                          valueColor: AlwaysStoppedAnimation<Color>(
-                                            Theme.of(context).colorScheme.onPrimary,
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                            Theme.of(context)
+                                                .colorScheme
+                                                .onPrimary,
                                           ),
                                         ),
                                       )
@@ -237,23 +285,28 @@ class NowPlayingScreen extends StatelessWidget {
                                             ? Icons.pause
                                             : Icons.play_arrow,
                                         size: 32,
-                                        color: Theme.of(context).colorScheme.onPrimary,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onPrimary,
                                       ),
                               ),
                             ),
-                            
+
                             // Next button
                             IconButton(
-                              onPressed: provider.canGoNext ? provider.playNext : null,
+                              onPressed:
+                                  provider.canGoNext ? provider.playNext : null,
                               icon: Icon(
                                 Icons.skip_next,
                                 size: 32,
                                 color: provider.canGoNext
                                     ? Theme.of(context).colorScheme.onSurface
-                                    : Theme.of(context).colorScheme.surfaceContainerHighest,
+                                    : Theme.of(context)
+                                        .colorScheme
+                                        .surfaceContainerHighest,
                               ),
                             ),
-                            
+
                             // Repeat button
                             IconButton(
                               onPressed: provider.toggleRepeat,
@@ -261,32 +314,42 @@ class NowPlayingScreen extends StatelessWidget {
                                 _getRepeatIcon(provider.repeatMode),
                                 color: provider.repeatMode != RepeatMode.off
                                     ? Theme.of(context).colorScheme.primary
-                                    : Theme.of(context).colorScheme.surfaceContainerHighest,
+                                    : Theme.of(context)
+                                        .colorScheme
+                                        .surfaceContainerHighest,
                               ),
                             ),
                           ],
                         ),
                       ),
-                      
+
                       const SizedBox(height: 40),
-                      
+
                       // Volume control
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: AppConstants.defaultPadding),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: AppConstants.defaultPadding),
                         child: Row(
                           children: [
                             Icon(
                               Icons.volume_down,
-                              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .surfaceContainerHighest,
                             ),
                             Expanded(
                               child: SliderTheme(
                                 data: SliderTheme.of(context).copyWith(
-                                  thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
+                                  thumbShape: const RoundSliderThumbShape(
+                                      enabledThumbRadius: 6),
                                   trackHeight: 3,
-                                  activeTrackColor: Theme.of(context).colorScheme.primary,
-                                  inactiveTrackColor: Theme.of(context).colorScheme.surfaceContainerHighest,
-                                  thumbColor: Theme.of(context).colorScheme.primary,
+                                  activeTrackColor:
+                                      Theme.of(context).colorScheme.primary,
+                                  inactiveTrackColor: Theme.of(context)
+                                      .colorScheme
+                                      .surfaceContainerHighest,
+                                  thumbColor:
+                                      Theme.of(context).colorScheme.primary,
                                 ),
                                 child: Slider(
                                   value: provider.volume,
@@ -296,12 +359,14 @@ class NowPlayingScreen extends StatelessWidget {
                             ),
                             Icon(
                               Icons.volume_up,
-                              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .surfaceContainerHighest,
                             ),
                           ],
                         ),
                       ),
-                      
+
                       const SizedBox(height: 40),
                     ],
                   ),
@@ -310,7 +375,7 @@ class NowPlayingScreen extends StatelessWidget {
       },
     );
   }
-  
+
   IconData _getRepeatIcon(RepeatMode mode) {
     switch (mode) {
       case RepeatMode.one:
@@ -321,7 +386,7 @@ class NowPlayingScreen extends StatelessWidget {
         return Icons.repeat;
     }
   }
-  
+
   void _showTrackOptions(BuildContext context, TrackModel track) {
     showModalBottomSheet(
       context: context,
@@ -352,8 +417,8 @@ class NowPlayingScreen extends StatelessWidget {
                   Text(
                     track.artistNames,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -363,7 +428,9 @@ class NowPlayingScreen extends StatelessWidget {
                       track.isFavorite ? Icons.favorite : Icons.favorite_border,
                       color: track.isFavorite ? Colors.red : null,
                     ),
-                    title: Text(track.isFavorite ? 'Remove from Favorites' : 'Add to Favorites'),
+                    title: Text(track.isFavorite
+                        ? 'Remove from Favorites'
+                        : 'Add to Favorites'),
                     onTap: () {
                       Navigator.pop(context);
                       // Toggle favorite logic here
@@ -401,44 +468,47 @@ class NowPlayingScreen extends StatelessWidget {
       },
     );
   }
-  
+
   /// Build audio info badge showing bitrate and file type
   /// Matches Android: bitrate badge in NowPlaying.kt
   Widget _buildAudioInfoBadge(BuildContext context, TrackModel track) {
     final bitrate = track.bitrate;
     final filepath = track.filepath;
     final extension = filepath.split('.').last.toUpperCase();
-    
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.5),
+            color: Theme.of(context)
+                .colorScheme
+                .surfaceContainerHighest
+                .withValues(alpha: 0.5),
             borderRadius: BorderRadius.circular(4),
           ),
           child: Text(
             '$bitrate kbps',
             style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-              fontWeight: FontWeight.w500,
-            ),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w500,
+                ),
           ),
         ),
         const SizedBox(width: 8),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(4),
           ),
           child: Text(
             extension,
             style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: Theme.of(context).colorScheme.primary,
-              fontWeight: FontWeight.w600,
-            ),
+                  color: Theme.of(context).colorScheme.primary,
+                  fontWeight: FontWeight.w600,
+                ),
           ),
         ),
       ],

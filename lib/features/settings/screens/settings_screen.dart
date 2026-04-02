@@ -102,15 +102,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     children: [
                       Text(
                         session.username ?? 'Guest User',
-                        style: Theme.of(context).textTheme.titleMedium
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium
                             ?.copyWith(fontWeight: FontWeight.w600),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         session.isAuthenticated ? 'Logged in' : 'Not logged in',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
+                            ),
                       ),
                     ],
                   ),

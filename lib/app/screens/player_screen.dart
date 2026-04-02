@@ -27,11 +27,11 @@ class PlayerScreen extends StatelessWidget {
         final currentLine = lyrics.isEmpty
             ? -1
             : player.lyricsSynced
-            ? _currentSyncedLine(cues, player.position.inMilliseconds)
-            : ((lyrics.length - 1) * player.progress).round().clamp(
-                0,
-                lyrics.length - 1,
-              );
+                ? _currentSyncedLine(cues, player.position.inMilliseconds)
+                : ((lyrics.length - 1) * player.progress).round().clamp(
+                      0,
+                      lyrics.length - 1,
+                    );
 
         return Scaffold(
           appBar: AppBar(
@@ -71,7 +71,7 @@ class PlayerScreen extends StatelessWidget {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      scheme.primary.withOpacity(0.18),
+                      scheme.primary.withValues(alpha: 0.18),
                       scheme.surfaceContainerHighest,
                     ],
                   ),
@@ -151,8 +151,8 @@ class PlayerScreen extends StatelessWidget {
                       seed: track.id,
                       progress: player.progress,
                       onSeekRatio: (ratio) {
-                        final ms = (player.duration.inMilliseconds * ratio)
-                            .round();
+                        final ms =
+                            (player.duration.inMilliseconds * ratio).round();
                         player.seek(Duration(milliseconds: ms));
                       },
                     ),
@@ -160,8 +160,8 @@ class PlayerScreen extends StatelessWidget {
                     Slider(
                       value: player.progress,
                       onChanged: (value) {
-                        final ms = (player.duration.inMilliseconds * value)
-                            .round();
+                        final ms =
+                            (player.duration.inMilliseconds * value).round();
                         player.seek(Duration(milliseconds: ms));
                       },
                     ),
@@ -207,9 +207,9 @@ class PlayerScreen extends StatelessWidget {
                     onPressed: offline.isDownloaded(track.trackhash)
                         ? null
                         : () => offline.downloadTrack(
-                            track,
-                            collectionLabel: 'album ${track.album}',
-                          ),
+                              track,
+                              collectionLabel: 'album ${track.album}',
+                            ),
                     icon: const Icon(Icons.download_for_offline),
                     label: Text(
                       offline.isDownloaded(track.trackhash)
@@ -236,7 +236,7 @@ class PlayerScreen extends StatelessWidget {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      scheme.primary.withOpacity(0.25),
+                      scheme.primary.withValues(alpha: 0.25),
                       scheme.surfaceContainerHighest,
                     ],
                   ),
@@ -245,67 +245,69 @@ class PlayerScreen extends StatelessWidget {
                 child: player.lyricsLoading
                     ? const Center(child: CircularProgressIndicator())
                     : lyrics.isEmpty
-                    ? Center(
-                        child: Text(
-                          'No lyrics found for this track.',
-                          style: TextStyle(color: scheme.onSurfaceVariant),
-                        ),
-                      )
-                    : ListView.builder(
-                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
-                        itemCount: lyrics.length,
-                        itemBuilder: (context, index) {
-                          final distance = currentLine == -1
-                              ? 99
-                              : (index - currentLine).abs();
-
-                          final isCurrent = index == currentLine;
-                          final isSeen =
-                              currentLine != -1 && index < currentLine;
-
-                          var opacity = 1.0;
-                          if (!isCurrent && distance >= 3) {
-                            opacity = 0.6;
-                          } else if (!isCurrent && distance == 2) {
-                            opacity = 0.75;
-                          } else if (!isCurrent && distance == 1) {
-                            opacity = 0.88;
-                          }
-
-                          final color = isCurrent
-                              ? Colors.white
-                              : isSeen
-                              ? Colors.white.withOpacity(0.85 * opacity)
-                              : Colors.white.withOpacity(0.72 * opacity);
-
-                          return InkWell(
-                            onTap: () {
-                              if (player.duration.inMilliseconds <= 0 ||
-                                  lyrics.length <= 1) {
-                                return;
-                              }
-                              final ratio = index / (lyrics.length - 1);
-                              final ms =
-                                  (player.duration.inMilliseconds * ratio)
-                                      .round();
-                              player.seek(Duration(milliseconds: ms));
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.only(bottom: 12),
-                              child: AnimatedDefaultTextStyle(
-                                duration: const Duration(milliseconds: 220),
-                                style: TextStyle(
-                                  color: color,
-                                  fontSize: isCurrent ? 32 : 26,
-                                  fontWeight: FontWeight.w700,
-                                  height: 1.16,
-                                ),
-                                child: Text(lyrics[index]),
-                              ),
+                        ? Center(
+                            child: Text(
+                              'No lyrics found for this track.',
+                              style: TextStyle(color: scheme.onSurfaceVariant),
                             ),
-                          );
-                        },
-                      ),
+                          )
+                        : ListView.builder(
+                            padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+                            itemCount: lyrics.length,
+                            itemBuilder: (context, index) {
+                              final distance = currentLine == -1
+                                  ? 99
+                                  : (index - currentLine).abs();
+
+                              final isCurrent = index == currentLine;
+                              final isSeen =
+                                  currentLine != -1 && index < currentLine;
+
+                              var opacity = 1.0;
+                              if (!isCurrent && distance >= 3) {
+                                opacity = 0.6;
+                              } else if (!isCurrent && distance == 2) {
+                                opacity = 0.75;
+                              } else if (!isCurrent && distance == 1) {
+                                opacity = 0.88;
+                              }
+
+                              final color = isCurrent
+                                  ? Colors.white
+                                  : isSeen
+                                      ? Colors.white
+                                          .withValues(alpha: 0.85 * opacity)
+                                      : Colors.white
+                                          .withValues(alpha: 0.72 * opacity);
+
+                              return InkWell(
+                                onTap: () {
+                                  if (player.duration.inMilliseconds <= 0 ||
+                                      lyrics.length <= 1) {
+                                    return;
+                                  }
+                                  final ratio = index / (lyrics.length - 1);
+                                  final ms =
+                                      (player.duration.inMilliseconds * ratio)
+                                          .round();
+                                  player.seek(Duration(milliseconds: ms));
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.only(bottom: 12),
+                                  child: AnimatedDefaultTextStyle(
+                                    duration: const Duration(milliseconds: 220),
+                                    style: TextStyle(
+                                      color: color,
+                                      fontSize: isCurrent ? 32 : 26,
+                                      fontWeight: FontWeight.w700,
+                                      height: 1.16,
+                                    ),
+                                    child: Text(lyrics[index]),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
               ),
             ],
           ),

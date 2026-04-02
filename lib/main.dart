@@ -43,12 +43,8 @@ class SwingMusicMobileApp extends StatelessWidget {
           },
         ),
         Provider<LocalCacheService>(create: (_) => LocalCacheService()),
-        ProxyProvider3<
-          SwingApiClient,
-          SessionController,
-          LocalCacheService,
-          OfflineManager
-        >(
+        ProxyProvider3<SwingApiClient, SessionController, LocalCacheService,
+            OfflineManager>(
           update: (context, api, session, cache, previous) =>
               OfflineManager(api: api, session: session, cache: cache),
         ),

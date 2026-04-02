@@ -14,16 +14,16 @@ enum CatalogSearchType { tracks, albums, artists }
 
 extension CatalogSearchTypeX on CatalogSearchType {
   String get apiValue => switch (this) {
-    CatalogSearchType.tracks => 'tracks',
-    CatalogSearchType.albums => 'albums',
-    CatalogSearchType.artists => 'artists',
-  };
+        CatalogSearchType.tracks => 'tracks',
+        CatalogSearchType.albums => 'albums',
+        CatalogSearchType.artists => 'artists',
+      };
 
   String get label => switch (this) {
-    CatalogSearchType.tracks => 'Tracks',
-    CatalogSearchType.albums => 'Albums',
-    CatalogSearchType.artists => 'Artists',
-  };
+        CatalogSearchType.tracks => 'Tracks',
+        CatalogSearchType.albums => 'Albums',
+        CatalogSearchType.artists => 'Artists',
+      };
 }
 
 class SearchViewAllScreen extends StatefulWidget {
@@ -263,11 +263,11 @@ class _SearchViewAllScreenState extends State<SearchViewAllScreen> {
 
           return switch (widget.type) {
             CatalogSearchType.tracks => _buildTrackTile(
-              index,
-              library,
-              player,
-              offline,
-            ),
+                index,
+                library,
+                player,
+                offline,
+              ),
             CatalogSearchType.albums => _buildAlbumTile(_albums[index]),
             CatalogSearchType.artists => _buildArtistTile(_artists[index]),
           };
@@ -277,10 +277,10 @@ class _SearchViewAllScreenState extends State<SearchViewAllScreen> {
   }
 
   int get _itemCount => switch (widget.type) {
-    CatalogSearchType.tracks => _tracks.length,
-    CatalogSearchType.albums => _albums.length,
-    CatalogSearchType.artists => _artists.length,
-  };
+        CatalogSearchType.tracks => _tracks.length,
+        CatalogSearchType.albums => _albums.length,
+        CatalogSearchType.artists => _artists.length,
+      };
 
   Widget _buildTrackTile(
     int index,
@@ -319,13 +319,13 @@ class _SearchViewAllScreenState extends State<SearchViewAllScreen> {
           onTap: album.spotifyId == null
               ? null
               : () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => AlbumDetailScreen(
-                      albumId: album.spotifyId!,
-                      albumName: album.title,
+                    MaterialPageRoute(
+                      builder: (_) => AlbumDetailScreen(
+                        albumId: album.spotifyId!,
+                        albumName: album.title,
+                      ),
                     ),
                   ),
-                ),
           leading: _Artwork(
             imageUrl: album.imageUrl,
             fallbackIcon: Icons.album,
@@ -359,13 +359,13 @@ class _SearchViewAllScreenState extends State<SearchViewAllScreen> {
           onTap: artist.spotifyId == null
               ? null
               : () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => ArtistDetailScreen(
-                      artistId: artist.spotifyId!,
-                      artistName: artist.name,
+                    MaterialPageRoute(
+                      builder: (_) => ArtistDetailScreen(
+                        artistId: artist.spotifyId!,
+                        artistName: artist.name,
+                      ),
                     ),
                   ),
-                ),
           leading: _Artwork(
             imageUrl: artist.imageUrl,
             fallbackIcon: Icons.person,

@@ -44,28 +44,28 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
               ],
             ),
             const SizedBox(height: 16),
-            
+
             // Top Tracks
             _buildSectionHeader('Top Tracks'),
             const SizedBox(height: 8),
             _buildTopTracksList(),
-            
+
             const SizedBox(height: 24),
-            
+
             // Listening Stats
             _buildSectionHeader('Listening Statistics'),
             const SizedBox(height: 8),
             _buildListeningStats(),
-            
+
             const SizedBox(height: 24),
-            
+
             // Genre Distribution
             _buildSectionHeader('Genre Distribution'),
             const SizedBox(height: 8),
             _buildGenreChart(),
-            
+
             const SizedBox(height: 24),
-            
+
             // Time Distribution
             _buildSectionHeader('Time Distribution'),
             const SizedBox(height: 8),
@@ -94,15 +94,16 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
           Text(
             title,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+                  fontWeight: FontWeight.bold,
+                ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildOverviewCard(String title, IconData icon, String value, Color color) {
+  Widget _buildOverviewCard(
+      String title, IconData icon, String value, Color color) {
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
@@ -130,16 +131,16 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   Text(
                     title,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onPrimary,
-                      fontWeight: FontWeight.bold,
-                    ),
+                          color: Theme.of(context).colorScheme.onPrimary,
+                          fontWeight: FontWeight.bold,
+                        ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     value,
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onPrimary,
-                    ),
+                          color: Theme.of(context).colorScheme.onPrimary,
+                        ),
                   ),
                 ],
               ),
@@ -152,11 +153,36 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
 
   Widget _buildTopTracksList() {
     final topTracks = [
-      {'title': 'Bohemian Rhapsody', 'artist': 'Queen', 'plays': 1234, 'duration': '5:55'},
-      {'title': 'Stairway to Heaven', 'artist': 'Led Zeppelin', 'plays': 987, 'duration': '8:02'},
-      {'title': 'Hotel California', 'artist': 'Eagles', 'plays': 856, 'duration': '3:31'},
-      {'title': 'Sweet Child O\' Mine', 'artist': 'Guns N\' Roses', 'plays': 743, 'duration': '5:44'},
-      {'title': 'Don\'t Stop Believin\'', 'artist': 'Journey', 'plays': 654, 'duration': '4:12'},
+      {
+        'title': 'Bohemian Rhapsody',
+        'artist': 'Queen',
+        'plays': 1234,
+        'duration': '5:55'
+      },
+      {
+        'title': 'Stairway to Heaven',
+        'artist': 'Led Zeppelin',
+        'plays': 987,
+        'duration': '8:02'
+      },
+      {
+        'title': 'Hotel California',
+        'artist': 'Eagles',
+        'plays': 856,
+        'duration': '3:31'
+      },
+      {
+        'title': 'Sweet Child O\' Mine',
+        'artist': 'Guns N\' Roses',
+        'plays': 743,
+        'duration': '5:44'
+      },
+      {
+        'title': 'Don\'t Stop Believin\'',
+        'artist': 'Journey',
+        'plays': 654,
+        'duration': '4:12'
+      },
     ];
 
     return Card(
@@ -187,15 +213,15 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 subtitle: Text(
                   track['artist']?.toString() ?? '',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
                 ),
                 trailing: Text(
                   '${track['plays'] ?? 0} plays',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Theme.of(context).colorScheme.primary,
-                    fontWeight: FontWeight.bold,
-                  ),
+                        color: Theme.of(context).colorScheme.primary,
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
               );
             },
@@ -215,8 +241,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             Text(
               'Daily Average',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             const SizedBox(height: 8),
             Row(
@@ -233,8 +259,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             Text(
               'Weekly Average',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             const SizedBox(height: 8),
             Row(
@@ -251,8 +277,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             Text(
               'Monthly Average',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             const SizedBox(height: 8),
             Row(
@@ -284,16 +310,16 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
           Text(
             value,
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-              color: Theme.of(context).colorScheme.primary,
-              fontWeight: FontWeight.bold,
-            ),
+                  color: Theme.of(context).colorScheme.primary,
+                  fontWeight: FontWeight.bold,
+                ),
           ),
           const SizedBox(height: 4),
           Text(
             label,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
           ),
         ],
       ),
@@ -320,8 +346,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             Text(
               'Genre Distribution',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             const SizedBox(height: 16),
             SizedBox(
@@ -385,8 +411,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             Text(
               'Daily Listening Pattern',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             const SizedBox(height: 16),
             SizedBox(
@@ -406,10 +432,14 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                             ),
                             Text(
                               '${data['percentage']}%',
-                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                color: Theme.of(context).colorScheme.primary,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge
+                                  ?.copyWith(
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                             ),
                           ],
                         ),

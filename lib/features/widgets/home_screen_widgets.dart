@@ -15,7 +15,7 @@ class HomeScreenWidgets extends StatefulWidget {
 class _HomeScreenWidgetsState extends State<HomeScreenWidgets> {
   late final EnhancedApiService _apiService;
   late final AnalyticsService _analyticsService;
-  
+
   Map<String, dynamic> _quickStats = {};
   List<Map<String, dynamic>> _recentTracks = [];
   List<Map<String, dynamic>> _topArtists = [];
@@ -35,12 +35,14 @@ class _HomeScreenWidgetsState extends State<HomeScreenWidgets> {
       final recentFuture = _apiService.getTracks(limit: 5);
       final artistsFuture = _analyticsService.getTopArtists(limit: 3);
 
-      final results = await Future.wait([statsFuture, recentFuture, artistsFuture]);
+      final results =
+          await Future.wait([statsFuture, recentFuture, artistsFuture]);
 
       if (mounted) {
         setState(() {
           _quickStats = results[0] as Map<String, dynamic>;
-          _recentTracks = (results[1] as List<dynamic>).cast<Map<String, dynamic>>();
+          _recentTracks =
+              (results[1] as List<dynamic>).cast<Map<String, dynamic>>();
           _topArtists = results[2] as List<Map<String, dynamic>>;
           _isLoading = false;
         });
@@ -68,19 +70,19 @@ class _HomeScreenWidgetsState extends State<HomeScreenWidgets> {
           // Quick Stats Widget
           _QuickStatsWidget(stats: _quickStats),
           const SizedBox(height: AppSpacing.lg),
-          
+
           // Now Playing Widget
           _NowPlayingWidget(),
           const SizedBox(height: AppSpacing.lg),
-          
+
           // Recent Tracks Widget
           _RecentTracksWidget(tracks: _recentTracks),
           const SizedBox(height: AppSpacing.lg),
-          
+
           // Top Artists Widget
           _TopArtistsWidget(artists: _topArtists),
           const SizedBox(height: AppSpacing.lg),
-          
+
           // Quick Actions Widget
           _QuickActionsWidget(),
         ],
@@ -126,7 +128,8 @@ class _QuickStatsWidget extends StatelessWidget {
                 Expanded(
                   child: _StatItem(
                     label: 'Hours',
-                    value: ((stats['totalPlayTime'] as int? ?? 0) / 3600).toStringAsFixed(1),
+                    value: ((stats['totalPlayTime'] as int? ?? 0) / 3600)
+                        .toStringAsFixed(1),
                     icon: Icons.access_time,
                   ),
                 ),
@@ -159,8 +162,8 @@ class _StatItem extends StatelessWidget {
         Text(
           value,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+                fontWeight: FontWeight.bold,
+              ),
         ),
         Text(
           label,
@@ -177,7 +180,7 @@ class _NowPlayingWidget extends StatelessWidget {
     return Consumer<AudioProvider>(
       builder: (context, audioProvider, child) {
         final currentTrack = audioProvider.currentTrack;
-        
+
         if (currentTrack == null) {
           return Card(
             child: Padding(
@@ -231,10 +234,14 @@ class _NowPlayingWidget extends StatelessWidget {
                           return Container(
                             width: 60,
                             height: 60,
-                            color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .surfaceContainerHighest,
                             child: Icon(
                               Icons.album,
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
                             ),
                           );
                         },
@@ -289,9 +296,13 @@ class _NowPlayingWidget extends StatelessWidget {
                       icon: const Icon(Icons.skip_previous),
                     ),
                     IconButton(
-                      onPressed: audioProvider.isPlaying ? audioProvider.pause : audioProvider.play,
+                      onPressed: audioProvider.isPlaying
+                          ? audioProvider.pause
+                          : audioProvider.play,
                       icon: Icon(
-                        audioProvider.isPlaying ? Icons.pause : Icons.play_arrow,
+                        audioProvider.isPlaying
+                            ? Icons.pause
+                            : Icons.play_arrow,
                       ),
                     ),
                     IconButton(
@@ -345,7 +356,10 @@ class _RecentTracksWidget extends StatelessWidget {
               )
             else
               Column(
-                children: tracks.take(3).map((track) => _RecentTrackItem(track: track)).toList(),
+                children: tracks
+                    .take(3)
+                    .map((track) => _RecentTrackItem(track: track))
+                    .toList(),
               ),
           ],
         ),

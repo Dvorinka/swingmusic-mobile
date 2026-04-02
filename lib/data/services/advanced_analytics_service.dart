@@ -24,7 +24,7 @@ class AdvancedAnalyticsService {
   Future<void> _initializeAnalyticsCache() async {
     try {
       final cacheBox = await Hive.openBox('analytics_cache');
-      
+
       // Load cached analytics data
       final cachedData = cacheBox.get('advanced_analytics');
       if (cachedData != null) {
@@ -44,14 +44,14 @@ class AdvancedAnalyticsService {
   Future<void> _updateAnalyticsCache() async {
     try {
       final freshData = await _generateAdvancedAnalytics();
-      
+
       // Update cache
       _analyticsCache.addAll(freshData);
-      
+
       // Save to persistent storage
       final cacheBox = await Hive.openBox('analytics_cache');
       await cacheBox.put('advanced_analytics', _analyticsCache);
-      
+
       debugPrint('Analytics cache updated');
     } catch (e) {
       debugPrint('Error updating analytics cache: $e');
@@ -64,7 +64,7 @@ class AdvancedAnalyticsService {
       if (_analyticsCache.isNotEmpty) {
         return Map<String, dynamic>.from(_analyticsCache);
       }
-      
+
       return await _generateAdvancedAnalytics();
     } catch (e) {
       debugPrint('Error getting advanced analytics: $e');
@@ -75,7 +75,7 @@ class AdvancedAnalyticsService {
   Future<Map<String, dynamic>> _generateAdvancedAnalytics() async {
     try {
       final basicAnalytics = await _apiService.getAnalyticsData('year');
-      
+
       return {
         'basicStats': basicAnalytics,
         'listeningPatterns': await _analyzeListeningPatterns(),
@@ -111,7 +111,7 @@ class AdvancedAnalyticsService {
         'seasonalPatterns': _analyzeSeasonalPatterns(),
         'weekendVsWeekday': _analyzeWeekendVsWeekday(),
       };
-      
+
       return patterns;
     } catch (e) {
       debugPrint('Error analyzing listening patterns: $e');
@@ -133,12 +133,11 @@ class AdvancedAnalyticsService {
         'metal': _calculateGenreListening('metal'),
         'indie': _calculateGenreListening('indie'),
       };
-      
+
       // Sort genres by listening time
       final sortedGenres = Map.fromEntries(
-        genres.entries.toList()..sort((a, b) => b.value.compareTo(a.value))
-      );
-      
+          genres.entries.toList()..sort((a, b) => b.value.compareTo(a.value)));
+
       return {
         'genreDistribution': sortedGenres,
         'topGenre': sortedGenres.keys.first,
@@ -155,12 +154,12 @@ class AdvancedAnalyticsService {
   Future<Map<String, dynamic>> _analyzeTempoPreferences() async {
     try {
       final tempoRanges = {
-        'slow': _calculateTempoRange(0, 80),      // 0-80 BPM
-        'medium': _calculateTempoRange(80, 120),   // 80-120 BPM
-        'fast': _calculateTempoRange(120, 160),    // 120-160 BPM
+        'slow': _calculateTempoRange(0, 80), // 0-80 BPM
+        'medium': _calculateTempoRange(80, 120), // 80-120 BPM
+        'fast': _calculateTempoRange(120, 160), // 120-160 BPM
         'veryFast': _calculateTempoRange(160, 300), // 160-300 BPM
       };
-      
+
       return {
         'tempoDistribution': tempoRanges,
         'preferredTempo': _getPreferredTempo(tempoRanges),
@@ -199,7 +198,7 @@ class AdvancedAnalyticsService {
         'focused': _calculateMoodScore('focused'),
         'nostalgic': _calculateMoodScore('nostalgic'),
       };
-      
+
       return {
         'moodDistribution': moods,
         'dominantMood': _getDominantMood(moods),
@@ -352,7 +351,15 @@ class AdvancedAnalyticsService {
 
   // Helper methods for analytics calculations
   String _getMostActiveDay() {
-    final days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    final days = [
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+      'Sunday'
+    ];
     return days[Random().nextInt(days.length)];
   }
 
@@ -362,7 +369,8 @@ class AdvancedAnalyticsService {
 
   double _calculateListeningConsistency() => 0.6 + Random().nextDouble() * 0.4;
 
-  List<String> _getPeakListeningTimes() => ['8:00 AM', '12:00 PM', '6:00 PM', '9:00 PM'];
+  List<String> _getPeakListeningTimes() =>
+      ['8:00 AM', '12:00 PM', '6:00 PM', '9:00 PM'];
 
   Map<String, double> _analyzeSeasonalPatterns() {
     return {
@@ -427,7 +435,8 @@ class AdvancedAnalyticsService {
     };
   }
 
-  Map<String, dynamic> _analyzeRelaxationMusic(Map<String, double> tempoRanges) {
+  Map<String, dynamic> _analyzeRelaxationMusic(
+      Map<String, double> tempoRanges) {
     return {
       'preferredRelaxationTempo': 'slow',
       'relaxationFrequency': 0.2 + Random().nextDouble() * 0.3,
@@ -556,10 +565,12 @@ class AdvancedAnalyticsService {
   int _getLongestListeningStreak() => 15 + Random().nextInt(45);
 
   List<Map<String, dynamic>> _getStreakHistory() {
-    return List.generate(12, (index) => {
-      'month': DateTime.now().subtract(Duration(days: 30 * index)),
-      'streak': 5 + Random().nextInt(20),
-    });
+    return List.generate(
+        12,
+        (index) => {
+              'month': DateTime.now().subtract(Duration(days: 30 * index)),
+              'streak': 5 + Random().nextInt(20),
+            });
   }
 
   Map<String, dynamic> _predictStreakContinuation() {
@@ -598,11 +609,20 @@ class AdvancedAnalyticsService {
   }
 
   List<Map<String, dynamic>> _createEvolutionTimeline() {
-    return List.generate(6, (index) => {
-      'period': 'month_${index + 1}',
-      'dominant_genre': ['rock', 'pop', 'electronic', 'indie', 'jazz', 'classical'][index],
-      'diversity_score': 0.3 + Random().nextDouble() * 0.7,
-    });
+    return List.generate(
+        6,
+        (index) => {
+              'period': 'month_${index + 1}',
+              'dominant_genre': [
+                'rock',
+                'pop',
+                'electronic',
+                'indie',
+                'jazz',
+                'classical'
+              ][index],
+              'diversity_score': 0.3 + Random().nextDouble() * 0.7,
+            });
   }
 
   List<String> _identifyMilestoneAchievements() {

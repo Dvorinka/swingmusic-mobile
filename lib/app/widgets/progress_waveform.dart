@@ -101,9 +101,8 @@ class _WaveformPainter extends CustomPainter {
       final isPlayed = (x + barWidth) <= playedThreshold;
 
       final paint = Paint()
-        ..color = isPlayed
-            ? playedColor
-            : unplayedColor.withOpacity(0.65);
+        ..color =
+            isPlayed ? playedColor : unplayedColor.withValues(alpha: 0.65);
       canvas.drawRRect(RRect.fromRectAndRadius(rect, radius), paint);
       x += barWidth + gap;
     }

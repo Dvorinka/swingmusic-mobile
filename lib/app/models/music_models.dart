@@ -99,9 +99,8 @@ class MusicTrack {
       artist: artist,
       album: json['album']?.toString() ?? '',
       filepath: json['filepath']?.toString() ?? '',
-      durationSeconds: durationMs > 0
-          ? (durationMs ~/ 1000)
-          : _asInt(json['duration']),
+      durationSeconds:
+          durationMs > 0 ? (durationMs ~/ 1000) : _asInt(json['duration']),
       bitrate: _asInt(json['bitrate']),
       imageUrl: json['image_url']?.toString() ?? json['image']?.toString(),
       albumhash: json['albumhash']?.toString(),
@@ -159,8 +158,7 @@ class MusicAlbum {
   factory MusicAlbum.fromCatalogJson(Map<String, dynamic> json) {
     final spotifyId = json['spotify_id']?.toString();
     return MusicAlbum(
-      id:
-          spotifyId ??
+      id: spotifyId ??
           json['albumhash']?.toString() ??
           json['title']?.toString() ??
           '',

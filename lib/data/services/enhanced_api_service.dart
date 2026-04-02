@@ -13,7 +13,8 @@ class EnhancedApiService {
   final String baseUrl;
   late SharedPreferences _prefs;
 
-  EnhancedApiService({String? baseUrl}) : baseUrl = baseUrl ?? AppConstants.defaultApiUrl {
+  EnhancedApiService({String? baseUrl})
+      : baseUrl = baseUrl ?? AppConstants.defaultApiUrl {
     _dio = Dio(BaseOptions(
       baseUrl: this.baseUrl,
       connectTimeout: AppConstants.apiTimeout,
@@ -23,9 +24,9 @@ class EnhancedApiService {
         'Accept': 'application/json',
       },
     ));
-    
+
     _initializePrefs();
-    
+
     _dio.interceptors.add(LogInterceptor(
       requestBody: true,
       responseBody: true,
@@ -33,7 +34,7 @@ class EnhancedApiService {
         if (kDebugMode) debugPrint('API: $obj');
       },
     ));
-    
+
     _dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) async {
         final token = _prefs.getString('auth_token');
@@ -44,7 +45,7 @@ class EnhancedApiService {
       },
       onError: (error, handler) {
         String errorMessage = AppConstants.genericErrorMessage;
-        
+
         if (error.type == DioExceptionType.connectionTimeout ||
             error.type == DioExceptionType.receiveTimeout) {
           errorMessage = AppConstants.networkErrorMessage;
@@ -55,7 +56,7 @@ class EnhancedApiService {
         } else if (error.response?.statusCode == 404) {
           errorMessage = AppConstants.notFoundErrorMessage;
         }
-        
+
         handler.next(DioException(
           requestOptions: error.requestOptions,
           error: errorMessage,
@@ -65,7 +66,7 @@ class EnhancedApiService {
       },
     ));
   }
-  
+
   Future<void> _initializePrefs() async {
     _prefs = await SharedPreferences.getInstance();
   }
@@ -94,7 +95,7 @@ class EnhancedApiService {
         'limit': limit,
         'offset': offset,
       };
-      
+
       if (search != null && search.isNotEmpty) {
         queryParams['search'] = search;
       }
@@ -113,8 +114,10 @@ class EnhancedApiService {
 
       final response = await _dio.get('/tracks', queryParameters: queryParams);
       final tracksData = response.data['tracks'] as List<dynamic>? ?? [];
-      
-      return tracksData.map((trackData) => TrackModel.fromJson(trackData)).toList();
+
+      return tracksData
+          .map((trackData) => TrackModel.fromJson(trackData))
+          .toList();
     } catch (e) {
       throw Exception('Failed to load tracks: $e');
     }
@@ -144,7 +147,7 @@ class EnhancedApiService {
         'limit': limit,
         'offset': offset,
       };
-      
+
       if (search != null && search.isNotEmpty) {
         queryParams['search'] = search;
       }
@@ -160,8 +163,10 @@ class EnhancedApiService {
 
       final response = await _dio.get('/albums', queryParameters: queryParams);
       final albumsData = response.data['albums'] as List<dynamic>? ?? [];
-      
-      return albumsData.map((albumData) => AlbumModel.fromJson(albumData)).toList();
+
+      return albumsData
+          .map((albumData) => AlbumModel.fromJson(albumData))
+          .toList();
     } catch (e) {
       throw Exception('Failed to load albums: $e');
     }
@@ -177,18 +182,22 @@ class EnhancedApiService {
     }
   }
 
-  Future<List<TrackModel>> getAlbumTracks(String albumHash, {
+  Future<List<TrackModel>> getAlbumTracks(
+    String albumHash, {
     int limit = 20,
     int offset = 0,
   }) async {
     try {
-      final response = await _dio.get('/album/$albumHash/tracks', queryParameters: {
+      final response =
+          await _dio.get('/album/$albumHash/tracks', queryParameters: {
         'limit': limit,
         'offset': offset,
       });
       final tracksData = response.data['tracks'] as List<dynamic>? ?? [];
-      
-      return tracksData.map((trackData) => TrackModel.fromJson(trackData)).toList();
+
+      return tracksData
+          .map((trackData) => TrackModel.fromJson(trackData))
+          .toList();
     } catch (e) {
       throw Exception('Failed to load album tracks: $e');
     }
@@ -205,15 +214,17 @@ class EnhancedApiService {
         'limit': limit,
         'offset': offset,
       };
-      
+
       if (search != null && search.isNotEmpty) {
         queryParams['search'] = search;
       }
 
       final response = await _dio.get('/artists', queryParameters: queryParams);
       final artistsData = response.data['artists'] as List<dynamic>? ?? [];
-      
-      return artistsData.map((artistData) => artist.ArtistModel.fromJson(artistData)).toList();
+
+      return artistsData
+          .map((artistData) => artist.ArtistModel.fromJson(artistData))
+          .toList();
     } catch (e) {
       throw Exception('Failed to load artists: $e');
     }
@@ -223,7 +234,9 @@ class EnhancedApiService {
     try {
       final response = await _dio.get('/artist/$artistHash');
       final artistData = response.data['artist'];
-      return artistData != null ? artist.ArtistModel.fromJson(artistData) : null;
+      return artistData != null
+          ? artist.ArtistModel.fromJson(artistData)
+          : null;
     } catch (e) {
       throw Exception('Failed to load artist: $e');
     }
@@ -237,11 +250,12 @@ class EnhancedApiService {
     bool returnAllAlbums = true,
   }) async {
     try {
-      final response = await _dio.get('/artist/$artistHash/info', queryParameters: {
+      final response =
+          await _dio.get('/artist/$artistHash/info', queryParameters: {
         'tracklimit': trackLimit,
         'all': returnAllAlbums,
       });
-      
+
       return response.data as Map<String, dynamic>? ?? {};
     } catch (e) {
       throw Exception('Failed to load artist info: $e');
@@ -254,42 +268,52 @@ class EnhancedApiService {
     try {
       final response = await _dio.get('/artist/$artistHash/similar');
       final artistsData = response.data['artists'] as List<dynamic>? ?? [];
-      
-      return artistsData.map((artistData) => artist.ArtistModel.fromJson(artistData)).toList();
+
+      return artistsData
+          .map((artistData) => artist.ArtistModel.fromJson(artistData))
+          .toList();
     } catch (e) {
       throw Exception('Failed to load similar artists: $e');
     }
   }
 
-  Future<List<AlbumModel>> getArtistAlbums(String artistHash, {
+  Future<List<AlbumModel>> getArtistAlbums(
+    String artistHash, {
     int limit = 20,
     int offset = 0,
   }) async {
     try {
-      final response = await _dio.get('/artist/$artistHash/albums', queryParameters: {
+      final response =
+          await _dio.get('/artist/$artistHash/albums', queryParameters: {
         'limit': limit,
         'offset': offset,
       });
       final albumsData = response.data['albums'] as List<dynamic>? ?? [];
-      
-      return albumsData.map((albumData) => AlbumModel.fromJson(albumData)).toList();
+
+      return albumsData
+          .map((albumData) => AlbumModel.fromJson(albumData))
+          .toList();
     } catch (e) {
       throw Exception('Failed to load artist albums: $e');
     }
   }
 
-  Future<List<TrackModel>> getArtistTracks(String artistHash, {
+  Future<List<TrackModel>> getArtistTracks(
+    String artistHash, {
     int limit = 20,
     int offset = 0,
   }) async {
     try {
-      final response = await _dio.get('/artist/$artistHash/tracks', queryParameters: {
+      final response =
+          await _dio.get('/artist/$artistHash/tracks', queryParameters: {
         'limit': limit,
         'offset': offset,
       });
       final tracksData = response.data['tracks'] as List<dynamic>? ?? [];
-      
-      return tracksData.map((trackData) => TrackModel.fromJson(trackData)).toList();
+
+      return tracksData
+          .map((trackData) => TrackModel.fromJson(trackData))
+          .toList();
     } catch (e) {
       throw Exception('Failed to load artist tracks: $e');
     }
@@ -300,8 +324,10 @@ class EnhancedApiService {
     try {
       final response = await _dio.get('/playlists');
       final playlistsData = response.data['playlists'] as List<dynamic>? ?? [];
-      
-      return playlistsData.map((playlistData) => PlaylistModel.fromJson(playlistData)).toList();
+
+      return playlistsData
+          .map((playlistData) => PlaylistModel.fromJson(playlistData))
+          .toList();
     } catch (e) {
       throw Exception('Failed to load playlists: $e');
     }
@@ -323,7 +349,7 @@ class EnhancedApiService {
         'name': name,
         'description': description,
       });
-      
+
       return PlaylistModel.fromJson(response.data['playlist']);
     } catch (e) {
       throw Exception('Failed to create playlist: $e');
@@ -391,8 +417,10 @@ class EnhancedApiService {
         'offset': offset,
       });
       final tracksData = response.data['tracks'] as List<dynamic>? ?? [];
-      
-      return tracksData.map((trackData) => TrackModel.fromJson(trackData)).toList();
+
+      return tracksData
+          .map((trackData) => TrackModel.fromJson(trackData))
+          .toList();
     } catch (e) {
       throw Exception('Failed to load favorite tracks: $e');
     }
@@ -408,8 +436,10 @@ class EnhancedApiService {
         'offset': offset,
       });
       final albumsData = response.data['albums'] as List<dynamic>? ?? [];
-      
-      return albumsData.map((albumData) => AlbumModel.fromJson(albumData)).toList();
+
+      return albumsData
+          .map((albumData) => AlbumModel.fromJson(albumData))
+          .toList();
     } catch (e) {
       throw Exception('Failed to load favorite albums: $e');
     }
@@ -425,8 +455,10 @@ class EnhancedApiService {
         'offset': offset,
       });
       final artistsData = response.data['artists'] as List<dynamic>? ?? [];
-      
-      return artistsData.map((artistData) => artist.ArtistModel.fromJson(artistData)).toList();
+
+      return artistsData
+          .map((artistData) => artist.ArtistModel.fromJson(artistData))
+          .toList();
     } catch (e) {
       throw Exception('Failed to load favorite artists: $e');
     }
@@ -439,9 +471,12 @@ class EnhancedApiService {
         'q': query,
         'limit': 10,
       });
-      final suggestionsData = response.data['suggestions'] as List<dynamic>? ?? [];
-      
-      return suggestionsData.map((suggestionData) => SearchSuggestion.fromJson(suggestionData)).toList();
+      final suggestionsData =
+          response.data['suggestions'] as List<dynamic>? ?? [];
+
+      return suggestionsData
+          .map((suggestionData) => SearchSuggestion.fromJson(suggestionData))
+          .toList();
     } catch (e) {
       throw Exception('Failed to get search suggestions: $e');
     }
@@ -449,13 +484,14 @@ class EnhancedApiService {
 
   /// Get top search results (aggregated results with top result)
   /// Matches Android: getTopSearchResults
-  Future<Map<String, dynamic>> getTopSearchResults(String query, {int limit = 5}) async {
+  Future<Map<String, dynamic>> getTopSearchResults(String query,
+      {int limit = 5}) async {
     try {
       final response = await _dio.get('/search', queryParameters: {
         'q': query,
         'limit': limit,
       });
-      
+
       return response.data as Map<String, dynamic>? ?? {};
     } catch (e) {
       throw Exception('Failed to get top search results: $e');
@@ -495,25 +531,29 @@ class EnhancedApiService {
         'limit': limit,
         'offset': offset,
       });
-      
+
       return response.data as Map<String, dynamic>? ?? {};
     } catch (e) {
       throw Exception('Failed to load folder content: $e');
     }
   }
 
-  Future<List<TrackModel>> getFolderTracks(String folderHash, {
+  Future<List<TrackModel>> getFolderTracks(
+    String folderHash, {
     int limit = 20,
     int offset = 0,
   }) async {
     try {
-      final response = await _dio.get('/folder/$folderHash/tracks', queryParameters: {
+      final response =
+          await _dio.get('/folder/$folderHash/tracks', queryParameters: {
         'limit': limit,
         'offset': offset,
       });
       final tracksData = response.data['tracks'] as List<dynamic>? ?? [];
-      
-      return tracksData.map((trackData) => TrackModel.fromJson(trackData)).toList();
+
+      return tracksData
+          .map((trackData) => TrackModel.fromJson(trackData))
+          .toList();
     } catch (e) {
       throw Exception('Failed to load folder tracks: $e');
     }
@@ -521,7 +561,8 @@ class EnhancedApiService {
 
   // User methods
   // Generic HTTP methods
-  Future<Map<String, dynamic>> post(String path, {Map<String, dynamic>? data}) async {
+  Future<Map<String, dynamic>> post(String path,
+      {Map<String, dynamic>? data}) async {
     try {
       final response = await _dio.post(path, data: data);
       return response.data as Map<String, dynamic>;
@@ -667,8 +708,10 @@ class EnhancedApiService {
     try {
       final response = await _dio.get('/queue');
       final tracksData = response.data['tracks'] as List<dynamic>? ?? [];
-      
-      return tracksData.map((trackData) => TrackModel.fromJson(trackData)).toList();
+
+      return tracksData
+          .map((trackData) => TrackModel.fromJson(trackData))
+          .toList();
     } catch (e) {
       throw Exception('Failed to get queue: $e');
     }
@@ -718,7 +761,7 @@ class EnhancedApiService {
       final response = await _dio.get('/analytics', queryParameters: {
         'period': period,
       });
-      
+
       return response.data;
     } catch (e) {
       throw Exception('Failed to load analytics data: $e');
@@ -727,10 +770,11 @@ class EnhancedApiService {
 
   Future<List<dynamic>> getTopTracks({int limit = 10}) async {
     try {
-      final response = await _dio.get('/analytics/top-tracks', queryParameters: {
+      final response =
+          await _dio.get('/analytics/top-tracks', queryParameters: {
         'limit': limit,
       });
-      
+
       return response.data['tracks'] ?? [];
     } catch (e) {
       throw Exception('Failed to load top tracks: $e');
@@ -739,10 +783,11 @@ class EnhancedApiService {
 
   Future<List<dynamic>> getTopArtists({int limit = 10}) async {
     try {
-      final response = await _dio.get('/analytics/top-artists', queryParameters: {
+      final response =
+          await _dio.get('/analytics/top-artists', queryParameters: {
         'limit': limit,
       });
-      
+
       return response.data['artists'] ?? [];
     } catch (e) {
       throw Exception('Failed to load top artists: $e');
@@ -753,7 +798,7 @@ class EnhancedApiService {
   Future<Map<String, dynamic>> getUserSettings() async {
     try {
       final response = await _dio.get('/settings');
-      
+
       return response.data['settings'] ?? {};
     } catch (e) {
       throw Exception('Failed to load user settings: $e');
@@ -771,10 +816,11 @@ class EnhancedApiService {
   // Sync API methods
   Future<Map<String, dynamic>> getLibraryChanges(int lastSyncTimestamp) async {
     try {
-      final response = await _dio.get('/sync/library/changes', queryParameters: {
+      final response =
+          await _dio.get('/sync/library/changes', queryParameters: {
         'since': lastSyncTimestamp,
       });
-      
+
       return response.data as Map<String, dynamic>? ?? {};
     } catch (e) {
       throw Exception('Failed to get library changes: $e');
@@ -802,7 +848,7 @@ class EnhancedApiService {
   }) async {
     try {
       final ts = timestamp ?? DateTime.now().millisecondsSinceEpoch ~/ 1000;
-      
+
       await _dio.post(
         '${baseUrl}logger/track/log',
         data: {
@@ -812,8 +858,9 @@ class EnhancedApiService {
           'trackhash': trackhash,
         },
       );
-      
-      debugPrint('LOG: Track logged -> $trackhash, duration: ${durationSeconds}s, source: $source');
+
+      debugPrint(
+          'LOG: Track logged -> $trackhash, duration: ${durationSeconds}s, source: $source');
     } on DioException catch (e) {
       debugPrint('NETWORK ERROR LOGGING TRACK TO SERVER: ${e.message}');
       // Don't throw - logging failures shouldn't interrupt playback

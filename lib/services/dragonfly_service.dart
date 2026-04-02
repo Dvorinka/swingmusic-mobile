@@ -114,7 +114,11 @@ class DragonflyService {
       final response = await _dio.get('/dragonfly/health');
       return response.data;
     } catch (e) {
-      return {'connected': false, 'latency_ms': 0, 'message': 'Connection failed'};
+      return {
+        'connected': false,
+        'latency_ms': 0,
+        'message': 'Connection failed'
+      };
     }
   }
 
@@ -152,7 +156,7 @@ class DragonflyService {
     try {
       final response = await _dio.get('/dragonfly/services');
       final services = response.data['services'] as List?;
-      
+
       return services?.map((s) => CacheService.fromJson(s)).toList() ?? [];
     } catch (e) {
       return [];
@@ -164,7 +168,7 @@ class DragonflyService {
     try {
       final response = await _dio.get('/dragonfly/keys');
       final keys = response.data['keys'] as List?;
-      
+
       return keys?.map((k) => KeyNamespace.fromJson(k)).toList() ?? [];
     } catch (e) {
       return [];

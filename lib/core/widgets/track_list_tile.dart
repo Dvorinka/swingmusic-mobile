@@ -56,8 +56,10 @@ class TrackListTile extends StatelessWidget {
                     : Text(
                         '${track.track}',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
+                            ),
                       ),
               ),
             ),
@@ -78,8 +80,8 @@ class TrackListTile extends StatelessWidget {
           Text(
             track.artistNames,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -87,8 +89,8 @@ class TrackListTile extends StatelessWidget {
             Text(
               track.displayAlbum,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -101,8 +103,8 @@ class TrackListTile extends StatelessWidget {
               Text(
                 track.durationFormatted,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
               ),
               const SizedBox(width: 8),
               if (onPlay != null)
@@ -126,8 +128,8 @@ class TrackListTile extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Theme.of(context).colorScheme.primary.withOpacity(0.7),
-            Theme.of(context).colorScheme.secondary.withOpacity(0.7),
+            Theme.of(context).colorScheme.primary.withValues(alpha: 0.7),
+            Theme.of(context).colorScheme.secondary.withValues(alpha: 0.7),
           ],
         ),
       ),
