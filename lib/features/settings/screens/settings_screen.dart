@@ -86,14 +86,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget _buildUserSection(BuildContext context) {
     return Consumer<SessionController>(
       builder: (context, session, child) {
+        final colorScheme = Theme.of(context).colorScheme;
         return Card(
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Row(
               children: [
                 CircleAvatar(
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  child: Icon(Icons.person, color: Colors.white),
+                  backgroundColor: colorScheme.primary,
+                  child: Icon(Icons.person, color: colorScheme.onPrimary),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -385,7 +386,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             label: const Text('Logout'),
             style: ElevatedButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.error,
-              foregroundColor: Colors.white,
+              foregroundColor: Theme.of(context).colorScheme.onError,
               padding: const EdgeInsets.symmetric(vertical: 16),
             ),
           ),
@@ -473,6 +474,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void _showColorPickerDialog(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final colors = [
       {'name': 'Blue', 'value': 'blue', 'color': Colors.blue},
       {'name': 'Green', 'value': 'green', 'color': Colors.green},
@@ -518,11 +520,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     color: colorData['color'] as Color,
                     shape: BoxShape.circle,
                     border: isSelected
-                        ? Border.all(color: Colors.white, width: 3)
+                        ? Border.all(color: colorScheme.onPrimary, width: 3)
                         : null,
                   ),
                   child: isSelected
-                      ? const Icon(Icons.check, color: Colors.white)
+                      ? Icon(Icons.check, color: colorScheme.onPrimary)
                       : null,
                 ),
               );
@@ -661,28 +663,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
               },
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                children: const [
+                children: [
                   RadioListTile<String>(
-                    title: Text('Low (96kbps)'),
+                    title: const Text('Low (96kbps)'),
                     subtitle: Text(
                       'Best for saving data',
-                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                      style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant),
                     ),
                     value: 'low',
                   ),
                   RadioListTile<String>(
-                    title: Text('Medium (192kbps)'),
+                    title: const Text('Medium (192kbps)'),
                     subtitle: Text(
                       'Good balance',
-                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                      style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant),
                     ),
                     value: 'medium',
                   ),
                   RadioListTile<String>(
-                    title: Text('High (320kbps)'),
+                    title: const Text('High (320kbps)'),
                     subtitle: Text(
                       'Best quality',
-                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                      style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant),
                     ),
                     value: 'high',
                   ),
@@ -729,14 +731,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
               },
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                children: const [
-                  RadioListTile<String>(title: Text('Light'), value: 'light'),
-                  RadioListTile<String>(title: Text('Dark'), value: 'dark'),
+                children: [
+                  const RadioListTile<String>(title: Text('Light'), value: 'light'),
+                  const RadioListTile<String>(title: Text('Dark'), value: 'dark'),
                   RadioListTile<String>(
-                    title: Text('System'),
+                    title: const Text('System'),
                     subtitle: Text(
                       'Follow device settings',
-                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                      style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant),
                     ),
                     value: 'system',
                   ),
@@ -783,36 +785,36 @@ class _SettingsScreenState extends State<SettingsScreen> {
               },
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                children: const [
+                children: [
                   RadioListTile<String>(
-                    title: Text('Low (96kbps)'),
+                    title: const Text('Low (96kbps)'),
                     subtitle: Text(
                       'Smallest files',
-                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                      style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant),
                     ),
                     value: 'low',
                   ),
                   RadioListTile<String>(
-                    title: Text('Medium (192kbps)'),
+                    title: const Text('Medium (192kbps)'),
                     subtitle: Text(
                       'Balanced size and quality',
-                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                      style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant),
                     ),
                     value: 'medium',
                   ),
                   RadioListTile<String>(
-                    title: Text('High (320kbps)'),
+                    title: const Text('High (320kbps)'),
                     subtitle: Text(
                       'Best quality',
-                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                      style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant),
                     ),
                     value: 'high',
                   ),
                   RadioListTile<String>(
-                    title: Text('Lossless (FLAC)'),
+                    title: const Text('Lossless (FLAC)'),
                     subtitle: Text(
                       'Original quality',
-                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                      style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant),
                     ),
                     value: 'lossless',
                   ),
@@ -934,7 +936,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.error,
-              foregroundColor: Colors.white,
+              foregroundColor: Theme.of(context).colorScheme.onError,
             ),
             child: const Text('Logout'),
           ),

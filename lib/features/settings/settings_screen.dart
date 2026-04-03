@@ -218,23 +218,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Widget _buildConnectionStatus() {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: _isConnected ? Colors.green : Colors.red,
+        color: _isConnected 
+            ? colorScheme.primary.withValues(alpha: 0.15)
+            : colorScheme.error.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
         children: [
           Icon(
             _isConnected ? Icons.check_circle : Icons.error,
-            color: Colors.white,
+            color: _isConnected ? colorScheme.primary : colorScheme.error,
           ),
           const SizedBox(width: 8),
           Text(
             _isConnected ? 'Connected' : 'Disconnected',
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: _isConnected ? colorScheme.primary : colorScheme.error,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -442,6 +445,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Widget _buildClearCacheButton() {
+    final colorScheme = Theme.of(context).colorScheme;
     return ElevatedButton.icon(
       onPressed: () async {
         // Clear cache logic
@@ -452,8 +456,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       icon: const Icon(Icons.delete_outline),
       label: const Text('Clear Cache'),
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.red,
-        foregroundColor: Colors.white,
+        backgroundColor: colorScheme.error,
+        foregroundColor: colorScheme.onError,
       ),
     );
   }
@@ -533,18 +537,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Widget _buildDragonflyStatus() {
+    final colorScheme = Theme.of(context).colorScheme;
     if (!_isConnected) {
       return Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.grey.shade200,
+          color: colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(8),
         ),
-        child: const Row(
+        child: Row(
           children: [
-            Icon(Icons.info_outline, color: Colors.grey),
-            SizedBox(width: 8),
-            Text('Connect to server to view cache status'),
+            Icon(Icons.info_outline, color: colorScheme.onSurfaceVariant),
+            const SizedBox(width: 8),
+            Text(
+              'Connect to server to view cache status',
+              style: TextStyle(color: colorScheme.onSurfaceVariant),
+            ),
           ],
         ),
       );
@@ -563,14 +571,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
       return Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.orange.shade100,
+          color: colorScheme.errorContainer,
           borderRadius: BorderRadius.circular(8),
         ),
-        child: const Row(
+        child: Row(
           children: [
-            Icon(Icons.warning, color: Colors.orange),
-            SizedBox(width: 8),
-            Text('Cache server status unavailable'),
+            Icon(Icons.warning, color: colorScheme.onErrorContainer),
+            const SizedBox(width: 8),
+            Text(
+              'Cache server status unavailable',
+              style: TextStyle(color: colorScheme.onErrorContainer),
+            ),
           ],
         ),
       );
@@ -578,14 +589,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     final stats = _dragonflyStats!;
     final statusColor = stats.connected
-        ? (stats.latencyMs > 100 ? Colors.orange : Colors.green)
-        : Colors.red;
+        ? (stats.latencyMs > 100 ? colorScheme.tertiary : colorScheme.primary)
+        : colorScheme.error;
 
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: Colors.grey.shade300),
+        side: BorderSide(color: colorScheme.outline),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -636,6 +647,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Widget _buildStatRow(String label, String value) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -643,11 +655,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
         children: [
           Text(
             label,
-            style: TextStyle(color: Colors.grey.shade600),
+            style: TextStyle(color: colorScheme.onSurfaceVariant),
           ),
           Text(
             value,
-            style: const TextStyle(fontWeight: FontWeight.w500),
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              color: colorScheme.onSurface,
+            ),
           ),
         ],
       ),

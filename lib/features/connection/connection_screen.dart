@@ -138,22 +138,23 @@ class _ConnectionScreenState extends State<ConnectionScreen>
   }
 
   Widget _buildConnectionStatusCard() {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       margin: AppSpacing.marginLG,
       padding: AppSpacing.paddingLG,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: _isConnected
-              ? [Colors.green, Colors.lightGreen]
+              ? [colorScheme.primary, colorScheme.primaryContainer]
               : [
-                  Theme.of(context).colorScheme.primary,
-                  Theme.of(context).colorScheme.primaryContainer
+                  colorScheme.primary,
+                  colorScheme.primaryContainer
                 ],
         ),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: colorScheme.shadow.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -172,11 +173,11 @@ class _ConnectionScreenState extends State<ConnectionScreen>
                       width: 48,
                       height: 48,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: colorScheme.onPrimary,
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
+                            color: colorScheme.shadow.withValues(alpha: 0.2),
                             blurRadius: 8,
                             spreadRadius: 2,
                           ),
@@ -185,8 +186,8 @@ class _ConnectionScreenState extends State<ConnectionScreen>
                       child: Icon(
                         _isConnected ? Icons.cloud_done : Icons.cloud_queue,
                         color: _isConnected
-                            ? Colors.green
-                            : Theme.of(context).colorScheme.primary,
+                            ? colorScheme.primary
+                            : colorScheme.primary,
                         size: 24,
                       ),
                     ),
@@ -201,7 +202,7 @@ class _ConnectionScreenState extends State<ConnectionScreen>
                     Text(
                       _connectionStatus,
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            color: Colors.white,
+                            color: colorScheme.onPrimary,
                             fontWeight: FontWeight.bold,
                           ),
                     ),
@@ -211,7 +212,7 @@ class _ConnectionScreenState extends State<ConnectionScreen>
                           ? 'Connected to SwingMusic server'
                           : 'Not connected to any server',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Colors.white.withOpacity(0.9),
+                            color: colorScheme.onPrimary.withValues(alpha: 0.9),
                           ),
                     ),
                   ],
@@ -223,8 +224,8 @@ class _ConnectionScreenState extends State<ConnectionScreen>
                   icon: const Icon(Icons.link_off),
                   label: const Text('Disconnect'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.red,
+                    backgroundColor: colorScheme.onPrimary,
+                    foregroundColor: colorScheme.error,
                   ),
                 ),
             ],
@@ -371,7 +372,7 @@ class _ConnectionScreenState extends State<ConnectionScreen>
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
                             valueColor:
-                                AlwaysStoppedAnimation<Color>(Colors.white),
+                                AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.onPrimary),
                           ),
                         )
                       : const Icon(Icons.link),
@@ -420,10 +421,11 @@ class _ConnectionScreenState extends State<ConnectionScreen>
     _pulseController.forward();
 
     if (mounted) {
+      final colorScheme = Theme.of(context).colorScheme;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Connected to ${server.name}'),
-          backgroundColor: Colors.green,
+          backgroundColor: colorScheme.primary,
         ),
       );
     }
@@ -454,10 +456,11 @@ class _ConnectionScreenState extends State<ConnectionScreen>
     _pulseController.forward();
 
     if (mounted) {
+      final colorScheme = Theme.of(context).colorScheme;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Connected successfully'),
-          backgroundColor: Colors.green,
+        SnackBar(
+          content: const Text('Connected successfully'),
+          backgroundColor: colorScheme.primary,
         ),
       );
     }
@@ -528,6 +531,7 @@ class ServerTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: Padding(
@@ -540,13 +544,13 @@ class ServerTile extends StatelessWidget {
               height: 48,
               decoration: BoxDecoration(
                 color: server.isActive
-                    ? Colors.green.withOpacity(0.1)
-                    : Colors.grey.withOpacity(0.1),
+                    ? colorScheme.primary.withValues(alpha: 0.1)
+                    : colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
                 Icons.dns,
-                color: server.isActive ? Colors.green : Colors.grey,
+                color: server.isActive ? colorScheme.primary : colorScheme.onSurfaceVariant,
                 size: 24,
               ),
             ),
@@ -568,10 +572,7 @@ class ServerTile extends StatelessWidget {
                   Text(
                     server.url,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onSurface
-                              .withOpacity(0.7),
+                          color: colorScheme.onSurface.withValues(alpha: 0.7),
                         ),
                   ),
                   const SizedBox(height: 2),
@@ -580,7 +581,7 @@ class ServerTile extends StatelessWidget {
                       Text(
                         'v${server.version}',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Theme.of(context).colorScheme.primary,
+                              color: colorScheme.primary,
                               fontWeight: FontWeight.w500,
                             ),
                       ),
@@ -589,7 +590,7 @@ class ServerTile extends StatelessWidget {
                         width: 8,
                         height: 8,
                         decoration: BoxDecoration(
-                          color: server.isActive ? Colors.green : Colors.grey,
+                          color: server.isActive ? colorScheme.primary : colorScheme.onSurfaceVariant,
                           shape: BoxShape.circle,
                         ),
                       ),
@@ -597,8 +598,7 @@ class ServerTile extends StatelessWidget {
                       Text(
                         server.isActive ? 'Active' : 'Inactive',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color:
-                                  server.isActive ? Colors.green : Colors.grey,
+                              color: server.isActive ? colorScheme.primary : colorScheme.onSurfaceVariant,
                               fontWeight: FontWeight.w500,
                             ),
                       ),
