@@ -355,7 +355,7 @@ class _AdvancedWaveformVisualizerState
                     .textTheme
                     .bodySmall
                     ?.color
-                    ?.withValues(alpha: 0.7),
+                    ?.withOpacity(0.7),
               ),
         ),
       ],

@@ -154,9 +154,8 @@ class _LyricsScreenState extends State<LyricsScreen> {
                                   ? scheme.onSurface
                                   : isPast
                                       ? scheme.onSurface
-                                          .withValues(alpha: alpha)
-                                      : scheme.onSurfaceVariant.withValues(
-                                          alpha: alpha,
+                                          .withOpacity(alpha)
+                                      : scheme.onSurfaceVariant.withOpacity(alpha,
                                         );
 
                               return InkWell(

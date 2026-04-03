@@ -349,7 +349,7 @@ class _DownloadScreenState extends State<DownloadScreen>
                     color: Theme.of(context)
                         .colorScheme
                         .onSurface
-                        .withValues(alpha: 0.8),
+                        .withOpacity(0.8),
                   ),
             ),
             const SizedBox(height: 16),
@@ -593,7 +593,7 @@ class DownloadTile extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.2),
+                      color: Colors.black.withOpacity(0.2),
                       blurRadius: 6,
                       offset: const Offset(0, 2),
                     ),
@@ -635,7 +635,7 @@ class DownloadTile extends StatelessWidget {
                             color: Theme.of(context)
                                 .colorScheme
                                 .onSurface
-                                .withValues(alpha: 0.8),
+                                .withOpacity(0.8),
                           ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -780,7 +780,7 @@ class DownloadTile extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
+            Theme.of(context).colorScheme.primary.withOpacity(0.8),
             Theme.of(context).colorScheme.primary,
           ],
         ),

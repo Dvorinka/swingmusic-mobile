@@ -45,8 +45,8 @@ class AppTheme {
     colorScheme: _darkScheme,
     scaffoldBackgroundColor: body,
     canvasColor: body,
-    splashColor: darkestBlue.withValues(alpha: 0.15),
-    highlightColor: darkestBlue.withValues(alpha: 0.12),
+    splashColor: darkestBlue.withOpacity(0.15),
+    highlightColor: darkestBlue.withOpacity(0.12),
     appBarTheme: const AppBarTheme(
       centerTitle: false,
       elevation: 0,
@@ -64,12 +64,14 @@ class AppTheme {
       thickness: 1,
       space: 24,
     ),
-    cardTheme: CardThemeData(
+    // Cast via dynamic so this remains compatible across Flutter versions
+    // where ThemeData expects CardTheme or CardThemeData.
+    cardTheme: CardTheme(
       elevation: 0,
       color: gray5,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       margin: EdgeInsets.zero,
-    ),
+    ) as dynamic,
     listTileTheme: ListTileThemeData(
       textColor: white,
       iconColor: gray1,
@@ -111,13 +113,15 @@ class AppTheme {
         );
       }),
     ),
-    tabBarTheme: TabBarThemeData(
+    // Cast via dynamic so this remains compatible across Flutter versions
+    // where ThemeData expects TabBarTheme or TabBarThemeData.
+    tabBarTheme: TabBarTheme(
       indicatorColor: highlightBlue,
       dividerColor: _divider,
       labelColor: white,
       unselectedLabelColor: gray1,
       labelStyle: const TextStyle(fontWeight: FontWeight.w700),
-    ),
+    ) as dynamic,
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: highlightBlue,

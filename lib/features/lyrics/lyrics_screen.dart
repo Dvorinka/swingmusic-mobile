@@ -109,7 +109,7 @@ class _LyricsScreenState extends State<LyricsScreen> {
                                   color: Theme.of(context)
                                       .colorScheme
                                       .onSurface
-                                      .withValues(alpha: 0.8),
+                                      .withOpacity(0.8),
                                 ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -125,7 +125,7 @@ class _LyricsScreenState extends State<LyricsScreen> {
                                     color: Theme.of(context)
                                         .colorScheme
                                         .onSurface
-                                        .withValues(alpha: 0.6),
+                                        .withOpacity(0.6),
                                   ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -143,7 +143,7 @@ class _LyricsScreenState extends State<LyricsScreen> {
                         borderRadius: BorderRadius.circular(8),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.2),
+                            color: Colors.black.withOpacity(0.2),
                             blurRadius: 8,
                             offset: const Offset(0, 4),
                           ),
@@ -163,7 +163,7 @@ class _LyricsScreenState extends State<LyricsScreen> {
                                           Theme.of(context)
                                               .colorScheme
                                               .primary
-                                              .withValues(alpha: 0.8),
+                                              .withOpacity(0.8),
                                           Theme.of(context).colorScheme.primary,
                                         ],
                                       ),
@@ -185,7 +185,7 @@ class _LyricsScreenState extends State<LyricsScreen> {
                                       Theme.of(context)
                                           .colorScheme
                                           .primary
-                                          .withValues(alpha: 0.8),
+                                          .withOpacity(0.8),
                                       Theme.of(context).colorScheme.primary,
                                     ],
                                   ),
@@ -238,7 +238,7 @@ class _LyricsScreenState extends State<LyricsScreen> {
                       color: Theme.of(context)
                           .colorScheme
                           .outline
-                          .withValues(alpha: 0.3),
+                          .withOpacity(0.3),
                     ),
                   ),
                   child: Column(
@@ -297,7 +297,7 @@ class _LyricsScreenState extends State<LyricsScreen> {
                                 color: Theme.of(context)
                                     .colorScheme
                                     .onSurface
-                                    .withValues(alpha: 0.6),
+                                    .withOpacity(0.6),
                                 size: 48,
                               ),
                               const SizedBox(height: 16),
@@ -310,7 +310,7 @@ class _LyricsScreenState extends State<LyricsScreen> {
                                       color: Theme.of(context)
                                           .colorScheme
                                           .onSurface
-                                          .withValues(alpha: 0.6),
+                                          .withOpacity(0.6),
                                     ),
                                 textAlign: TextAlign.center,
                               ),
@@ -339,7 +339,7 @@ class _LyricsScreenState extends State<LyricsScreen> {
             Icons.music_note,
             size: 64,
             color:
-                Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
           ),
           const SizedBox(height: 16),
           Text(
@@ -356,7 +356,7 @@ class _LyricsScreenState extends State<LyricsScreen> {
                   color: Theme.of(context)
                       .colorScheme
                       .onSurface
-                      .withValues(alpha: 0.8),
+                      .withOpacity(0.8),
                 ),
             textAlign: TextAlign.center,
           ),

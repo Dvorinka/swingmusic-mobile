@@ -185,7 +185,7 @@ class _MobileScannerScreenState extends State<MobileScannerScreen> {
         // Dark overlay
         Container(
           decoration: BoxDecoration(
-            color: Colors.black.withValues(alpha: 0.5),
+            color: Colors.black.withOpacity(0.5),
           ),
         ),
 

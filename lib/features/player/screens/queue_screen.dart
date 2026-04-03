@@ -96,13 +96,13 @@ class QueueScreen extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
-            Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1),
+            Theme.of(context).colorScheme.primary.withOpacity(0.1),
+            Theme.of(context).colorScheme.secondary.withOpacity(0.1),
           ],
         ),
         borderRadius: BorderRadius.circular(AppConstants.cardBorderRadius),
         border: Border.all(
-          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+          color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
         ),
       ),
       child: Column(
@@ -211,7 +211,7 @@ class QueueScreen extends StatelessWidget {
           ? Theme.of(context)
               .colorScheme
               .primaryContainer
-              .withValues(alpha: 0.3)
+              .withOpacity(0.3)
           : null,
       child: ListTile(
         leading: isCurrentTrack

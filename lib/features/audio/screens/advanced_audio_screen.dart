@@ -372,7 +372,7 @@ class _AdvancedAudioScreenState extends State<AdvancedAudioScreen> {
         if (_reverbEnabled) ...[
           const SizedBox(height: AppSpacing.sm),
           DropdownButtonFormField<String>(
-            initialValue: _reverbPreset,
+            value: _reverbPreset,
             decoration: const InputDecoration(
               labelText: 'Reverb Type',
               border: OutlineInputBorder(),

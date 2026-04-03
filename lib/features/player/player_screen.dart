@@ -70,7 +70,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.3),
+                          color: Colors.black.withOpacity(0.3),
                           blurRadius: 20,
                           offset: const Offset(0, 8),
                         ),
@@ -87,11 +87,11 @@ class _PlayerScreenState extends State<PlayerScreen> {
                               Theme.of(context)
                                   .colorScheme
                                   .primary
-                                  .withValues(alpha: 0.7),
+                                  .withOpacity(0.7),
                               Theme.of(context)
                                   .colorScheme
                                   .secondary
-                                  .withValues(alpha: 0.7),
+                                  .withOpacity(0.7),
                             ],
                           ),
                         ),
@@ -383,8 +383,8 @@ class _PlayerScreenState extends State<PlayerScreen> {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Theme.of(context).colorScheme.primary.withValues(alpha: 0.7),
-            Theme.of(context).colorScheme.secondary.withValues(alpha: 0.7),
+            Theme.of(context).colorScheme.primary.withOpacity(0.7),
+            Theme.of(context).colorScheme.secondary.withOpacity(0.7),
           ],
         ),
       ),

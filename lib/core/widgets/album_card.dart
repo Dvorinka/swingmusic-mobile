@@ -83,7 +83,7 @@ class _AlbumCardState extends State<AlbumCard> {
                                     begin: Alignment.bottomCenter,
                                     end: Alignment.topCenter,
                                     colors: [
-                                      Colors.black.withValues(alpha: 0.6),
+                                      Colors.black.withOpacity(0.6),
                                       Colors.transparent,
                                     ],
                                     stops: const [0.0, 0.8],
@@ -117,7 +117,7 @@ class _AlbumCardState extends State<AlbumCard> {
                                       // Match web client shadow effects
                                       BoxShadow(
                                         color:
-                                            Colors.black.withValues(alpha: 0.3),
+                                            Colors.black.withOpacity(0.3),
                                         blurRadius: 8,
                                         offset: const Offset(0, 2),
                                       ),
@@ -160,7 +160,7 @@ class _AlbumCardState extends State<AlbumCard> {
                               color: Theme.of(context)
                                   .colorScheme
                                   .onSurface
-                                  .withValues(alpha: 0.75),
+                                  .withOpacity(0.75),
                               fontWeight: FontWeight.w700,
                               fontSize: 13, // 0.8rem from web client
                             ),
@@ -176,7 +176,7 @@ class _AlbumCardState extends State<AlbumCard> {
                                     color: Theme.of(context)
                                         .colorScheme
                                         .onSurface
-                                        .withValues(alpha: 0.6),
+                                        .withOpacity(0.6),
                                     fontSize: 12,
                                   ),
                         ),
@@ -199,8 +199,8 @@ class _AlbumCardState extends State<AlbumCard> {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Theme.of(context).colorScheme.primary.withValues(alpha: 0.7),
-            Theme.of(context).colorScheme.secondary.withValues(alpha: 0.7),
+            Theme.of(context).colorScheme.primary.withOpacity(0.7),
+            Theme.of(context).colorScheme.secondary.withOpacity(0.7),
           ],
         ),
       ),

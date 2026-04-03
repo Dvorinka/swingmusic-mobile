@@ -153,7 +153,7 @@ class _ConnectionScreenState extends State<ConnectionScreen>
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
+            color: Colors.black.withOpacity(0.1),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -176,7 +176,7 @@ class _ConnectionScreenState extends State<ConnectionScreen>
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.2),
+                            color: Colors.black.withOpacity(0.2),
                             blurRadius: 8,
                             spreadRadius: 2,
                           ),
@@ -211,7 +211,7 @@ class _ConnectionScreenState extends State<ConnectionScreen>
                           ? 'Connected to SwingMusic server'
                           : 'Not connected to any server',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Colors.white.withValues(alpha: 0.9),
+                            color: Colors.white.withOpacity(0.9),
                           ),
                     ),
                   ],
@@ -261,7 +261,7 @@ class _ConnectionScreenState extends State<ConnectionScreen>
                             color: Theme.of(context)
                                 .colorScheme
                                 .onSurface
-                                .withValues(alpha: 0.7),
+                                .withOpacity(0.7),
                           ),
                     ),
                   ],
@@ -280,7 +280,7 @@ class _ConnectionScreenState extends State<ConnectionScreen>
                       color: Theme.of(context)
                           .colorScheme
                           .onSurface
-                          .withValues(alpha: 0.3),
+                          .withOpacity(0.3),
                     ),
                     const SizedBox(height: 16),
                     Text(
@@ -289,7 +289,7 @@ class _ConnectionScreenState extends State<ConnectionScreen>
                             color: Theme.of(context)
                                 .colorScheme
                                 .onSurface
-                                .withValues(alpha: 0.5),
+                                .withOpacity(0.5),
                           ),
                     ),
                     const SizedBox(height: 8),
@@ -299,7 +299,7 @@ class _ConnectionScreenState extends State<ConnectionScreen>
                             color: Theme.of(context)
                                 .colorScheme
                                 .onSurface
-                                .withValues(alpha: 0.5),
+                                .withOpacity(0.5),
                           ),
                       textAlign: TextAlign.center,
                     ),
@@ -540,8 +540,8 @@ class ServerTile extends StatelessWidget {
               height: 48,
               decoration: BoxDecoration(
                 color: server.isActive
-                    ? Colors.green.withValues(alpha: 0.1)
-                    : Colors.grey.withValues(alpha: 0.1),
+                    ? Colors.green.withOpacity(0.1)
+                    : Colors.grey.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
@@ -571,7 +571,7 @@ class ServerTile extends StatelessWidget {
                           color: Theme.of(context)
                               .colorScheme
                               .onSurface
-                              .withValues(alpha: 0.7),
+                              .withOpacity(0.7),
                         ),
                   ),
                   const SizedBox(height: 2),

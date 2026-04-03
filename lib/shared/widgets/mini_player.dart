@@ -129,7 +129,7 @@ class _MiniPlayerState extends State<MiniPlayer> with TickerProviderStateMixin {
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.1),
+                color: Colors.black.withOpacity(0.1),
                 blurRadius: 8,
                 offset: const Offset(0, -2),
               ),
@@ -221,7 +221,7 @@ class _MiniPlayerState extends State<MiniPlayer> with TickerProviderStateMixin {
                                           color: Theme.of(context)
                                               .colorScheme
                                               .onSurface
-                                              .withValues(alpha: 0.6),
+                                              .withOpacity(0.6),
                                         ),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
@@ -292,8 +292,8 @@ class _MiniPlayerState extends State<MiniPlayer> with TickerProviderStateMixin {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Theme.of(context).colorScheme.primary.withValues(alpha: 0.7),
-            Theme.of(context).colorScheme.secondary.withValues(alpha: 0.7),
+            Theme.of(context).colorScheme.primary.withOpacity(0.7),
+            Theme.of(context).colorScheme.secondary.withOpacity(0.7),
           ],
         ),
       ),

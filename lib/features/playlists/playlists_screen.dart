@@ -180,11 +180,11 @@ class _PlaylistsScreenState extends State<PlaylistsScreen> {
                           Theme.of(context)
                               .colorScheme
                               .primary
-                              .withValues(alpha: 0.8),
+                              .withOpacity(0.8),
                           Theme.of(context)
                               .colorScheme
                               .secondary
-                              .withValues(alpha: 0.8),
+                              .withOpacity(0.8),
                         ],
                       ),
                       borderRadius: BorderRadius.circular(8),
@@ -198,7 +198,7 @@ class _PlaylistsScreenState extends State<PlaylistsScreen> {
                           child: Container(
                             padding: const EdgeInsets.all(4),
                             decoration: BoxDecoration(
-                              color: Colors.black.withValues(alpha: 0.7),
+                              color: Colors.black.withOpacity(0.7),
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: Icon(

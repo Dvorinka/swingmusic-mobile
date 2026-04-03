@@ -19,7 +19,7 @@ class BottomNavigation extends StatelessWidget {
         return NavigationBar(
           height: 65,
           backgroundColor: Theme.of(context).colorScheme.surface,
-          indicatorColor: AppTheme.highlightBlue.withValues(alpha: 0.12),
+          indicatorColor: AppTheme.highlightBlue.withOpacity(0.12),
           labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
           destinations: const [
             NavigationDestination(
